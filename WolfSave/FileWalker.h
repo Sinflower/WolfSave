@@ -122,7 +122,7 @@ public:
 	void ReadBytesArr(std::array<BYTE, S>& buffer, const DWORD& size = -1)
 	{
 		if (size == -1)
-			ReadBytes(buffer.data(), buffer.size());
+			ReadBytes(buffer.data(), static_cast<DWORD>(buffer.size()));
 		else if (size <= buffer.size())
 			ReadBytes(buffer.data(), size);
 		else

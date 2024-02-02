@@ -131,9 +131,10 @@ bool parseSave(FileWalker &fw, const BYTE &a2, const BYTE &a3)
 		std::cout << "Offset After Step 1: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
 		parse_save_2(fw);
 		std::cout << "Offset After Step 2: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
+		//fw.Seek(0x3906);
 		parse_save_3(fw, 0);
 		std::cout << "Offset After Step 3: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
-		fw.Seek(0xC1EEF);
+		// fw.Seek(0xC1EEF);
 		parse_save_4(fw);
 		std::cout << "Offset After Step 4: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
 		parse_save_5(fw, 0);
@@ -430,10 +431,485 @@ void parse_save_1_1_1_1(FileWalker &fw)
 
 void parse_save_2(FileWalker &fw)
 {
+	BYTE this_2212  = fw.ReadByte();
+	BYTE this_2213  = fw.ReadByte();
+	DWORD this_2216 = fw.ReadDWord();
+	DWORD this_2220 = fw.ReadDWord();
+	DWORD this_2228 = fw.ReadDWord();
+	DWORD this_2232 = fw.ReadDWord();
+	DWORD skip1 = fw.ReadDWord();
+	DWORD skip2 = fw.ReadDWord();
+	DWORD this_2244 = fw.ReadDWord();
+	DWORD this_2248 = fw.ReadDWord();
+	DWORD this_2252 = fw.ReadDWord();
+	DWORD this_2256 = fw.ReadDWord();
+	DWORD this_2260 = fw.ReadDWord();
+	DWORD this_2264 = fw.ReadDWord();
+	DWORD this_2268 = fw.ReadDWord();
+	DWORD this_2272 = fw.ReadDWord();
+	DWORD this_2276 = fw.ReadDWord();
+	DWORD this_2280 = fw.ReadDWord();
+	DWORD this_2284 = fw.ReadDWord();
+	DWORD this_2288 = fw.ReadDWord();
+	DWORD this_2292 = fw.ReadDWord();
+	WORD this_2296  = fw.ReadWord();
+	WORD this_2298  = fw.ReadWord();
+	WORD this_2300  = fw.ReadWord();
+	DWORD this_2302 = fw.ReadDWord();
+	WORD this_2306  = fw.ReadWord();
+	WORD this_2308  = fw.ReadWord();
+	WORD this_2310  = fw.ReadWord();
+	DWORD this_2320 = fw.ReadDWord();
+	DWORD this_2324 = fw.ReadDWord();
+	DWORD this_2328 = fw.ReadDWord();
+	DWORD this_2332 = fw.ReadDWord();
+	DWORD this_2336 = fw.ReadDWord();
+	DWORD this_2340 = fw.ReadDWord();
+	DWORD this_2344 = fw.ReadDWord();
+	DWORD this_2348 = fw.ReadDWord();
+	DWORD this_2352 = fw.ReadDWord();
+	BYTE this_2372  = fw.ReadByte();
+	WORD this_2356  = fw.ReadWord();
+	DWORD this_2360 = fw.ReadDWord();
+	DWORD this_2364 = fw.ReadDWord();
+	WORD this_2374  = fw.ReadWord();
+	WORD this_2376  = fw.ReadWord();
+	WORD this_2388  = fw.ReadWord();
+	WORD this_2390  = fw.ReadWord();
+	DWORD this_2392 = fw.ReadDWord();
+	DWORD this_2396 = fw.ReadDWord();
+	DWORD this_2400 = fw.ReadDWord();
+	BYTE this_2404  = fw.ReadByte();
+
+	if (g_fileVersion <= 96)
+		DWORD skip = fw.ReadDWord();
+
+	DWORD this_2408 = fw.ReadDWord();
+
+	if (g_fileVersion >= 98)
+	{
+		DWORD this_2412 = fw.ReadDWord();
+		DWORD this_2416 = fw.ReadDWord();
+	}
+
+	if (g_fileVersion >= 100)
+	{
+		DWORD this_2420 = fw.ReadDWord();
+		DWORD this_2424 = fw.ReadDWord();
+		BYTE this_2428 = fw.ReadByte();
+
+		DWORD v348 = fw.ReadDWord();
+
+		if ((int)v348 > 0)
+		{
+			for (DWORD i = 0; i < v348; i++)
+			{
+				MemData<DWORD> memData;
+				initMemData(memData, fw);
+
+				if (!buf_6_eq_85)
+				{
+					NOT_IMPLEMENTED
+				}
+			}
+		}
+
+		DWORD v73 = fw.ReadDWord();
+
+		if ((int)v73 > 0)
+		{
+			std::vector<DWORD> data;
+			for (DWORD i = 0; i < v73; i++)
+				data.push_back(fw.ReadDWord());
+		}
+
+		DWORD this_2456 = fw.ReadDWord();
+		DWORD this_2460 = fw.ReadDWord();
+		DWORD this_2464 = fw.ReadDWord();
+		DWORD this_2468 = fw.ReadDWord();
+		DWORD this_2472 = fw.ReadDWord();
+	}
+	if (g_fileVersion >= 101)
+	{
+		DWORD this_2476 = fw.ReadDWord();
+		DWORD this_2488 = fw.ReadDWord();
+		DWORD this_2480 = fw.ReadDWord();
+		DWORD this_2492 = fw.ReadDWord();
+		DWORD this_2484 = fw.ReadDWord();
+		DWORD this_2496 = fw.ReadDWord();
+	}
+	if (g_fileVersion >= 102)
+		WORD this_2380 = fw.ReadWord();
+
+	if (g_fileVersion >= 103)
+	{
+		MemData<WORD> memData1;
+		initMemData(memData1, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		MemData<WORD> memData2;
+		initMemData(memData2, fw);
+
+		if (!buf_6_eq_85) // this is 1 -- figure out where it is set
+		{
+			NOT_IMPLEMENTED
+		}
+	}
+
+	if (g_fileVersion >= 104)
+		DWORD this_2500 = fw.ReadDWord();
+
+	if (g_fileVersion >= 106)
+	{
+		DWORD this_2552 = fw.ReadDWord();
+		DWORD this_2556 = fw.ReadDWord();
+		DWORD this_2560 = fw.ReadDWord();
+	}
+
+	if (g_fileVersion >= 108)
+	{
+		MemData<WORD> memData1;
+		initMemData(memData1, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		DWORD this_2612 = fw.ReadDWord();
+		DWORD this_2616 = fw.ReadDWord();
+		DWORD this_2620 = fw.ReadDWord();
+
+		MemData<WORD> memData2;
+		initMemData(memData2, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		DWORD this_2624 = fw.ReadDWord();
+		DWORD this_2628 = fw.ReadDWord();
+		DWORD this_2632 = fw.ReadDWord();
+	}
+
+	if (g_fileVersion >= 109)
+	{
+		MemData<WORD> memData1;
+		initMemData(memData1, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		MemData<WORD> memData2;
+		initMemData(memData2, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		BYTE this_2756 = fw.ReadByte();
+	}
+
+	if (g_fileVersion >= 110)
+		BYTE this_2757 = fw.ReadByte();
+
+	if (g_fileVersion >= 119)
+	{
+		MemData<WORD> memData1;
+		initMemData(memData1, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		MemData<WORD> memData2;
+		initMemData(memData2, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		MemData<WORD> memData3;
+		initMemData(memData3, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+	}
+
+	if (g_fileVersion >= 121)
+		DWORD this_2760 = fw.ReadDWord();
+
+	if (g_fileVersion >= 122)
+		DWORD this_2764 = fw.ReadDWord();
+
+	if (g_fileVersion >= 124)
+		DWORD this_2768 = fw.ReadDWord();
+
+	if (g_fileVersion >= 126)
+		DWORD this_2772 = fw.ReadDWord();
+
+	if (g_fileVersion >= 128)
+		DWORD this_2776 = fw.ReadDWord();
+
+	if (g_fileVersion >= 129)
+	{
+		DWORD this_2828 = fw.ReadDWord();
+		DWORD this_2836 = fw.ReadDWord();
+	}
+
+	if (g_fileVersion >= 130)
+		DWORD this_2832 = fw.ReadDWord();
+
+	if (g_fileVersion >= 131)
+		DWORD this_2840 = fw.ReadDWord();
+
+	if (g_fileVersion >= 132)
+	{
+		DWORD this_2844 = fw.ReadDWord();
+		DWORD this_2848 = fw.ReadDWord();
+		DWORD this_2852 = fw.ReadDWord();
+		DWORD this_2856 = fw.ReadDWord();
+	}
+
+	if (g_fileVersion >= 134)
+		BYTE this_2860 = fw.ReadByte();
+
+	if (g_fileVersion >= 136)
+		BYTE this_2861 = fw.ReadByte();
+
+	if (g_fileVersion >= 137)
+	{
+		DWORD this_2888 = fw.ReadDWord();
+		DWORD this_2896 = fw.ReadDWord();
+		DWORD this_2900 = fw.ReadDWord();
+		DWORD this_2904 = fw.ReadDWord();
+
+		std::vector<DWORD> data;
+
+		for (DWORD i = 0; i < 2; i++)
+		{
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+			data.push_back(fw.ReadDWord());
+		}
+	}
+
+	if (g_fileVersion >= 138)
+	{
+		DWORD this_3052 = fw.ReadDWord();
+		DWORD this_3056 = fw.ReadDWord();
+		DWORD this_3060 = fw.ReadDWord();
+		DWORD this_3136 = fw.ReadDWord();
+
+		MemData<DWORD> memData;
+		initMemData(memData, fw);
+
+		if (!buf_6_eq_85)
+		{
+			NOT_IMPLEMENTED
+		}
+
+		DWORD v293 = fw.ReadDWord();
+
+		if ((int)v293 > 0)
+		{
+			for (DWORD i = 0; i < v293; i++)
+			{
+				MemData<DWORD> memData;
+				initMemData(memData, fw);
+
+				if (!buf_6_eq_85)
+				{
+					NOT_IMPLEMENTED
+				}
+			}
+		}
+	}
+
+	if (g_fileVersion < 141) return;
+
+	BYTE byte0  = fw.ReadByte();
+	BYTE byte1  = fw.ReadByte();
+	BYTE byte2  = fw.ReadByte();
+	BYTE byte3  = fw.ReadByte();
+	BYTE byte4  = fw.ReadByte();
+	BYTE byte5  = fw.ReadByte();
+	BYTE byte6  = fw.ReadByte();
+	BYTE byte7  = fw.ReadByte();
+	BYTE byte8  = fw.ReadByte();
+	BYTE byte9  = fw.ReadByte();
+	BYTE byte10 = fw.ReadByte();
+	BYTE byte11 = fw.ReadByte();
+	BYTE byte12 = fw.ReadByte();
+	BYTE byte13 = fw.ReadByte();
+
+	std::array<BYTE, 0x100> bytes;
+	fw.ReadBytesArr(bytes);
+
+	BYTE byte14 = fw.ReadByte();
+	BYTE byte15 = fw.ReadByte();
 }
 
 void parse_save_3(FileWalker &fw, const BYTE &a2)
 {
+	DWORD v8 = fw.ReadDWord();
+	DWORD v9 = fw.ReadDWord();
+
+	if ((int)v9 >= 0)
+	{
+		if (v9 > 0)
+		{
+			for (DWORD i = 0; i < v9; i++)
+			{
+				DWORD v14 = fw.ReadDWord();
+				if (v14 < 0) return;
+
+				for (DWORD j = 0; j < v14; j++)
+				{
+					BYTE v160 = fw.ReadByte();
+					if (v160 > 0)
+					{
+						std::vector<DWORD> data;
+						for (DWORD k = 0; k < v160; k++)
+							data.push_back(fw.ReadDWord());
+					}
+				}
+			}
+		}
+
+		DWORD v33 = fw.ReadDWord();
+
+		if (v33 <= 0x270F)
+		{
+			if ((int)v33 > 0)
+			{
+				for (DWORD i = 0; i < v33; i++)
+				{
+					DWORD v40 = fw.ReadDWord();
+					if ((int)v40 < 0) return;
+
+					if ((int)v40 > 0)
+					{
+						std::vector<DWORD> data;
+						for (DWORD j = 0; j < v40; j++)
+							data.push_back(fw.ReadDWord());
+					}
+				}
+			}
+
+			DWORD v54 = fw.ReadDWord();
+
+			if ((int)v54 >= 0)
+			{
+				if ((int)v54 > 0)
+				{
+					for (DWORD i = 0; i < v54; i++)
+					{
+						if (g_fileVersion < 111)
+						{
+							// This is a WORD read not a DWORD
+							MemData<WORD> memData;
+							initMemData(memData, fw);
+
+							if (!buf_6_eq_85)
+							{
+								NOT_IMPLEMENTED
+							}
+						}
+						else
+						{
+							MemData<DWORD> memData;
+							initMemData(memData, fw);
+
+							if (!buf_6_eq_85)
+							{
+								NOT_IMPLEMENTED
+							}
+						}
+					}
+				}
+
+				DWORD v93 = fw.ReadDWord();
+
+				if ((int)v93 < 0 || v93 > 10000)
+					return;
+
+				for (DWORD i = 0; i < v93; i++)
+				{
+					BYTE v100 = fw.ReadByte();
+
+					std::vector<DWORD> data;
+
+					for (BYTE j = 0; j < v100; j++)
+						data.push_back(fw.ReadDWord());
+				}
+
+				DWORD v108 = fw.ReadDWord();
+
+				if (v108 <= 10000)
+				{
+					if ((int)v108 <= 0) return;
+
+					for (DWORD i = 0; i < v108; i++)
+					{
+						BYTE v160 = fw.ReadByte();
+
+						if (v160)
+						{
+							if (g_fileVersion < 111)
+							{
+								for (DWORD j = 0; j < v160; j++)
+								{
+									MemData<WORD> memData;
+									initMemData(memData, fw);
+
+									if (!buf_6_eq_85)
+									{
+										NOT_IMPLEMENTED
+									}
+								}
+							}
+							else
+							{
+								for (DWORD j = 0; j < v160; j++)
+								{
+									MemData<DWORD> memData;
+									initMemData(memData, fw);
+
+									if (!buf_6_eq_85)
+									{
+										NOT_IMPLEMENTED
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return;
 }
 
 void parse_save_4(FileWalker &fw)
@@ -881,7 +1357,10 @@ int main()
 
 	FileWalker fw(data);
 
-	step0(fw);
+	if (step0(fw))
+		std::cout << "Parsing successful" << std::endl;
+	else
+		std::cout << "Parsing failed" << std::endl;
 
 	return 0;
 }
