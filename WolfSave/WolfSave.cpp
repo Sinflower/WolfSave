@@ -8,17 +8,17 @@
 #include "Utils.h"
 
 bool validateName(FileWalker &fw);
-bool parseSave(FileWalker &fw, const BYTE &a2, const BYTE &a3);
+bool parseSave(FileWalker &fw);
 
-void parse_save_1(FileWalker &fw, const BYTE &a2);
+void parse_save_1(FileWalker &fw);
 void parse_save_1_1(FileWalker &fw);
 void parse_save_1_1_1(FileWalker &fw);
 void parse_save_1_1_1_1(FileWalker &fw);
 void parse_save_2(FileWalker &fw);
-void parse_save_3(FileWalker &fw, const BYTE &a2);
+void parse_save_3(FileWalker &fw);
 void parse_save_4(FileWalker &fw);
-void parse_save_5(FileWalker &fw, const BYTE &a2);
-void parse_save_5_1(FileWalker &fw, const BYTE &a2);
+void parse_save_5(FileWalker &fw);
+void parse_save_5_1(FileWalker &fw);
 void parse_save_6(FileWalker &fw);
 void parse_save_6_1(FileWalker &fw);
 void parse_save_6_1_1(FileWalker &fw, const DWORD &a2, const DWORD &a3);
@@ -27,7 +27,6 @@ void parse_save_7(FileWalker &fw);
 const uint32_t SEED_COUNT      = 3;
 const std::size_t START_OFFSET = 0x14;
 
-bool buf_6_eq_85;
 WORD g_fileVersion;
 
 void decryptSave(FileWalker &fw)
@@ -70,15 +69,12 @@ bool step0(FileWalker &fw)
 {
 	decryptSave(fw);
 
-	buf_6_eq_85 = (fw.At(6) == 0x55);
-
 	fw.Seek(0x14);
 
 	if (fw.GetOffset() + 1 > fw.GetSize())
 		return false;
 
-	BYTE v28           = fw.ReadByte();
-	BYTE dword_1378130 = 1;
+	BYTE v28 = fw.ReadByte();
 
 	if (v28 != 0x19)
 	{
@@ -89,10 +85,7 @@ bool step0(FileWalker &fw)
 	if (!validateName(fw))
 		return false;
 
-	BYTE dword_137A534 = 0;
-	BYTE v66           = 0;               // a3;
-	BYTE v67           = 0;               // a4;
-	return parseSave(fw, v66, (char)v67); // v66 and v67 tend to be 0
+	return parseSave(fw);
 }
 
 bool validateName(FileWalker &fw)
@@ -101,14 +94,9 @@ bool validateName(FileWalker &fw)
 	std::vector<BYTE> name(nameLen);
 	fw.ReadBytesVec(name);
 
-	if (!buf_6_eq_85)
-	{
-		NOT_IMPLEMENTED
-	}
-
 	g_fileVersion = fw.ReadWord();
 
-	if (g_fileVersion > 141)
+	if (g_fileVersion > 0x8D)
 	{
 		std::cerr << "File Version: 0x" << std::hex << g_fileVersion << std::dec << " is not supported" << std::endl;
 		return false;
@@ -117,51 +105,42 @@ bool validateName(FileWalker &fw)
 	return true;
 }
 
-bool parseSave(FileWalker &fw, const BYTE &a2, const BYTE &a3)
+bool parseSave(FileWalker &fw)
 {
 	std::cout << "Starting save parse at offset: 0x" << std::hex << fw.GetOffset() << std::dec << std::endl;
 
-	if (a2)
+	parse_save_1(fw);
+	std::cout << "Offset After Step 1: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
+	parse_save_2(fw);
+	std::cout << "Offset After Step 2: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
+	parse_save_3(fw);
+	std::cout << "Offset After Step 3: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
+	parse_save_4(fw);
+	std::cout << "Offset After Step 4: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
+	parse_save_5(fw);
+	std::cout << "Offset After Step 5: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC6EA7" << std::dec << std::endl;
+	parse_save_6(fw);
+	std::cout << "Offset After Step 6: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xFC73D" << std::dec << std::endl;
+	parse_save_7(fw);
+	std::cout << "Offset After Step 7: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xFC73E" << std::dec << std::endl;
+
+	if (fw.GetOffset() + 1 != fw.GetSize())
 	{
-		NOT_IMPLEMENTED
+		std::cerr << "Error: fw.GetOffset() + 1 != fw.GetSize()" << std::endl;
+		return false;
 	}
-	else
+
+	BYTE v3 = fw.ReadByte();
+	if (v3 != 0x19)
 	{
-		parse_save_1(fw, 0);
-		std::cout << "Offset After Step 1: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
-		parse_save_2(fw);
-		std::cout << "Offset After Step 2: 0x" << std::hex << fw.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
-		//fw.Seek(0x3906);
-		parse_save_3(fw, 0);
-		std::cout << "Offset After Step 3: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
-		// fw.Seek(0xC1EEF);
-		parse_save_4(fw);
-		std::cout << "Offset After Step 4: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
-		parse_save_5(fw, 0);
-		std::cout << "Offset After Step 5: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xC6EA7" << std::dec << std::endl;
-		parse_save_6(fw);
-		std::cout << "Offset After Step 6: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xFC73D" << std::dec << std::endl;
-		parse_save_7(fw);
-		std::cout << "Offset After Step 7: 0x" << std::hex << fw.GetOffset() << " - Expected: 0xFC73E" << std::dec << std::endl;
-
-		if (fw.GetOffset() + 1 != fw.GetSize())
-		{
-			std::cerr << "Error: fw.GetOffset() + 1 != fw.GetSize()" << std::endl;
-			return false;
-		}
-
-		BYTE v3 = fw.ReadByte();
-		if (v3 != 0x19)
-		{
-			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << v3 << std::dec << std::endl;
-			return false;
-		}
-
-		return true;
+		std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << v3 << std::dec << std::endl;
+		return false;
 	}
+
+	return true;
 }
 
-void parse_save_1(FileWalker &fw, const BYTE &a2)
+void parse_save_1(FileWalker &fw)
 {
 	DWORD this_1707 = fw.ReadDWord();
 	DWORD this_1708 = fw.ReadDWord();
@@ -196,11 +175,6 @@ void parse_save_1(FileWalker &fw, const BYTE &a2)
 	MemData<DWORD> data0;
 	initMemData(data0, fw);
 
-	if (!buf_6_eq_85)
-	{
-		NOT_IMPLEMENTED
-	}
-
 	DWORD v140 = 7;
 	if (g_fileVersion >= 0x73)
 		v140 = 15;
@@ -216,11 +190,6 @@ void parse_save_1(FileWalker &fw, const BYTE &a2)
 		MemData<DWORD> data;
 		initMemData(data, fw);
 		data1.push_back(data);
-
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
 
 		v139++;
 	} while (v139 < v140);
@@ -242,11 +211,6 @@ void parse_save_1(FileWalker &fw, const BYTE &a2)
 			for (DWORD i = 0; i < v50; i++)
 				dataVecOld.push_back(fw.ReadByte());
 		}
-	}
-
-	if (g_fileVersion < 0x8A)
-	{
-		CHECK_IF_NEEDED
 	}
 
 	DWORD v75 = fw.ReadDWord();
@@ -296,11 +260,6 @@ void parse_save_1_1(FileWalker &fw)
 
 	MemData<WORD> memData;
 	initMemData(memData, fw);
-
-	if (!buf_6_eq_85)
-	{
-		NOT_IMPLEMENTED
-	}
 
 	WORD this_64 = fw.ReadWord();
 	WORD this_66 = fw.ReadWord();
@@ -437,8 +396,8 @@ void parse_save_2(FileWalker &fw)
 	DWORD this_2220 = fw.ReadDWord();
 	DWORD this_2228 = fw.ReadDWord();
 	DWORD this_2232 = fw.ReadDWord();
-	DWORD skip1 = fw.ReadDWord();
-	DWORD skip2 = fw.ReadDWord();
+	DWORD skip1     = fw.ReadDWord();
+	DWORD skip2     = fw.ReadDWord();
 	DWORD this_2244 = fw.ReadDWord();
 	DWORD this_2248 = fw.ReadDWord();
 	DWORD this_2252 = fw.ReadDWord();
@@ -496,7 +455,7 @@ void parse_save_2(FileWalker &fw)
 	{
 		DWORD this_2420 = fw.ReadDWord();
 		DWORD this_2424 = fw.ReadDWord();
-		BYTE this_2428 = fw.ReadByte();
+		BYTE this_2428  = fw.ReadByte();
 
 		DWORD v348 = fw.ReadDWord();
 
@@ -506,11 +465,6 @@ void parse_save_2(FileWalker &fw)
 			{
 				MemData<DWORD> memData;
 				initMemData(memData, fw);
-
-				if (!buf_6_eq_85)
-				{
-					NOT_IMPLEMENTED
-				}
 			}
 		}
 
@@ -546,18 +500,8 @@ void parse_save_2(FileWalker &fw)
 		MemData<WORD> memData1;
 		initMemData(memData1, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		MemData<WORD> memData2;
 		initMemData(memData2, fw);
-
-		if (!buf_6_eq_85) // this is 1 -- figure out where it is set
-		{
-			NOT_IMPLEMENTED
-		}
 	}
 
 	if (g_fileVersion >= 104)
@@ -575,22 +519,12 @@ void parse_save_2(FileWalker &fw)
 		MemData<WORD> memData1;
 		initMemData(memData1, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		DWORD this_2612 = fw.ReadDWord();
 		DWORD this_2616 = fw.ReadDWord();
 		DWORD this_2620 = fw.ReadDWord();
 
 		MemData<WORD> memData2;
 		initMemData(memData2, fw);
-
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
 
 		DWORD this_2624 = fw.ReadDWord();
 		DWORD this_2628 = fw.ReadDWord();
@@ -602,18 +536,8 @@ void parse_save_2(FileWalker &fw)
 		MemData<WORD> memData1;
 		initMemData(memData1, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		MemData<WORD> memData2;
 		initMemData(memData2, fw);
-
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
 
 		BYTE this_2756 = fw.ReadByte();
 	}
@@ -626,26 +550,11 @@ void parse_save_2(FileWalker &fw)
 		MemData<WORD> memData1;
 		initMemData(memData1, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		MemData<WORD> memData2;
 		initMemData(memData2, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		MemData<WORD> memData3;
 		initMemData(memData3, fw);
-
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
 	}
 
 	if (g_fileVersion >= 121)
@@ -725,11 +634,6 @@ void parse_save_2(FileWalker &fw)
 		MemData<DWORD> memData;
 		initMemData(memData, fw);
 
-		if (!buf_6_eq_85)
-		{
-			NOT_IMPLEMENTED
-		}
-
 		DWORD v293 = fw.ReadDWord();
 
 		if ((int)v293 > 0)
@@ -738,11 +642,6 @@ void parse_save_2(FileWalker &fw)
 			{
 				MemData<DWORD> memData;
 				initMemData(memData, fw);
-
-				if (!buf_6_eq_85)
-				{
-					NOT_IMPLEMENTED
-				}
 			}
 		}
 	}
@@ -771,7 +670,7 @@ void parse_save_2(FileWalker &fw)
 	BYTE byte15 = fw.ReadByte();
 }
 
-void parse_save_3(FileWalker &fw, const BYTE &a2)
+void parse_save_3(FileWalker &fw)
 {
 	DWORD v8 = fw.ReadDWord();
 	DWORD v9 = fw.ReadDWord();
@@ -831,21 +730,11 @@ void parse_save_3(FileWalker &fw, const BYTE &a2)
 							// This is a WORD read not a DWORD
 							MemData<WORD> memData;
 							initMemData(memData, fw);
-
-							if (!buf_6_eq_85)
-							{
-								NOT_IMPLEMENTED
-							}
 						}
 						else
 						{
 							MemData<DWORD> memData;
 							initMemData(memData, fw);
-
-							if (!buf_6_eq_85)
-							{
-								NOT_IMPLEMENTED
-							}
 						}
 					}
 				}
@@ -883,11 +772,6 @@ void parse_save_3(FileWalker &fw, const BYTE &a2)
 								{
 									MemData<WORD> memData;
 									initMemData(memData, fw);
-
-									if (!buf_6_eq_85)
-									{
-										NOT_IMPLEMENTED
-									}
 								}
 							}
 							else
@@ -896,11 +780,6 @@ void parse_save_3(FileWalker &fw, const BYTE &a2)
 								{
 									MemData<DWORD> memData;
 									initMemData(memData, fw);
-
-									if (!buf_6_eq_85)
-									{
-										NOT_IMPLEMENTED
-									}
 								}
 							}
 						}
@@ -948,18 +827,18 @@ void parse_save_4(FileWalker &fw)
 	}
 }
 
-void parse_save_5(FileWalker &fw, const BYTE &a2)
+void parse_save_5(FileWalker &fw)
 {
 	WORD v5 = fw.ReadWord();
 
 	if ((v5 & 0x8000u) == 0)
 	{
 		for (WORD i = 0; i < v5; i++)
-			parse_save_5_1(fw, 0);
+			parse_save_5_1(fw);
 	}
 }
 
-void parse_save_5_1(FileWalker &fw, const BYTE &a2)
+void parse_save_5_1(FileWalker &fw)
 {
 	DWORD this_167 = fw.ReadDWord();
 
@@ -971,11 +850,6 @@ void parse_save_5_1(FileWalker &fw, const BYTE &a2)
 
 	MemData<WORD> memData;
 	initMemData(memData, fw);
-
-	if (!buf_6_eq_85)
-	{
-		NOT_IMPLEMENTED
-	}
 
 	DWORD this_44 = fw.ReadDWord();
 	DWORD this_46 = fw.ReadDWord();
@@ -1144,19 +1018,14 @@ void parse_save_5_1(FileWalker &fw, const BYTE &a2)
 	}
 }
 
-BYTE byte_1DA80F5 = 0;
-
 void parse_save_6(FileWalker &fw)
 {
 	// Is here 1 byte just skipped?
 	fw.ReadByte();
-	byte_1DA80F5 = 1;
 
 	DWORD v2 = fw.ReadDWord();
 	for (DWORD i = 0; i < v2; i++)
 		parse_save_6_1(fw);
-
-	byte_1DA80F5 = 0;
 
 	// TODO: Here soemthing is done with CDataBase -- Maybe mapping of custom variables, look into it later
 	// sub_69CDF0("BasicData/CDataBase");
@@ -1165,36 +1034,15 @@ void parse_save_6(FileWalker &fw)
 
 void parse_save_6_1(FileWalker &fw)
 {
-	DWORD v6;
-
-	if (byte_1DA80F5)
-		v6 = fw.ReadDWord();
-	else
-	{
-		NOT_IMPLEMENTED
-	}
+	DWORD v6 = fw.ReadDWord();
 
 	if ((int)v6 <= -1)
 	{
 		if ((int)v6 <= -2)
-		{
-			if (byte_1DA80F5)
-				DWORD this_7 = fw.ReadDWord();
-			else
-			{
-				NOT_IMPLEMENTED
-			}
-		}
-		bool v9 = (byte_1DA80F5 == 0);
+			DWORD this_7 = fw.ReadDWord();
 
 		DWORD this_6 = v6;
-
-		if (byte_1DA80F5)
-			v6 = fw.ReadDWord();
-		else
-		{
-			NOT_IMPLEMENTED
-		}
+		v6           = fw.ReadDWord();
 	}
 
 	DWORD v36 = 0;
@@ -1205,31 +1053,17 @@ void parse_save_6_1(FileWalker &fw)
 		std::vector<DWORD> data;
 		for (DWORD i = 0; i < v6; i++)
 		{
-			if (byte_1DA80F5)
-			{
-				DWORD val = fw.ReadDWord();
-				data.push_back(val);
+			DWORD val = fw.ReadDWord();
+			data.push_back(val);
 
-				if (val < 0x7D0)
-					v36++;
-				else
-					v35++;
-			}
+			if (val < 0x7D0)
+				v36++;
 			else
-			{
-				NOT_IMPLEMENTED
-			}
+				v35++;
 		}
 	}
 
-	DWORD v27 = 0;
-
-	if (byte_1DA80F5)
-		v27 = fw.ReadDWord();
-	else
-	{
-		NOT_IMPLEMENTED
-	}
+	DWORD v27 = fw.ReadDWord();
 
 	for (DWORD i = 0; i < v27; i++)
 		parse_save_6_1_1(fw, v36, v35);
@@ -1242,52 +1076,15 @@ void parse_save_6_1_1(FileWalker &fw, const DWORD &a2, const DWORD &a3)
 		std::vector<DWORD> data;
 
 		for (DWORD i = 0; i < a2; i++)
-		{
-			if (byte_1DA80F5)
-				data.push_back(fw.ReadDWord());
-			else
-			{
-				NOT_IMPLEMENTED
-			}
-		}
+			data.push_back(fw.ReadDWord());
 	}
 
 	if (a3 > 0)
 	{
 		for (DWORD i = 0; i < a3; i++)
 		{
-			if (byte_1DA80F5)
-			{
-				MemData<DWORD> memData;
-				initMemData(memData, fw);
-
-				// DWORD v5 = fw.ReadDWord();
-
-				// if (v5 <= 1600)
-				//{
-				//	MemData<WORD> memData;
-				//	initMemData(memData, fw);
-
-				//	if (!buf_6_eq_85)
-				//	{
-				//		NOT_IMPLEMENTED
-				//	}
-				//}
-				// else
-				//{
-				//	MemData<WORD> memData;
-				//	initMemData(memData, fw);
-
-				//	if (!buf_6_eq_85)
-				//	{
-				//		NOT_IMPLEMENTED
-				//	}
-				//}
-			}
-			else
-			{
-				NOT_IMPLEMENTED
-			}
+			MemData<DWORD> memData;
+			initMemData(memData, fw);
 		}
 	}
 }
@@ -1310,6 +1107,10 @@ void parse_save_7(FileWalker &fw)
 			DWORD v11 = fw.ReadDWord();
 	}
 }
+
+/////////////////////////////////////////////////////
+////////////////////// UTILS ////////////////////////
+/////////////////////////////////////////////////////
 
 bool read2Buffer(const TCHAR *pFilePath, std::vector<BYTE> &buffer)
 {
@@ -1345,10 +1146,14 @@ bool read2Buffer(const TCHAR *pFilePath, std::vector<BYTE> &buffer)
 	return true;
 }
 
+/////////////////////////////////////////////////////
+////////////////////// MAIN /////////////////////////
+/////////////////////////////////////////////////////
+
 int main()
 {
 	std::vector<BYTE> data;
-	const TCHAR pFileName[] = TEXT("SaveData02.sav");
+	const TCHAR pFileName[] = TEXT("SaveData31.sav");
 	if (!read2Buffer(pFileName, data))
 	{
 		tcerr << TEXT("Failed to load input file: ") << pFileName << std::endl;
