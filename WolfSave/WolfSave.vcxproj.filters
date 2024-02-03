@@ -35,5 +35,29 @@
     <ClInclude Include="Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SavePart1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SavePart7.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
