@@ -2,6 +2,7 @@
 
 #include <array>
 #include <iostream>
+#include <tuple>
 #include <vector>
 
 #include "FileWalker.h"
@@ -87,13 +88,13 @@ class SavePart1_1 : public SaveInterface
 		}
 
 	private:
-		BYTE m_var1;
-		BYTE m_var2;
-		BYTE m_var3;
-		BYTE m_var4;
-		BYTE m_var5;
-		BYTE m_var6;
-		DWORD m_var7;
+		BYTE m_var1 = 0;
+		BYTE m_var2 = 0;
+		BYTE m_var3 = 0;
+		BYTE m_var4 = 0;
+		BYTE m_var5 = 0;
+		BYTE m_var6 = 0;
+		DWORD m_var7 = 0;
 
 		std::vector<SavePart1_1_1_1> m_savePart1_1_1_1s;
 	};
@@ -200,45 +201,45 @@ public:
 	}
 
 private:
-	DWORD m_var1;
-	DWORD m_var2;
-	DWORD m_var3;
-	DWORD m_var4;
-	BYTE m_var5;
-	DWORD m_var6;
-	WORD m_var7;
-	WORD m_var8;
-	WORD m_var9;
-	WORD m_var10;
-	BYTE m_var11;
-	BYTE m_var12;
-	WORD m_var13;
-	WORD m_var14;
-	WORD m_var15;
-	WORD m_var16;
-	WORD m_var17;
-	WORD m_var18;
-	BYTE m_var19;
-	BYTE m_var20;
-	BYTE m_var21;
-	DWORD m_var22;
-	BYTE m_var23;
-	BYTE m_var24;
-	DWORD m_var25;
-	DWORD m_var26;
-	DWORD m_var27;
-	DWORD m_var28;
-	DWORD m_var29;
-	DWORD m_var30;
-	DWORD m_var31;
-	DWORD m_var32;
-	WORD m_var33;
-	DWORD m_var34;
-	BYTE m_var35;
-	DWORD m_var36;
-	DWORD m_var37;
-	DWORD m_var38;
-	DWORD m_var39;
+	DWORD m_var1  = 0;
+	DWORD m_var2  = 0;
+	DWORD m_var3  = 0;
+	DWORD m_var4  = 0;
+	BYTE m_var5   = 0;
+	DWORD m_var6  = 0;
+	WORD m_var7   = 0;
+	WORD m_var8   = 0;
+	WORD m_var9   = 0;
+	WORD m_var10  = 0;
+	BYTE m_var11  = 0;
+	BYTE m_var12  = 0;
+	WORD m_var13  = 0;
+	WORD m_var14  = 0;
+	WORD m_var15  = 0;
+	WORD m_var16  = 0;
+	WORD m_var17  = 0;
+	WORD m_var18  = 0;
+	BYTE m_var19  = 0;
+	BYTE m_var20  = 0;
+	BYTE m_var21  = 0;
+	DWORD m_var22 = 0;
+	BYTE m_var23  = 0;
+	BYTE m_var24  = 0;
+	DWORD m_var25 = 0;
+	DWORD m_var26 = 0;
+	DWORD m_var27 = 0;
+	DWORD m_var28 = 0;
+	DWORD m_var29 = 0;
+	DWORD m_var30 = 0;
+	DWORD m_var31 = 0;
+	DWORD m_var32 = 0;
+	WORD m_var33  = 0;
+	DWORD m_var34 = 0;
+	BYTE m_var35  = 0;
+	DWORD m_var36 = 0;
+	DWORD m_var37 = 0;
+	DWORD m_var38 = 0;
+	DWORD m_var39 = 0;
 
 	MemData<WORD> m_md1;
 
@@ -360,26 +361,26 @@ public:
 	}
 
 private:
-	DWORD m_var1;
-	DWORD m_var2;
-	DWORD m_var3;
-	DWORD m_var4;
-	DWORD m_var5;
-	DWORD m_var6;
-	DWORD m_var7;
-	DWORD m_var8;
-	DWORD m_var9;
-	DWORD m_var10;
-	DWORD m_var11;
-	DWORD m_var12;
-	DWORD m_var13;
-	DWORD m_var14;
-	DWORD m_var15;
-	DWORD m_var16;
-	DWORD m_var17;
-	DWORD m_var18;
-	DWORD m_var19;
-	DWORD m_var20;
+	DWORD m_var1 = 0;
+	DWORD m_var2 = 0;
+	DWORD m_var3 = 0;
+	DWORD m_var4 = 0;
+	DWORD m_var5 = 0;
+	DWORD m_var6 = 0;
+	DWORD m_var7 = 0;
+	DWORD m_var8 = 0;
+	DWORD m_var9 = 0;
+	DWORD m_var10 = 0;
+	DWORD m_var11 = 0;
+	DWORD m_var12 = 0;
+	DWORD m_var13 = 0;
+	DWORD m_var14 = 0;
+	DWORD m_var15 = 0;
+	DWORD m_var16 = 0;
+	DWORD m_var17 = 0;
+	DWORD m_var18 = 0;
+	DWORD m_var19 = 0;
+	DWORD m_var20 = 0;
 
 	std::vector<DWORD> m_vars1;
 	std::vector<DWORD> m_vars2New;
@@ -670,128 +671,128 @@ public:
 	}
 
 private:
-	BYTE m_var1;
-	BYTE m_var2;
-	DWORD m_var3;
-	DWORD m_var4;
-	DWORD m_var5;
-	DWORD m_var6;
-	DWORD m_var7;
-	DWORD m_var8;
-	DWORD m_var9;
-	DWORD m_var10;
-	DWORD m_var11;
-	DWORD m_var12;
-	DWORD m_var13;
-	DWORD m_var14;
-	DWORD m_var15;
-	DWORD m_var16;
-	DWORD m_var17;
-	DWORD m_var18;
-	DWORD m_var19;
-	DWORD m_var20;
-	DWORD m_var21;
-	WORD m_var22;
-	WORD m_var23;
-	WORD m_var24;
-	DWORD m_var25;
-	WORD m_var26;
-	WORD m_var27;
-	WORD m_var28;
-	DWORD m_var29;
-	DWORD m_var30;
-	DWORD m_var31;
-	DWORD m_var32;
-	DWORD m_var33;
-	DWORD m_var34;
-	DWORD m_var35;
-	DWORD m_var36;
-	DWORD m_var37;
-	BYTE m_var38;
-	WORD m_var39;
-	DWORD m_var40;
-	DWORD m_var41;
-	WORD m_var42;
-	WORD m_var43;
-	WORD m_var44;
-	WORD m_var45;
-	DWORD m_var46;
-	DWORD m_var47;
-	DWORD m_var48;
-	BYTE m_var49;
-	DWORD m_var50;
-	DWORD m_var51;
-	DWORD m_var52;
-	DWORD m_var53;
-	DWORD m_var54;
-	DWORD m_var55;
-	BYTE m_var56;
-	DWORD m_var57;
-	DWORD m_var58;
-	DWORD m_var59;
-	DWORD m_var60;
-	DWORD m_var61;
-	DWORD m_var62;
-	DWORD m_var63;
-	DWORD m_var64;
-	DWORD m_var65;
-	DWORD m_var66;
-	DWORD m_var67;
-	DWORD m_var68;
-	DWORD m_var69;
-	WORD m_var70;
-	DWORD m_var71;
-	DWORD m_var72;
-	DWORD m_var73;
-	DWORD m_var74;
-	DWORD m_var75;
-	DWORD m_var76;
-	DWORD m_var77;
-	DWORD m_var78;
-	DWORD m_var79;
-	DWORD m_var80;
-	BYTE m_var81;
-	BYTE m_var82;
-	DWORD m_var83;
-	DWORD m_var84;
-	DWORD m_var85;
-	DWORD m_var86;
-	DWORD m_var87;
-	DWORD m_var88;
-	DWORD m_var89;
-	DWORD m_var90;
-	DWORD m_var91;
-	DWORD m_var92;
-	DWORD m_var93;
-	DWORD m_var94;
-	DWORD m_var95;
-	BYTE m_var96;
-	BYTE m_var97;
-	DWORD m_var98;
-	DWORD m_var99;
-	DWORD m_var100;
-	DWORD m_var101;
-	DWORD m_var102;
-	DWORD m_var103;
-	DWORD m_var104;
-	DWORD m_var105;
-	DWORD m_var106;
-	BYTE m_var107;
-	BYTE m_var108;
-	BYTE m_var109;
-	BYTE m_var110;
-	BYTE m_var111;
-	BYTE m_var112;
-	BYTE m_var113;
-	BYTE m_var114;
-	BYTE m_var115;
-	BYTE m_var116;
-	BYTE m_var117;
-	BYTE m_var118;
-	BYTE m_var119;
-	BYTE m_var120;
-	BYTE m_var121;
-	BYTE m_var122;
+	BYTE m_var1    = 0;
+	BYTE m_var2    = 0;
+	DWORD m_var3   = 0;
+	DWORD m_var4   = 0;
+	DWORD m_var5   = 0;
+	DWORD m_var6   = 0;
+	DWORD m_var7   = 0;
+	DWORD m_var8   = 0;
+	DWORD m_var9   = 0;
+	DWORD m_var10  = 0;
+	DWORD m_var11  = 0;
+	DWORD m_var12  = 0;
+	DWORD m_var13  = 0;
+	DWORD m_var14  = 0;
+	DWORD m_var15  = 0;
+	DWORD m_var16  = 0;
+	DWORD m_var17  = 0;
+	DWORD m_var18  = 0;
+	DWORD m_var19  = 0;
+	DWORD m_var20  = 0;
+	DWORD m_var21  = 0;
+	WORD m_var22   = 0;
+	WORD m_var23   = 0;
+	WORD m_var24   = 0;
+	DWORD m_var25  = 0;
+	WORD m_var26   = 0;
+	WORD m_var27   = 0;
+	WORD m_var28   = 0;
+	DWORD m_var29  = 0;
+	DWORD m_var30  = 0;
+	DWORD m_var31  = 0;
+	DWORD m_var32  = 0;
+	DWORD m_var33  = 0;
+	DWORD m_var34  = 0;
+	DWORD m_var35  = 0;
+	DWORD m_var36  = 0;
+	DWORD m_var37  = 0;
+	BYTE m_var38   = 0;
+	WORD m_var39   = 0;
+	DWORD m_var40  = 0;
+	DWORD m_var41  = 0;
+	WORD m_var42   = 0;
+	WORD m_var43   = 0;
+	WORD m_var44   = 0;
+	WORD m_var45   = 0;
+	DWORD m_var46  = 0;
+	DWORD m_var47  = 0;
+	DWORD m_var48  = 0;
+	BYTE m_var49   = 0;
+	DWORD m_var50  = 0;
+	DWORD m_var51  = 0;
+	DWORD m_var52  = 0;
+	DWORD m_var53  = 0;
+	DWORD m_var54  = 0;
+	DWORD m_var55  = 0;
+	BYTE m_var56   = 0;
+	DWORD m_var57  = 0;
+	DWORD m_var58  = 0;
+	DWORD m_var59  = 0;
+	DWORD m_var60  = 0;
+	DWORD m_var61  = 0;
+	DWORD m_var62  = 0;
+	DWORD m_var63  = 0;
+	DWORD m_var64  = 0;
+	DWORD m_var65  = 0;
+	DWORD m_var66  = 0;
+	DWORD m_var67  = 0;
+	DWORD m_var68  = 0;
+	DWORD m_var69  = 0;
+	WORD m_var70   = 0;
+	DWORD m_var71  = 0;
+	DWORD m_var72  = 0;
+	DWORD m_var73  = 0;
+	DWORD m_var74  = 0;
+	DWORD m_var75  = 0;
+	DWORD m_var76  = 0;
+	DWORD m_var77  = 0;
+	DWORD m_var78  = 0;
+	DWORD m_var79  = 0;
+	DWORD m_var80  = 0;
+	BYTE m_var81   = 0;
+	BYTE m_var82   = 0;
+	DWORD m_var83  = 0;
+	DWORD m_var84  = 0;
+	DWORD m_var85  = 0;
+	DWORD m_var86  = 0;
+	DWORD m_var87  = 0;
+	DWORD m_var88  = 0;
+	DWORD m_var89  = 0;
+	DWORD m_var90  = 0;
+	DWORD m_var91  = 0;
+	DWORD m_var92  = 0;
+	DWORD m_var93  = 0;
+	DWORD m_var94  = 0;
+	DWORD m_var95  = 0;
+	BYTE m_var96   = 0;
+	BYTE m_var97   = 0;
+	DWORD m_var98  = 0;
+	DWORD m_var99  = 0;
+	DWORD m_var100 = 0;
+	DWORD m_var101 = 0;
+	DWORD m_var102 = 0;
+	DWORD m_var103 = 0;
+	DWORD m_var104 = 0;
+	DWORD m_var105 = 0;
+	DWORD m_var106 = 0;
+	BYTE m_var107  = 0;
+	BYTE m_var108  = 0;
+	BYTE m_var109  = 0;
+	BYTE m_var110  = 0;
+	BYTE m_var111  = 0;
+	BYTE m_var112  = 0;
+	BYTE m_var113  = 0;
+	BYTE m_var114  = 0;
+	BYTE m_var115  = 0;
+	BYTE m_var116  = 0;
+	BYTE m_var117  = 0;
+	BYTE m_var118  = 0;
+	BYTE m_var119  = 0;
+	BYTE m_var120  = 0;
+	BYTE m_var121  = 0;
+	BYTE m_var122  = 0;
 
 	MemData<WORD> m_md1;
 	MemData<WORD> m_md2;
@@ -819,29 +820,28 @@ public:
 	{
 		if (!check()) return false;
 
-		DWORD m_var1 = fw.ReadDWord();
-		DWORD m_var2 = fw.ReadDWord();
+		m_var1 = fw.ReadDWord();
+		m_var2 = fw.ReadDWord();
 
 		if ((int)m_var2 >= 0)
 		{
 			for (DWORD i = 0; i < m_var2; i++)
 			{
-				DWORD m_var3 = fw.ReadDWord();
+				m_var3 = fw.ReadDWord();
 				if (m_var3 < 0) return false;
 
 				for (DWORD j = 0; j < m_var3; j++)
 				{
-					BYTE m_var4 = fw.ReadByte();
+					m_var4 = fw.ReadByte();
 					if (m_var4 > 0)
 					{
-						std::vector<DWORD> m_vars1;
 						for (DWORD k = 0; k < m_var4; k++)
 							m_vars1.push_back(fw.ReadDWord());
 					}
 				}
 			}
 
-			DWORD m_var5 = fw.ReadDWord();
+			m_var5 = fw.ReadDWord();
 
 			if (m_var5 <= 0x270F)
 			{
@@ -849,27 +849,23 @@ public:
 				{
 					for (DWORD i = 0; i < m_var5; i++)
 					{
-						DWORD m_var6 = fw.ReadDWord();
+						m_var6 = fw.ReadDWord();
 						if ((int)m_var6 < 0) return false;
 
 						if ((int)m_var6 > 0)
 						{
-							std::vector<DWORD> m_vars2;
 							for (DWORD j = 0; j < m_var6; j++)
 								m_vars2.push_back(fw.ReadDWord());
 						}
 					}
 				}
 
-				DWORD m_var7 = fw.ReadDWord();
+				m_var7 = fw.ReadDWord();
 
 				if ((int)m_var7 >= 0)
 				{
 					for (DWORD i = 0; i < m_var7; i++)
 					{
-						std::vector<MemData<WORD>> m_mds1Old;
-						std::vector<MemData<DWORD>> m_mds1New;
-
 						if (m_fileVersion < 0x6F)
 						{
 							// This is a WORD read not a DWORD
@@ -885,22 +881,20 @@ public:
 						}
 					}
 
-					DWORD m_var8 = fw.ReadDWord();
+					m_var8 = fw.ReadDWord();
 
 					if ((int)m_var8 < 0 || m_var8 > 10000)
 						return false;
 
 					for (DWORD i = 0; i < m_var8; i++)
 					{
-						BYTE m_var9 = fw.ReadByte();
-
-						std::vector<DWORD> m_vars3;
+						m_var9 = fw.ReadByte();
 
 						for (BYTE j = 0; j < m_var9; j++)
 							m_vars3.push_back(fw.ReadDWord());
 					}
 
-					DWORD m_var10 = fw.ReadDWord();
+					m_var10 = fw.ReadDWord();
 
 					if (m_var10 <= 10000)
 					{
@@ -908,13 +902,10 @@ public:
 
 						for (DWORD i = 0; i < m_var10; i++)
 						{
-							BYTE m_var11 = fw.ReadByte();
+							m_var11 = fw.ReadByte();
 
 							if (m_var11)
 							{
-								std::vector<MemData<WORD>> m_mds2Old;
-								std::vector<MemData<DWORD>> m_mds2New;
-
 								if (m_fileVersion < 0x6F)
 								{
 									for (DWORD j = 0; j < m_var11; j++)
@@ -942,6 +933,27 @@ public:
 
 		return true;
 	}
+
+private:
+	DWORD m_var1  = 0;
+	DWORD m_var2  = 0;
+	DWORD m_var3  = 0;
+	BYTE m_var4   = 0;
+	DWORD m_var5  = 0;
+	DWORD m_var6  = 0;
+	DWORD m_var7  = 0;
+	DWORD m_var8  = 0;
+	BYTE m_var9   = 0;
+	DWORD m_var10 = 0;
+	BYTE m_var11  = 0;
+
+	std::vector<DWORD> m_vars1;
+	std::vector<DWORD> m_vars2;
+	std::vector<DWORD> m_vars3;
+	std::vector<MemData<DWORD>> m_mds1New;
+	std::vector<MemData<DWORD>> m_mds2New;
+	std::vector<MemData<WORD>> m_mds1Old;
+	std::vector<MemData<WORD>> m_mds2Old;
 };
 
 class SavePart4 : public SaveInterface
@@ -952,11 +964,10 @@ public:
 	{
 		if (!check()) return false;
 
-		SavePart1_1 m_savePart1_1;
 		m_savePart1_1.SetFileVersion(m_fileVersion);
 		m_savePart1_1.Parse(fw);
 
-		DWORD m_var1 = fw.ReadDWord();
+		m_var1 = fw.ReadDWord();
 
 		for (DWORD i = 0; i < m_var1; i++)
 		{
@@ -966,15 +977,13 @@ public:
 			m_savePart1_1s.push_back(sp);
 		}
 
-		BYTE m_var2 = fw.ReadByte();
-		BYTE m_var3 = fw.ReadByte();
+		m_var2 = fw.ReadByte();
+		m_var3 = fw.ReadByte();
 
-		DWORD m_var4 = fw.ReadDWord();
+		m_var4 = fw.ReadDWord();
 
 		if ((int)m_var4 > 0)
 		{
-			std::vector<DWORD> m_vars1;
-
 			for (DWORD i = 0; i < m_var4; i++)
 				m_vars1.push_back(fw.ReadDWord());
 		}
@@ -982,12 +991,10 @@ public:
 		if (m_fileVersion < 0x8A)
 			return true;
 
-		DWORD m_var5 = fw.ReadDWord();
+		m_var5 = fw.ReadDWord();
 
 		if ((int)m_var5 > 0)
 		{
-			std::vector<QWORD> m_vars2;
-
 			for (DWORD i = 0; i < m_var5; i++)
 				m_vars2.push_back(fw.ReadQWord());
 		}
@@ -996,6 +1003,16 @@ public:
 	}
 
 private:
+	DWORD m_var1 = 0;
+	BYTE m_var2  = 0;
+	BYTE m_var3  = 0;
+	DWORD m_var4 = 0;
+	DWORD m_var5 = 0;
+
+	std::vector<DWORD> m_vars1;
+	std::vector<QWORD> m_vars2;
+
+	SavePart1_1 m_savePart1_1;
 	std::vector<SavePart1_1> m_savePart1_1s;
 };
 
@@ -1006,70 +1023,65 @@ class SavePart5 : public SaveInterface
 	public:
 		SavePart5_1(const WORD &fileVersion, FileWalker &fw)
 		{
-			DWORD m_var1 = fw.ReadDWord();
+			m_var1 = fw.ReadDWord();
 
-			BYTE m_var2 = fw.ReadByte();
-			BYTE m_var3 = fw.ReadByte();
-			WORD m_var4 = fw.ReadWord();
-			BYTE m_var5 = fw.ReadByte();
-			BYTE m_var6 = fw.ReadByte();
+			m_var2 = fw.ReadByte();
+			m_var3 = fw.ReadByte();
+			m_var4 = fw.ReadWord();
+			m_var5 = fw.ReadByte();
+			m_var6 = fw.ReadByte();
 
-			MemData<WORD> m_md1;
 			initMemData(m_md1, fw);
 
-			DWORD m_var7 = fw.ReadDWord();
-			DWORD m_var8 = fw.ReadDWord();
+			m_var7 = fw.ReadDWord();
+			m_var8 = fw.ReadDWord();
 
-			DWORD m_var9  = fw.ReadDWord();
-			DWORD m_var10 = fw.ReadDWord();
+			m_var9  = fw.ReadDWord();
+			m_var10 = fw.ReadDWord();
 
-			DWORD m_var11 = fw.ReadDWord();
-			DWORD m_var12 = fw.ReadDWord();
-			DWORD m_var13 = fw.ReadDWord();
-			DWORD m_var14 = fw.ReadDWord();
-			DWORD m_var15 = fw.ReadDWord();
-			DWORD m_var16 = fw.ReadDWord();
-			DWORD m_var17 = fw.ReadDWord();
-			DWORD m_var18 = fw.ReadDWord();
+			m_var11 = fw.ReadDWord();
+			m_var12 = fw.ReadDWord();
+			m_var13 = fw.ReadDWord();
+			m_var14 = fw.ReadDWord();
+			m_var15 = fw.ReadDWord();
+			m_var16 = fw.ReadDWord();
+			m_var17 = fw.ReadDWord();
+			m_var18 = fw.ReadDWord();
 
 			for (uint32_t i = 0; i < 2; i++)
 			{
-				std::vector<DWORD> m_vals1;
 				for (uint32_t j = 0; j < 3; j++)
 					m_vals1.push_back(fw.ReadDWord());
 			}
 
 			if (fileVersion >= 0x69)
 			{
-				DWORD m_var19 = fw.ReadDWord();
-				DWORD m_var20 = fw.ReadDWord();
-				DWORD m_var21 = fw.ReadDWord();
-				DWORD m_var22 = fw.ReadDWord();
-				DWORD m_var23 = fw.ReadDWord();
-				DWORD m_var24 = fw.ReadDWord();
-				DWORD m_var25 = fw.ReadDWord();
-				DWORD m_var26 = fw.ReadDWord();
-				DWORD m_var27 = fw.ReadDWord();
-				DWORD m_var28 = fw.ReadDWord();
-				DWORD m_var29 = fw.ReadDWord();
-				DWORD m_var30 = fw.ReadDWord();
-				DWORD m_var31 = fw.ReadDWord();
-				DWORD m_var32 = fw.ReadDWord();
-				DWORD m_var33 = fw.ReadDWord();
-				DWORD m_var34 = fw.ReadDWord();
-				DWORD m_var35 = fw.ReadDWord();
-				DWORD m_var36 = fw.ReadDWord();
+				m_var19 = fw.ReadDWord();
+				m_var20 = fw.ReadDWord();
+				m_var21 = fw.ReadDWord();
+				m_var22 = fw.ReadDWord();
+				m_var23 = fw.ReadDWord();
+				m_var24 = fw.ReadDWord();
+				m_var25 = fw.ReadDWord();
+				m_var26 = fw.ReadDWord();
+				m_var27 = fw.ReadDWord();
+				m_var28 = fw.ReadDWord();
+				m_var29 = fw.ReadDWord();
+				m_var30 = fw.ReadDWord();
+				m_var31 = fw.ReadDWord();
+				m_var32 = fw.ReadDWord();
+				m_var33 = fw.ReadDWord();
+				m_var34 = fw.ReadDWord();
+				m_var35 = fw.ReadDWord();
+				m_var36 = fw.ReadDWord();
 			}
 			if (fileVersion >= 0x6B)
-				BYTE m_var37 = fw.ReadByte();
+				m_var37 = fw.ReadByte();
 
 			if (fileVersion >= 0x72)
 			{
-				BYTE m_var38 = fw.ReadByte();
-				BYTE m_var39 = fw.ReadByte();
-
-				std::vector<DWORD> m_vals2;
-				std::vector<DWORD> m_vals3;
+				m_var38 = fw.ReadByte();
+				m_var39 = fw.ReadByte();
 
 				for (uint32_t i = 0; i < 4; i++)
 					m_vals2.push_back(fw.ReadDWord());
@@ -1080,109 +1092,215 @@ class SavePart5 : public SaveInterface
 
 			if (fileVersion >= 0x73)
 			{
-				DWORD m_var40 = fw.ReadDWord();
-				DWORD m_var41 = fw.ReadDWord();
-				DWORD m_var42 = fw.ReadDWord();
-				DWORD m_var43 = fw.ReadDWord();
+				m_var40 = fw.ReadDWord();
+				m_var41 = fw.ReadDWord();
+				m_var42 = fw.ReadDWord();
+				m_var43 = fw.ReadDWord();
 
 				if (fileVersion >= 0x74)
 				{
-					DWORD m_var44 = fw.ReadDWord();
-					DWORD m_var45 = fw.ReadDWord();
-					DWORD m_var46 = fw.ReadDWord();
-					DWORD m_var47 = fw.ReadDWord();
-					DWORD m_var48 = fw.ReadDWord();
+					m_var44 = fw.ReadDWord();
+					m_var45 = fw.ReadDWord();
+					m_var46 = fw.ReadDWord();
+					m_var47 = fw.ReadDWord();
+					m_var48 = fw.ReadDWord();
 				}
 
 				if (fileVersion >= 0x75)
 				{
-					DWORD m_var49 = fw.ReadDWord();
-					DWORD m_var50 = fw.ReadDWord();
-					DWORD m_var51 = fw.ReadDWord();
-					DWORD m_var52 = fw.ReadDWord();
-					DWORD m_var53 = fw.ReadDWord();
-					DWORD m_var54 = fw.ReadDWord();
+					m_var49 = fw.ReadDWord();
+					m_var50 = fw.ReadDWord();
+					m_var51 = fw.ReadDWord();
+					m_var52 = fw.ReadDWord();
+					m_var53 = fw.ReadDWord();
+					m_var54 = fw.ReadDWord();
 				}
 
-				DWORD m_var55 = fw.ReadDWord();
-				DWORD m_var56 = fw.ReadDWord();
-				DWORD m_var57 = fw.ReadDWord();
-				DWORD m_var58 = fw.ReadDWord();
-				DWORD m_var59 = fw.ReadDWord();
-				DWORD m_var60 = fw.ReadDWord();
+				m_var55 = fw.ReadDWord();
+				m_var56 = fw.ReadDWord();
+				m_var57 = fw.ReadDWord();
+				m_var58 = fw.ReadDWord();
+				m_var59 = fw.ReadDWord();
+				m_var60 = fw.ReadDWord();
 			}
 
 			if (fileVersion >= 0x76)
 			{
-				DWORD m_var61 = fw.ReadDWord();
-				DWORD m_var62 = fw.ReadDWord();
-				DWORD m_var63 = fw.ReadDWord();
+				m_var61 = fw.ReadDWord();
+				m_var62 = fw.ReadDWord();
+				m_var63 = fw.ReadDWord();
 			}
 
 			if (fileVersion < 0x81)
 				return;
 
-			DWORD m_var64 = fw.ReadDWord();
-			DWORD m_var65 = fw.ReadDWord();
-			DWORD m_var66 = fw.ReadDWord();
-			DWORD m_var67 = fw.ReadDWord();
-			DWORD m_var68 = fw.ReadDWord();
-			DWORD m_var69 = fw.ReadDWord();
+			m_var64 = fw.ReadDWord();
+			m_var65 = fw.ReadDWord();
+			m_var66 = fw.ReadDWord();
+			m_var67 = fw.ReadDWord();
+			m_var68 = fw.ReadDWord();
+			m_var69 = fw.ReadDWord();
 
-			DWORD m_var70 = fw.ReadDWord();
-			DWORD m_var71 = fw.ReadDWord();
-			DWORD m_var72 = fw.ReadDWord();
-			DWORD m_var73 = fw.ReadDWord();
-			DWORD m_var74 = fw.ReadDWord();
-			DWORD m_var75 = fw.ReadDWord();
-			DWORD m_var76 = fw.ReadDWord();
-			DWORD m_var77 = fw.ReadDWord();
-			DWORD m_var78 = fw.ReadDWord();
-			DWORD m_var79 = fw.ReadDWord();
-			DWORD m_var80 = fw.ReadDWord();
-			DWORD m_var81 = fw.ReadDWord();
-			DWORD m_var82 = fw.ReadDWord();
-			DWORD m_var83 = fw.ReadDWord();
-			DWORD m_var84 = fw.ReadDWord();
+			m_var70 = fw.ReadDWord();
+			m_var71 = fw.ReadDWord();
+			m_var72 = fw.ReadDWord();
+			m_var73 = fw.ReadDWord();
+			m_var74 = fw.ReadDWord();
+			m_var75 = fw.ReadDWord();
+			m_var76 = fw.ReadDWord();
+			m_var77 = fw.ReadDWord();
+			m_var78 = fw.ReadDWord();
+			m_var79 = fw.ReadDWord();
+			m_var80 = fw.ReadDWord();
+			m_var81 = fw.ReadDWord();
+			m_var82 = fw.ReadDWord();
+			m_var83 = fw.ReadDWord();
+			m_var84 = fw.ReadDWord();
 
 			if (fileVersion >= 0x87)
 			{
-				DWORD m_var85 = fw.ReadDWord();
-				DWORD m_var86 = fw.ReadDWord();
-				DWORD m_var87 = fw.ReadDWord();
-				DWORD m_var88 = fw.ReadDWord();
-				DWORD m_var89 = fw.ReadDWord();
+				m_var85 = fw.ReadDWord();
+				m_var86 = fw.ReadDWord();
+				m_var87 = fw.ReadDWord();
+				m_var88 = fw.ReadDWord();
+				m_var89 = fw.ReadDWord();
 			}
 
 			if (fileVersion >= 0x89)
 			{
-				DWORD m_var90 = fw.ReadDWord();
+				m_var90 = fw.ReadDWord();
 
 				if ((int)m_var90 > 0)
 				{
 					for (DWORD i = 0; i < m_var90; i++)
 					{
-						DWORD m_var91 = fw.ReadDWord();
+						DWORD v = fw.ReadDWord();
+						m_vals4.push_back(v);
 
-						if ((int)m_var91 > 0)
+						if ((int)v > 0)
 						{
-							std::vector<DWORD> m_vals4;
-
-							for (DWORD j = 0; j < m_var91; j++)
-								m_vals4.push_back(fw.ReadDWord());
+							for (DWORD j = 0; j < v; j++)
+								m_vals5.push_back(fw.ReadDWord());
 						}
 					}
 				}
 
-				DWORD m_var92 = fw.ReadDWord();
-				DWORD m_var93 = fw.ReadDWord();
-				DWORD m_var94 = fw.ReadDWord();
-				DWORD m_var95 = fw.ReadDWord();
-				DWORD m_var96 = fw.ReadDWord();
-				DWORD m_var97 = fw.ReadDWord();
-				DWORD m_var98 = fw.ReadDWord();
+				m_var91 = fw.ReadDWord();
+				m_var92 = fw.ReadDWord();
+				m_var93 = fw.ReadDWord();
+				m_var94 = fw.ReadDWord();
+				m_var95 = fw.ReadDWord();
+				m_var96 = fw.ReadDWord();
+				m_var97 = fw.ReadDWord();
 			}
-		};
+		}
+
+	private:
+		DWORD m_var1 = 0;
+		BYTE m_var2 = 0;
+		BYTE m_var3 = 0;
+		WORD m_var4 = 0;
+		BYTE m_var5 = 0;
+		BYTE m_var6 = 0;
+		DWORD m_var7 = 0;
+		DWORD m_var8 = 0;
+		DWORD m_var9 = 0;
+		DWORD m_var10 = 0;
+		DWORD m_var11 = 0;
+		DWORD m_var12 = 0;
+		DWORD m_var13 = 0;
+		DWORD m_var14 = 0;
+		DWORD m_var15 = 0;
+		DWORD m_var16 = 0;
+		DWORD m_var17 = 0;
+		DWORD m_var18 = 0;
+		DWORD m_var19 = 0;
+		DWORD m_var20 = 0;
+		DWORD m_var21 = 0;
+		DWORD m_var22 = 0;
+		DWORD m_var23 = 0;
+		DWORD m_var24 = 0;
+		DWORD m_var25 = 0;
+		DWORD m_var26 = 0;
+		DWORD m_var27 = 0;
+		DWORD m_var28 = 0;
+		DWORD m_var29 = 0;
+		DWORD m_var30 = 0;
+		DWORD m_var31 = 0;
+		DWORD m_var32 = 0;
+		DWORD m_var33 = 0;
+		DWORD m_var34 = 0;
+		DWORD m_var35 = 0;
+		DWORD m_var36 = 0;
+		BYTE m_var37 = 0;
+		BYTE m_var38 = 0;
+		BYTE m_var39 = 0;
+		DWORD m_var40 = 0;
+		DWORD m_var41 = 0;
+		DWORD m_var42 = 0;
+		DWORD m_var43 = 0;
+		DWORD m_var44 = 0;
+		DWORD m_var45 = 0;
+		DWORD m_var46 = 0;
+		DWORD m_var47 = 0;
+		DWORD m_var48 = 0;
+		DWORD m_var49 = 0;
+		DWORD m_var50 = 0;
+		DWORD m_var51 = 0;
+		DWORD m_var52 = 0;
+		DWORD m_var53 = 0;
+		DWORD m_var54 = 0;
+		DWORD m_var55 = 0;
+		DWORD m_var56 = 0;
+		DWORD m_var57 = 0;
+		DWORD m_var58 = 0;
+		DWORD m_var59 = 0;
+		DWORD m_var60 = 0;
+		DWORD m_var61 = 0;
+		DWORD m_var62 = 0;
+		DWORD m_var63 = 0;
+		DWORD m_var64 = 0;
+		DWORD m_var65 = 0;
+		DWORD m_var66 = 0;
+		DWORD m_var67 = 0;
+		DWORD m_var68 = 0;
+		DWORD m_var69 = 0;
+		DWORD m_var70 = 0;
+		DWORD m_var71 = 0;
+		DWORD m_var72 = 0;
+		DWORD m_var73 = 0;
+		DWORD m_var74 = 0;
+		DWORD m_var75 = 0;
+		DWORD m_var76 = 0;
+		DWORD m_var77 = 0;
+		DWORD m_var78 = 0;
+		DWORD m_var79 = 0;
+		DWORD m_var80 = 0;
+		DWORD m_var81 = 0;
+		DWORD m_var82 = 0;
+		DWORD m_var83 = 0;
+		DWORD m_var84 = 0;
+		DWORD m_var85 = 0;
+		DWORD m_var86 = 0;
+		DWORD m_var87 = 0;
+		DWORD m_var88 = 0;
+		DWORD m_var89 = 0;
+		DWORD m_var90 = 0;
+		DWORD m_var91 = 0;
+		DWORD m_var92 = 0;
+		DWORD m_var93 = 0;
+		DWORD m_var94 = 0;
+		DWORD m_var95 = 0;
+		DWORD m_var96 = 0;
+		DWORD m_var97 = 0;
+
+		MemData<WORD> m_md1;
+
+		std::vector<DWORD> m_vals1;
+		std::vector<DWORD> m_vals2;
+		std::vector<DWORD> m_vals3;
+		std::vector<DWORD> m_vals4;
+		std::vector<DWORD> m_vals5;
 	};
 
 public:
@@ -1191,7 +1309,7 @@ public:
 	{
 		if (!check()) return false;
 
-		WORD m_var1 = fw.ReadWord();
+		m_var1 = fw.ReadWord();
 
 		if ((m_var1 & 0x8000u) == 0)
 		{
@@ -1203,6 +1321,7 @@ public:
 	}
 
 private:
+	WORD m_var1 = 0;
 	std::vector<SavePart5_1> m_savePart5_1s;
 };
 
@@ -1215,15 +1334,12 @@ class SavePart6 : public SaveInterface
 		{
 			if (a2 > 0)
 			{
-				std::vector<DWORD> m_vars;
-
 				for (DWORD i = 0; i < a2; i++)
 					m_vars.push_back(fw.ReadDWord());
 			}
 
 			if (a3 > 0)
 			{
-				std::vector<MemData<DWORD>> m_mds;
 				for (DWORD i = 0; i < a3; i++)
 				{
 					MemData<DWORD> memData;
@@ -1231,7 +1347,11 @@ class SavePart6 : public SaveInterface
 					m_mds.push_back(memData);
 				}
 			}
-		};
+		}
+
+	private:
+		std::vector<DWORD> m_vars;
+		std::vector<MemData<DWORD>> m_mds;
 	};
 
 	class SavePart6_1
@@ -1240,16 +1360,16 @@ class SavePart6 : public SaveInterface
 		// TODO: When saving this maybe include a flag if var3 was read or not
 		SavePart6_1(FileWalker &fw)
 		{
-			DWORD m_var1 = fw.ReadDWord();
-			DWORD v6     = m_var1;
+			m_var1   = fw.ReadDWord();
+			DWORD v6 = m_var1;
 
 			if ((int)m_var1 <= -1)
 			{
 				if ((int)m_var1 <= -2)
-					DWORD m_var2 = fw.ReadDWord();
+					m_var2 = fw.ReadDWord();
 
-				DWORD m_var3 = fw.ReadDWord();
-				v6           = m_var3;
+				m_var3 = fw.ReadDWord();
+				v6     = m_var3;
 			}
 
 			DWORD v36 = 0;
@@ -1257,7 +1377,6 @@ class SavePart6 : public SaveInterface
 
 			if ((int)v6 > 0)
 			{
-				std::vector<DWORD> m_vars;
 				for (DWORD i = 0; i < v6; i++)
 				{
 					DWORD val = fw.ReadDWord();
@@ -1270,13 +1389,19 @@ class SavePart6 : public SaveInterface
 				}
 			}
 
-			DWORD m_vars4 = fw.ReadDWord();
+			m_var4 = fw.ReadDWord();
 
-			for (DWORD i = 0; i < m_vars4; i++)
+			for (DWORD i = 0; i < m_var4; i++)
 				m_savePart6_1_1s.push_back(SavePart6_1_1(fw, v36, v35));
-		};
+		}
 
 	private:
+		DWORD m_var1 = 0;
+		DWORD m_var2 = 0;
+		DWORD m_var3 = 0;
+		DWORD m_var4 = 0;
+
+		std::vector<DWORD> m_vars;
 		std::vector<SavePart6_1_1> m_savePart6_1_1s;
 	};
 
@@ -1287,9 +1412,9 @@ public:
 		if (!check()) return false;
 
 		// Is here 1 byte just skipped?
-		BYTE m_var1 = fw.ReadByte();
+		m_var1 = fw.ReadByte();
 
-		DWORD m_var2 = fw.ReadDWord();
+		m_var2 = fw.ReadDWord();
 		for (DWORD i = 0; i < m_var2; i++)
 			m_savePart6_1s.push_back(SavePart6_1(fw));
 
@@ -1301,8 +1426,12 @@ public:
 	}
 
 private:
+	BYTE m_var1 = 0;
+	DWORD m_var2 = 0;
 	std::vector<SavePart6_1> m_savePart6_1s;
 };
+
+using SP7_BBD = std::tuple<BYTE, BYTE, DWORD>;
 
 class SavePart7 : public SaveInterface
 {
@@ -1312,24 +1441,29 @@ public:
 	{
 		if (!check()) return false;
 
-		BYTE m_var1 = fw.ReadByte();
+		m_var1 = fw.ReadByte();
 		if (m_var1 != 1)
 			return true;
 
-		DWORD m_var2 = fw.ReadDWord();
+		m_var2 = fw.ReadDWord();
 
 		for (DWORD i = 0; i < m_var2; i++)
 		{
-			BYTE m_var3 = fw.ReadByte();
+			BYTE v = fw.ReadByte();
 
-			if (m_var3 < 0xFAu)
-				BYTE m_var4Old = fw.ReadByte();
+			if (v < 0xFAu)
+				m_sp7_bbds.push_back(SP7_BBD(v, fw.ReadByte(), 0));
 			else
-				DWORD m_var4New = fw.ReadDWord();
+				m_sp7_bbds.push_back(SP7_BBD(v, 0, fw.ReadDWord()));
 		}
 
 		return true;
 	}
+
+private:
+	BYTE m_var1 = 0;
+	DWORD m_var2 = 0;
+	std::vector<SP7_BBD> m_sp7_bbds;
 };
 
 class WolfSaveParser
