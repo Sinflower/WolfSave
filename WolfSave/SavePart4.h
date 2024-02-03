@@ -10,7 +10,7 @@ class SavePart4 : public SaveInterface
 {
 public:
 	SavePart4() = default;
-	bool Parse(FileWalker &fw)
+	bool Parse(FileWalker& fw)
 	{
 		if (!check()) return false;
 
@@ -50,6 +50,30 @@ public:
 		}
 
 		return true;
+	}
+
+	void Dump(JsonDumper& jd) const
+	{
+		jd.EnterSection(Name());
+		m_savePart1_1.Dump(jd);
+
+		jd.Dump(m_var1, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+		for (const auto& sp : m_savePart1_1s)
+			sp.Dump(jd);
+
+		jd.Dump(m_var2);
+		jd.Dump(m_var3);
+		jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+		jd.Dump(m_vars1);
+
+		if (m_fileVersion >= 0x8A)
+		{
+			jd.Dump(m_var5, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_vars2);
+		}
+
+		jd.LeaveSection();
 	}
 
 private:

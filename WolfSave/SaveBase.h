@@ -5,6 +5,7 @@
 
 #include "FileWalker.h"
 #include "Utils.h"
+#include "JsonDumper.h"
 
 class SaveInterface
 {
@@ -14,7 +15,20 @@ public:
 		m_fileVersion = fileVersion;
 	}
 
+	std::string Name() const
+	{
+		std::string name = typeid(*this).name();
+		// Remove the class name prefix
+		name = name.substr(name.find_first_of(" ") + 1);
+
+		return name;
+	}
+
 	virtual bool Parse(FileWalker &fw) = 0;
+	virtual void Dump(JsonDumper& jd) const
+	{
+		std::cout << "IMPLEMENT ME: " << Name() << std::endl;
+	}
 
 protected:
 	bool check() const

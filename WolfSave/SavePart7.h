@@ -34,6 +34,30 @@ public:
 		return true;
 	}
 
+	void Dump(JsonDumper& jd) const
+	{
+		jd.EnterSection(Name());
+
+		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH);
+
+		if (m_var1 == 1)
+		{
+			jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+			for (const auto& bbd : m_sp7_bbds)
+			{
+				jd.Dump(std::get<0>(bbd), JsonDumper::DO_NOT_TOUCH);
+				if (std::get<0>(bbd) < 0xFAu)
+					jd.Dump(std::get<1>(bbd));
+				else
+					jd.Dump(std::get<2>(bbd));
+				jd.LeaveSection();
+			}
+		}
+
+		jd.LeaveSection();
+	}
+
 private:
 	BYTE m_var1  = 0;
 	DWORD m_var2 = 0;

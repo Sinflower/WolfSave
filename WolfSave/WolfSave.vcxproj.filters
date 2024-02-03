@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\3rdParty">
+      <UniqueIdentifier>{b755af44-bad3-4876-9580-0541188d315e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\3rdParty\nlohmann">
+      <UniqueIdentifier>{da686062-eabf-426b-b39b-af2a5cf3154a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WolfSave.cpp">
@@ -57,6 +63,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SaveBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\nlohmann\json.hpp">
+      <Filter>Header Files\3rdParty\nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonDumper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

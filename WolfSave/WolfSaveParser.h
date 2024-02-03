@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "FileWalker.h"
+#include "JsonDumper.h"
 #include "Types.h"
 #include "Utils.h"
 
@@ -56,6 +57,21 @@ public:
 			return false;
 
 		return parseSave();
+	}
+
+	void Dump(const tString &outputPath)
+	{
+		JsonDumper dumper(outputPath);
+
+		m_savePart1.Dump(dumper);
+		m_savePart2.Dump(dumper);
+		m_savePart3.Dump(dumper);
+		m_savePart4.Dump(dumper);
+		m_savePart5.Dump(dumper);
+		m_savePart6.Dump(dumper);
+		m_savePart7.Dump(dumper);
+
+		dumper.Write2File();
 	}
 
 private:

@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "SaveBase.h"
 #include "MemData.h"
+#include "SaveBase.h"
 
 class SavePart1_1 : public SaveInterface
 {
@@ -23,6 +23,17 @@ class SavePart1_1 : public SaveInterface
 
 			for (BYTE i = 0; i < m_var3; i++)
 				m_vars2.push_back(fw.ReadByte());
+		}
+
+		void Dump(JsonDumper &jd) const
+		{
+			jd.EnterSection("SavePart1_1_1_1");
+			jd.Dump(m_var1);
+			jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_vars1);
+			jd.Dump(m_var3, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_vars2);
+			jd.LeaveSection();
 		}
 
 	private:
@@ -54,6 +65,24 @@ class SavePart1_1 : public SaveInterface
 
 			for (DWORD i = 0; i < m_var7; i++)
 				m_savePart1_1_1_1s.push_back(SavePart1_1_1_1(fw));
+		}
+
+		void Dump(JsonDumper &jd) const
+		{
+			jd.EnterSection("SavePart1_1_1");
+			jd.Dump(m_var1);
+			jd.Dump(m_var2);
+			jd.Dump(m_var3);
+			jd.Dump(m_var4);
+			jd.Dump(m_var5);
+			jd.Dump(m_var6);
+
+			jd.Dump(m_var7, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+			for (DWORD i = 0; i < m_var7; i++)
+				m_savePart1_1_1_1s[i].Dump(jd);
+
+			jd.LeaveSection();
 		}
 
 	private:
@@ -167,6 +196,80 @@ public:
 		m_var39 = fw.ReadDWord();
 
 		return true;
+	}
+
+	void Dump(JsonDumper &jd) const
+	{
+		jd.EnterSection(Name());
+		jd.Dump(m_var1);
+		jd.Dump(m_var2);
+		jd.Dump(m_var3);
+		jd.Dump(m_var4);
+		jd.Dump(m_var5);
+		jd.Dump(m_var6);
+
+		jd.Dump(m_md1);
+
+		jd.Dump(m_var7);
+		jd.Dump(m_var8);
+		jd.Dump(m_var9);
+		jd.Dump(m_var10);
+		jd.Dump(m_var11);
+		jd.Dump(m_var12);
+
+		m_sp1.Dump(jd);
+		m_sp2.Dump(jd);
+
+		jd.Dump(m_var13);
+		jd.Dump(m_var14);
+		jd.Dump(m_var15);
+		jd.Dump(m_var16);
+		jd.Dump(m_var17);
+		jd.Dump(m_var18);
+		jd.Dump(m_var19);
+		jd.Dump(m_var20);
+		jd.Dump(m_var21);
+		jd.Dump(m_var22, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+		jd.Dump(m_vars1);
+		if (m_fileVersion >= 0x70)
+		{
+			jd.Dump(m_var23);
+			jd.Dump(m_var24);
+		}
+		if (m_fileVersion >= 0x73)
+		{
+			jd.Dump(m_var25);
+			jd.Dump(m_var26);
+			jd.Dump(m_var27);
+			jd.Dump(m_var28);
+		}
+		if (m_fileVersion >= 0x78)
+			jd.Dump(m_var29);
+
+		if (m_fileVersion >= 0x85)
+		{
+			jd.Dump(m_var30);
+			jd.Dump(m_var31);
+			jd.Dump(m_var32);
+		}
+		if (m_fileVersion >= 0x8A)
+		{
+			jd.Dump(m_var33, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_mds1);
+
+			jd.Dump(m_var34);
+			jd.Dump(m_var35);
+			jd.Dump(m_var36);
+			jd.Dump(m_var37);
+		}
+
+		if (m_fileVersion >= 0x8B)
+			jd.Dump(m_var38);
+
+		if (m_fileVersion >= 0x8C)
+			jd.Dump(m_var39);
+		jd.LeaveSection();
 	}
 
 private:
@@ -327,6 +430,52 @@ public:
 		}
 
 		return true;
+	}
+
+	void Dump(JsonDumper &jd) const
+	{
+		jd.EnterSection(Name());
+		jd.Dump(m_var1);
+		jd.Dump(m_var2);
+		jd.Dump(m_var3);
+
+		if (m_fileVersion >= 0x69)
+		{
+			jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_var5, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_vars1);
+		}
+
+		jd.Dump(m_md1);
+		jd.Dump(m_mds1);
+		jd.Dump(m_var7, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+		if (m_fileVersion >= 0x64)
+			jd.Dump(m_vars2New);
+		else
+			jd.Dump(m_vars2Old);
+
+		jd.Dump(m_var8, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+		for (const SavePart1_1 &sp : m_savePart1_1s)
+			sp.Dump(jd);
+
+		if (m_fileVersion >= 0x72)
+		{
+			jd.Dump(m_var9);
+			jd.Dump(m_var10);
+			jd.Dump(m_var11);
+			jd.Dump(m_var12);
+			jd.Dump(m_var13);
+			jd.Dump(m_var14);
+			jd.Dump(m_var15);
+			jd.Dump(m_var16);
+			jd.Dump(m_var17);
+			jd.Dump(m_var18);
+			jd.Dump(m_var19);
+		}
+
+		jd.Dump(m_var20, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_vars3);
+		jd.LeaveSection();
 	}
 
 private:

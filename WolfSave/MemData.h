@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "FileWalker.h"
+#include "Types.h"
 
 template <typename T>
 struct MemData
@@ -13,13 +14,20 @@ struct MemData
 	DWORD offset;
 	T size;
 	bool readSize = false;
+
+	std::string toString() const
+	{
+		std::string str = "";
+
+		if (!data.empty() && data.size() > 1)
+			str = std::string(reinterpret_cast<const char*>(data.data()), data.size() - ((data.back() == 0x0) ? 1 : 0));
+
+		return str;
+	}
+
 	friend std::ostream& operator << (std::ostream& os, MemData const& md)
 	{
-		if (!md.data.empty())
-		{
-			std::string str(reinterpret_cast<const char*>(md.data.data()), md.data.size() - ((md.data.back() == 0x0) ? 2 : 0));
-			os << str;
-		}
+		os << md.toString();
 
 		return os;
 	}

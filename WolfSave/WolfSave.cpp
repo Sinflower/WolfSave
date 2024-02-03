@@ -12,8 +12,13 @@ int main()
 
 	if (parser.Parse(TEXT("SaveData02.sav")))
 		std::cout << "Parsing successful" << std::endl;
-	 else
+	else
+	{
 		std::cout << "Parsing failed" << std::endl;
+		return -1;
+	}
+
+	parser.Dump(_T("dump.json"));
 
 	return 0;
 }

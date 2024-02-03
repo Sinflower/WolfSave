@@ -29,6 +29,19 @@ class SavePart6 : public SaveInterface
 			}
 		}
 
+		void Dump(JsonDumper &jd) const
+		{
+			jd.EnterSection("SavePart6_1_1");
+
+			if (!m_vars.empty())
+				jd.Dump(m_vars);
+
+			if (!m_mds.empty())
+				jd.Dump(m_mds);
+
+			jd.LeaveSection();
+		}
+
 	private:
 		std::vector<DWORD> m_vars;
 		std::vector<MemData<DWORD>> m_mds;
@@ -75,6 +88,30 @@ class SavePart6 : public SaveInterface
 				m_savePart6_1_1s.push_back(SavePart6_1_1(fw, v36, v35));
 		}
 
+		void Dump(JsonDumper &jd) const
+		{
+			jd.EnterSection("SavePart6_1");
+
+			jd.Dump(m_var1);
+			if ((int)m_var1 <= -1)
+			{
+				if ((int)m_var1 <= -2)
+					jd.Dump(m_var2);
+
+				jd.Dump(m_var3);
+			}
+
+			if (!m_vars.empty())
+				jd.Dump(m_vars);
+
+			jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+			for (const SavePart6_1_1 &sp : m_savePart6_1_1s)
+				sp.Dump(jd);
+
+			jd.LeaveSection();
+		}
+
 	private:
 		DWORD m_var1 = 0;
 		DWORD m_var2 = 0;
@@ -103,6 +140,19 @@ public:
 		// sub_69CDF0(".project");
 
 		return true;
+	}
+
+	void Dump(JsonDumper &jd) const
+	{
+		jd.EnterSection(Name());
+
+		jd.Dump(m_var1);
+		jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+		for (const SavePart6_1 &sp : m_savePart6_1s)
+			sp.Dump(jd);
+
+		jd.LeaveSection();
 	}
 
 private:
