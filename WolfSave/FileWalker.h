@@ -47,6 +47,10 @@ public:
 		InitData(dataVec);
 	}
 
+	// Disable copy constructor and copy assignment operator
+	FileWalker(const FileWalker&) = delete;
+	FileWalker& operator=(const FileWalker&) = delete;
+
 	void InitData(const std::vector<BYTE>& dataVec)
 	{
 		m_dataVec = dataVec;

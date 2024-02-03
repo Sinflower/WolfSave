@@ -29,5 +29,11 @@
     <ClInclude Include="MemData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WolfSaveParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,9 @@
 #include "FileWalker.h"
 #include "MemData.h"
 #include "Utils.h"
+#include "Types.h"
+
+#include "WolfSaveParser.h"
 
 bool validateName(FileWalker &fw);
 bool parseSave(FileWalker &fw);
@@ -183,16 +186,13 @@ void parse_save_1(FileWalker &fw)
 		v140 = 31;
 
 	std::vector<MemData<DWORD>> data1;
-	DWORD v139 = 0;
 
-	do
+	for (DWORD i = 0; i < v140; i++)
 	{
 		MemData<DWORD> data;
 		initMemData(data, fw);
 		data1.push_back(data);
-
-		v139++;
-	} while (v139 < v140);
+	}
 
 	DWORD v50 = fw.ReadDWord();
 
@@ -369,23 +369,17 @@ void parse_save_1_1_1_1(FileWalker &fw)
 
 	BYTE v26 = fw.ReadByte();
 
-	if (v26)
-	{
-		std::vector<DWORD> data;
+	std::vector<DWORD> data1;
 
-		for (BYTE i = 0; i < v26; i++)
-			data.push_back(fw.ReadDWord());
-	}
+	for (BYTE i = 0; i < v26; i++)
+		data1.push_back(fw.ReadDWord());
 
 	BYTE v35 = fw.ReadByte();
 
-	if (v35)
-	{
-		std::vector<BYTE> data;
+	std::vector<BYTE> data2;
 
-		for (BYTE i = 0; i < v35; i++)
-			data.push_back(fw.ReadByte());
-	}
+	for (BYTE i = 0; i < v35; i++)
+		data2.push_back(fw.ReadByte());
 }
 
 void parse_save_2(FileWalker &fw)
@@ -677,22 +671,19 @@ void parse_save_3(FileWalker &fw)
 
 	if ((int)v9 >= 0)
 	{
-		if (v9 > 0)
+		for (DWORD i = 0; i < v9; i++)
 		{
-			for (DWORD i = 0; i < v9; i++)
-			{
-				DWORD v14 = fw.ReadDWord();
-				if (v14 < 0) return;
+			DWORD v14 = fw.ReadDWord();
+			if (v14 < 0) return;
 
-				for (DWORD j = 0; j < v14; j++)
+			for (DWORD j = 0; j < v14; j++)
+			{
+				BYTE v160 = fw.ReadByte();
+				if (v160 > 0)
 				{
-					BYTE v160 = fw.ReadByte();
-					if (v160 > 0)
-					{
-						std::vector<DWORD> data;
-						for (DWORD k = 0; k < v160; k++)
-							data.push_back(fw.ReadDWord());
-					}
+					std::vector<DWORD> data;
+					for (DWORD k = 0; k < v160; k++)
+						data.push_back(fw.ReadDWord());
 				}
 			}
 		}
@@ -721,21 +712,18 @@ void parse_save_3(FileWalker &fw)
 
 			if ((int)v54 >= 0)
 			{
-				if ((int)v54 > 0)
+				for (DWORD i = 0; i < v54; i++)
 				{
-					for (DWORD i = 0; i < v54; i++)
+					if (g_fileVersion < 111)
 					{
-						if (g_fileVersion < 111)
-						{
-							// This is a WORD read not a DWORD
-							MemData<WORD> memData;
-							initMemData(memData, fw);
-						}
-						else
-						{
-							MemData<DWORD> memData;
-							initMemData(memData, fw);
-						}
+						// This is a WORD read not a DWORD
+						MemData<WORD> memData;
+						initMemData(memData, fw);
+					}
+					else
+					{
+						MemData<DWORD> memData;
+						initMemData(memData, fw);
 					}
 				}
 
@@ -1152,19 +1140,21 @@ bool read2Buffer(const TCHAR *pFilePath, std::vector<BYTE> &buffer)
 
 int main()
 {
-	std::vector<BYTE> data;
-	const TCHAR pFileName[] = TEXT("SaveData31.sav");
-	if (!read2Buffer(pFileName, data))
-	{
-		tcerr << TEXT("Failed to load input file: ") << pFileName << std::endl;
-		return -1;
-	}
+	//std::vector<BYTE> data;
+	//const TCHAR pFileName[] = TEXT("SaveData31.sav");
+	//if (!read2Buffer(pFileName, data))
+	//{
+	//	tcerr << TEXT("Failed to load input file: ") << pFileName << std::endl;
+	//	return -1;
+	//}
 
-	FileWalker fw(data);
+	//FileWalker fw(data);
 
-	if (step0(fw))
+	WolfSaveParser parser;
+
+	if (parser.Parse(TEXT("SaveData02.sav")))
 		std::cout << "Parsing successful" << std::endl;
-	else
+	 else
 		std::cout << "Parsing failed" << std::endl;
 
 	return 0;

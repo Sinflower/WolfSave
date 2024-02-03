@@ -38,17 +38,3 @@ static inline std::string ws2s(const std::wstring& wstr)
 {
 	return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wstr);
 }
-
-std::basic_ostream<TCHAR>& tcout =
-#ifdef _UNICODE
-	std::wcout;
-#else
-	std::cout;
-#endif // _UNICODE
-
-std::basic_ostream<TCHAR>& tcerr =
-#ifdef _UNICODE
-	std::wcerr;
-#else
-	std::cerr;
-#endif // _UNICODE
