@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <map>
 #include <nlohmann/json.hpp>
 #include <vector>
 
@@ -9,6 +10,8 @@
 
 class JsonDumper
 {
+	using SecPair = std::pair<std::string, nlohmann::ordered_json>;
+
 public:
 	enum Flags
 	{
@@ -27,60 +30,73 @@ public:
 
 	void EnterSection(const std::string& section)
 	{
-		m_sections.push_back(section);
+		m_sectionCnt.try_emplace(section, 0);
+		m_sectionCnt[section]++;
+
+		m_sections.push_back({ section, nlohmann::ordered_json() });
 	}
 
 	void LeaveSection()
 	{
+		// If the current section is a sub-section, add it to the parent section
+		if (m_sections.size() > 1)
+		{
+			SecPair& subSec = m_sections.back();
+
+			m_sections[m_sections.size() - 2].second[buildSecName(subSec.first)] = subSec.second;
+		}
+		else
+			m_json[buildSecName(m_sections.back().first)] = m_sections.back().second;
+
 		m_sections.pop_back();
 	}
 
 	template<typename T>
 	void Dump(const T& data, const uint32_t& flags = Flags::NON)
 	{
-		std::string objName = buildObjName();
-		nlohmann::json j    = buildObj(data);
+		std::string objName      = buildObjName();
+		nlohmann::ordered_json j = buildObj(data);
 
 		if (flags != Flags::NON)
 			j["flags"] = flags2Strings(flags);
 
-		m_json[objName] = j;
+		addObj(objName, j);
 	}
 
 	template<typename T>
 	void Dump(const std::vector<T>& vec, const uint32_t& flags = Flags::NON)
 	{
-		std::string objName = buildObjName();
-		nlohmann::json j    = buildVecObj(vec);
+		std::string objName      = buildObjName();
+		nlohmann::ordered_json j = buildVecObj(vec);
 
 		if (flags != Flags::NON)
 			j["flags"] = flags2Strings(flags);
 
-		m_json[objName] = j;
+		addObj(objName, j);
 	}
-	
+
 	template<typename T, size_t U>
 	void Dump(const std::array<T, U>& vec, const uint32_t& flags = Flags::NON)
 	{
-		std::string objName = buildObjName();
-		nlohmann::json j    = buildArrObj(vec);
+		std::string objName      = buildObjName();
+		nlohmann::ordered_json j = buildArrObj(vec);
 
 		if (flags != Flags::NON)
 			j["flags"] = flags2Strings(flags);
 
-		m_json[objName] = j;
+		addObj(objName, j);
 	}
 
 	template<typename T>
 	void Dump(const MemData<T>& data, const uint32_t& flags = Flags::NON)
 	{
-		std::string objName = buildObjName();
-		nlohmann::json j    = buildObj(data);
+		std::string objName      = buildObjName();
+		nlohmann::ordered_json j = buildObj(data);
 
 		if (flags != Flags::NON)
 			j["flags"] = flags2Strings(flags);
 
-		m_json[objName] = j;
+		addObj(objName, j);
 	}
 
 	void Write2File()
@@ -104,20 +120,34 @@ public:
 	}
 
 private:
+	void addObj(const std::string& name, const nlohmann::ordered_json& j)
+	{
+		m_sections.back().second[name] = j;
+	}
+
 	std::string buildObjName()
 	{
 		std::string name;
-		for (const std::string& sec : m_sections)
-			name += sec + "-";
+		// for (const std::string& sec : m_sections)
+		//	name += sec + "-";
 
 		name += std::to_string(m_varCnt++);
 		return name;
 	}
 
-	template<typename T>
-	nlohmann::json buildObj(const T& data)
+	std::string buildSecName(const std::string& secName) const
 	{
-		nlohmann::json j;
+		std::string name = secName;
+
+		name += "_#" + std::to_string(m_sectionCnt.at(secName));
+
+		return name;
+	}
+
+	template<typename T>
+	nlohmann::ordered_json buildObj(const T& data) const
+	{
+		nlohmann::ordered_json j;
 		j["value"]    = data;
 		j["byteSize"] = sizeof(T);
 
@@ -125,9 +155,9 @@ private:
 	}
 
 	template<typename T>
-	nlohmann::json buildObj(const MemData<T>& data)
+	nlohmann::ordered_json buildObj(const MemData<T>& data) const
 	{
-		nlohmann::json j;
+		nlohmann::ordered_json j;
 		j["value"]    = data.toString();
 		j["byteSize"] = data.size;
 
@@ -135,11 +165,11 @@ private:
 	}
 
 	template<typename T>
-	nlohmann::json buildVecObj(const std::vector<T>& vec)
+	nlohmann::ordered_json buildVecObj(const std::vector<T>& vec) const
 	{
-		if (vec.empty()) return nlohmann::json();
+		if (vec.empty()) return nlohmann::ordered_json();
 
-		nlohmann::json j;
+		nlohmann::ordered_json j;
 		j["value"]    = vec;
 		j["byteSize"] = sizeof(T);
 
@@ -147,13 +177,13 @@ private:
 	}
 
 	template<typename T>
-	nlohmann::json buildVecObj(const std::vector<MemData<T>>& vec)
+	nlohmann::ordered_json buildVecObj(const std::vector<MemData<T>>& vec) const
 	{
-		if (vec.empty()) return nlohmann::json();
+		if (vec.empty()) return nlohmann::ordered_json();
 
-		nlohmann::json j;
+		nlohmann::ordered_json j;
 
-		nlohmann::json arr = nlohmann::json::array();
+		nlohmann::ordered_json arr = nlohmann::ordered_json::array();
 
 		for (const MemData<T>& data : vec)
 			arr.push_back(data.toString());
@@ -165,11 +195,11 @@ private:
 	}
 
 	template<typename T, std::size_t U>
-	nlohmann::json buildArrObj(const std::array<T, U>& arr)
+	nlohmann::ordered_json buildArrObj(const std::array<T, U>& arr) const
 	{
-		if (U == 0) return nlohmann::json();
+		if (U == 0) return nlohmann::ordered_json();
 
-		nlohmann::json j;
+		nlohmann::ordered_json j;
 		j["value"]    = arr;
 		j["byteSize"] = sizeof(T);
 		j["arrCount"] = U;
@@ -177,7 +207,7 @@ private:
 		return j;
 	}
 
-	std::vector<std::string> flags2Strings(const uint32_t& flags)
+	std::vector<std::string> flags2Strings(const uint32_t& flags) const
 	{
 		std::vector<std::string> strs;
 
@@ -196,6 +226,7 @@ private:
 private:
 	tString m_filePath = _T("");
 	uint64_t m_varCnt  = 0;
-	std::vector<std::string> m_sections;
+	std::vector<SecPair> m_sections;
+	std::map<std::string, uint32_t> m_sectionCnt;
 	nlohmann::ordered_json m_json;
 };
