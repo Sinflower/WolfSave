@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <array>
+#include <vector>
 
 #include "MemData.h"
 #include "SaveBase.h"
@@ -281,6 +281,243 @@ public:
 		m_var121 = fw.ReadByte();
 		m_var122 = fw.ReadByte();
 		return true;
+	}
+
+	void Dump(JsonDumper &jd) const
+	{
+		jd.EnterSection(Name());
+
+		jd.Dump(m_var1);
+		jd.Dump(m_var2);
+		jd.Dump(m_var3);
+		jd.Dump(m_var4);
+		jd.Dump(m_var5);
+		jd.Dump(m_var6);
+		jd.Dump(m_var7);
+		jd.Dump(m_var8);
+		jd.Dump(m_var9);
+		jd.Dump(m_var10);
+		jd.Dump(m_var11);
+		jd.Dump(m_var12);
+		jd.Dump(m_var13);
+		jd.Dump(m_var14);
+		jd.Dump(m_var15);
+		jd.Dump(m_var16);
+		jd.Dump(m_var17);
+		jd.Dump(m_var18);
+		jd.Dump(m_var19);
+		jd.Dump(m_var20);
+		jd.Dump(m_var21);
+		jd.Dump(m_var22);
+		jd.Dump(m_var23);
+		jd.Dump(m_var24);
+		jd.Dump(m_var25);
+		jd.Dump(m_var26);
+		jd.Dump(m_var27);
+		jd.Dump(m_var28);
+		jd.Dump(m_var29);
+		jd.Dump(m_var30);
+		jd.Dump(m_var31);
+		jd.Dump(m_var32);
+		jd.Dump(m_var33);
+		jd.Dump(m_var34);
+		jd.Dump(m_var35);
+		jd.Dump(m_var36);
+		jd.Dump(m_var37);
+		jd.Dump(m_var38);
+		jd.Dump(m_var39);
+		jd.Dump(m_var40);
+		jd.Dump(m_var41);
+		jd.Dump(m_var42);
+		jd.Dump(m_var43);
+		jd.Dump(m_var44);
+		jd.Dump(m_var45);
+		jd.Dump(m_var46);
+		jd.Dump(m_var47);
+		jd.Dump(m_var48);
+		jd.Dump(m_var49);
+
+		if (m_fileVersion <= 96)
+			jd.Dump(m_var50);
+
+		jd.Dump(m_var51);
+
+		if (m_fileVersion >= 98)
+		{
+			jd.Dump(m_var52);
+			jd.Dump(m_var53);
+		}
+
+		if (m_fileVersion >= 100)
+		{
+			jd.Dump(m_var54);
+			jd.Dump(m_var55);
+			jd.Dump(m_var56);
+
+			jd.Dump(m_var57, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			if ((int)m_var57 > 0)
+				jd.Dump(m_mds1);
+
+			jd.Dump(m_var58, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_vars1);
+
+			jd.Dump(m_var59);
+			jd.Dump(m_var60);
+			jd.Dump(m_var61);
+			jd.Dump(m_var62);
+			jd.Dump(m_var63);
+		}
+		if (m_fileVersion >= 101)
+		{
+			jd.Dump(m_var64);
+			jd.Dump(m_var65);
+			jd.Dump(m_var66);
+			jd.Dump(m_var67);
+			jd.Dump(m_var68);
+			jd.Dump(m_var69);
+		}
+		if (m_fileVersion >= 102)
+			jd.Dump(m_var70);
+
+		if (m_fileVersion >= 103)
+		{
+			jd.Dump(m_md1);
+			jd.Dump(m_md2);
+		}
+
+		if (m_fileVersion >= 104)
+			jd.Dump(m_var71);
+
+		if (m_fileVersion >= 106)
+		{
+			jd.Dump(m_var72);
+			jd.Dump(m_var73);
+			jd.Dump(m_var74);
+		}
+
+		if (m_fileVersion >= 108)
+		{
+			jd.Dump(m_md3);
+
+			jd.Dump(m_var75);
+			jd.Dump(m_var76);
+			jd.Dump(m_var77);
+
+			jd.Dump(m_md4);
+
+			jd.Dump(m_var78);
+			jd.Dump(m_var79);
+			jd.Dump(m_var80);
+		}
+
+		if (m_fileVersion >= 109)
+		{
+			jd.Dump(m_md5);
+			jd.Dump(m_md6);
+
+			jd.Dump(m_var81);
+		}
+
+		if (m_fileVersion >= 110)
+			jd.Dump(m_var82);
+
+		if (m_fileVersion >= 119)
+		{
+			jd.Dump(m_md7);
+			jd.Dump(m_md8);
+			jd.Dump(m_md9);
+		}
+
+		if (m_fileVersion >= 121)
+			jd.Dump(m_var83);
+
+		if (m_fileVersion >= 122)
+			jd.Dump(m_var84);
+
+		if (m_fileVersion >= 124)
+			jd.Dump(m_var85);
+
+		if (m_fileVersion >= 126)
+			jd.Dump(m_var86);
+
+		if (m_fileVersion >= 128)
+			jd.Dump(m_var87);
+
+		if (m_fileVersion >= 129)
+		{
+			jd.Dump(m_var88);
+			jd.Dump(m_var89);
+		}
+
+		if (m_fileVersion >= 130)
+			jd.Dump(m_var90);
+
+		if (m_fileVersion >= 131)
+			jd.Dump(m_var91);
+
+		if (m_fileVersion >= 132)
+		{
+			jd.Dump(m_var92);
+			jd.Dump(m_var93);
+			jd.Dump(m_var94);
+			jd.Dump(m_var95);
+		}
+
+		if (m_fileVersion >= 134)
+			jd.Dump(m_var96);
+
+		if (m_fileVersion >= 136)
+			jd.Dump(m_var97);
+
+		if (m_fileVersion >= 137)
+		{
+			jd.Dump(m_var98);
+			jd.Dump(m_var99);
+			jd.Dump(m_var100);
+			jd.Dump(m_var101);
+
+			jd.Dump(m_vars2);
+		}
+
+		if (m_fileVersion >= 0x8A)
+		{
+			jd.Dump(m_var102);
+			jd.Dump(m_var103);
+			jd.Dump(m_var104);
+			jd.Dump(m_var105);
+
+			jd.Dump(m_md10);
+
+			jd.Dump(m_var106, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+			if ((int)m_var106 > 0)
+				jd.Dump(m_mds2);
+		}
+
+		if (m_fileVersion >= 0x8D)
+		{
+			jd.Dump(m_var107);
+			jd.Dump(m_var108);
+			jd.Dump(m_var109);
+			jd.Dump(m_var110);
+			jd.Dump(m_var111);
+			jd.Dump(m_var112);
+			jd.Dump(m_var113);
+			jd.Dump(m_var114);
+			jd.Dump(m_var115);
+			jd.Dump(m_var116);
+			jd.Dump(m_var117);
+			jd.Dump(m_var118);
+			jd.Dump(m_var119);
+			jd.Dump(m_var120);
+
+			jd.Dump(m_bytes);
+
+			jd.Dump(m_var121);
+			jd.Dump(m_var122);
+		}
+
+		jd.LeaveSection();
 	}
 
 private:

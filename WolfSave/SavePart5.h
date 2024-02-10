@@ -184,6 +184,167 @@ class SavePart5 : public SaveInterface
 			}
 		}
 
+		void Dump(JsonDumper &jd, const WORD &fileVersion) const
+		{
+			jd.EnterSection("SavePart5_1");
+
+			jd.Dump(m_var1);
+
+			jd.Dump(m_var2);
+			jd.Dump(m_var3);
+			jd.Dump(m_var4);
+			jd.Dump(m_var5);
+			jd.Dump(m_var6);
+
+			jd.Dump(m_md1);
+
+			jd.Dump(m_var7);
+			jd.Dump(m_var8);
+
+			jd.Dump(m_var9);
+			jd.Dump(m_var10);
+
+			jd.Dump(m_var11);
+			jd.Dump(m_var12);
+			jd.Dump(m_var13);
+			jd.Dump(m_var14);
+			jd.Dump(m_var15);
+			jd.Dump(m_var16);
+			jd.Dump(m_var17);
+			jd.Dump(m_var18);
+
+			jd.Dump(m_vals1);
+
+			if (fileVersion >= 0x69)
+			{
+				jd.Dump(m_var19);
+				jd.Dump(m_var20);
+				jd.Dump(m_var21);
+				jd.Dump(m_var22);
+				jd.Dump(m_var23);
+				jd.Dump(m_var24);
+				jd.Dump(m_var25);
+				jd.Dump(m_var26);
+				jd.Dump(m_var27);
+				jd.Dump(m_var28);
+				jd.Dump(m_var29);
+				jd.Dump(m_var30);
+				jd.Dump(m_var31);
+				jd.Dump(m_var32);
+				jd.Dump(m_var33);
+				jd.Dump(m_var34);
+				jd.Dump(m_var35);
+				jd.Dump(m_var36);
+			}
+			if (fileVersion >= 0x6B)
+				jd.Dump(m_var37);
+
+			if (fileVersion >= 0x72)
+			{
+				jd.Dump(m_var38);
+				jd.Dump(m_var39);
+				jd.Dump(m_vals2);
+				jd.Dump(m_vals3);
+			}
+
+			if (fileVersion >= 0x73)
+			{
+				jd.Dump(m_var40);
+				jd.Dump(m_var41);
+				jd.Dump(m_var42);
+				jd.Dump(m_var43);
+
+				if (fileVersion >= 0x74)
+				{
+					jd.Dump(m_var44);
+					jd.Dump(m_var45);
+					jd.Dump(m_var46);
+					jd.Dump(m_var47);
+					jd.Dump(m_var48);
+				}
+
+				if (fileVersion >= 0x75)
+				{
+					jd.Dump(m_var49);
+					jd.Dump(m_var50);
+					jd.Dump(m_var51);
+					jd.Dump(m_var52);
+					jd.Dump(m_var53);
+					jd.Dump(m_var54);
+				}
+
+				jd.Dump(m_var55);
+				jd.Dump(m_var56);
+				jd.Dump(m_var57);
+				jd.Dump(m_var58);
+				jd.Dump(m_var59);
+				jd.Dump(m_var60);
+			}
+
+			if (fileVersion >= 0x76)
+			{
+				jd.Dump(m_var61);
+				jd.Dump(m_var62);
+				jd.Dump(m_var63);
+			}
+
+			if (fileVersion < 0x81)
+				return;
+
+			jd.Dump(m_var64);
+			jd.Dump(m_var65);
+			jd.Dump(m_var66);
+			jd.Dump(m_var67);
+			jd.Dump(m_var68);
+			jd.Dump(m_var69);
+
+			jd.Dump(m_var70);
+			jd.Dump(m_var71);
+			jd.Dump(m_var72);
+			jd.Dump(m_var73);
+			jd.Dump(m_var74);
+			jd.Dump(m_var75);
+			jd.Dump(m_var76);
+			jd.Dump(m_var77);
+			jd.Dump(m_var78);
+			jd.Dump(m_var79);
+			jd.Dump(m_var80);
+			jd.Dump(m_var81);
+			jd.Dump(m_var82);
+			jd.Dump(m_var83);
+			jd.Dump(m_var84);
+
+			if (fileVersion >= 0x87)
+			{
+				jd.Dump(m_var85);
+				jd.Dump(m_var86);
+				jd.Dump(m_var87);
+				jd.Dump(m_var88);
+				jd.Dump(m_var89);
+			}
+
+			if (fileVersion >= 0x89)
+			{
+				jd.Dump(m_var90, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+
+				if ((int)m_var90 > 0)
+				{
+					jd.Dump(m_vals4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+					jd.Dump(m_vals5);
+				}
+
+				jd.Dump(m_var91);
+				jd.Dump(m_var92);
+				jd.Dump(m_var93);
+				jd.Dump(m_var94);
+				jd.Dump(m_var95);
+				jd.Dump(m_var96);
+				jd.Dump(m_var97);
+			}
+
+			jd.LeaveSection();
+		}
+
 	private:
 		DWORD m_var1  = 0;
 		BYTE m_var2   = 0;
@@ -307,6 +468,21 @@ public:
 		}
 
 		return true;
+	}
+
+	void Dump(JsonDumper &jd) const
+	{
+		jd.EnterSection(Name());
+
+		jd.Dump(m_var1);
+
+		if ((m_var1 & 0x8000u) == 0)
+		{
+			for (const SavePart5_1 &sp : m_savePart5_1s)
+				sp.Dump(jd, m_fileVersion);
+		}
+
+		jd.LeaveSection();
 	}
 
 private:

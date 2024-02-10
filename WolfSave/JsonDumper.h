@@ -58,6 +58,18 @@ public:
 
 		m_json[objName] = j;
 	}
+	
+	template<typename T, size_t U>
+	void Dump(const std::array<T, U>& vec, const uint32_t& flags = Flags::NON)
+	{
+		std::string objName = buildObjName();
+		nlohmann::json j    = buildArrObj(vec);
+
+		if (flags != Flags::NON)
+			j["flags"] = flags2Strings(flags);
+
+		m_json[objName] = j;
+	}
 
 	template<typename T>
 	void Dump(const MemData<T>& data, const uint32_t& flags = Flags::NON)
@@ -148,6 +160,19 @@ private:
 
 		j["value"] = arr;
 		j["size"]  = sizeof(T);
+
+		return j;
+	}
+
+	template<typename T, std::size_t U>
+	nlohmann::json buildArrObj(const std::array<T, U>& arr)
+	{
+		if (U == 0) return nlohmann::json();
+
+		nlohmann::json j;
+		j["value"]    = arr;
+		j["byteSize"] = sizeof(T);
+		j["arrCount"] = U;
 
 		return j;
 	}
