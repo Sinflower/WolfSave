@@ -40,16 +40,18 @@ public:
 
 		decryptSave();
 
-		m_fw.Seek(0x14);
+		m_fw.Seek(0);
+
+		m_fw.ReadBytesArr(m_header);
 
 		if (m_fw.GetOffset() + 1 > m_fw.GetSize())
 			return false;
 
-		BYTE v28 = m_fw.ReadByte();
+		BYTE m_var1 = m_fw.ReadByte();
 
-		if (v28 != 0x19)
+		if (m_var1 != 0x19)
 		{
-			std::cerr << "Error: v28 != 0x19 -- This case is not implemented" << std::endl;
+			std::cerr << "Error: m_var1 != 0x19 -- This case is not implemented" << std::endl;
 			return false;
 		}
 
@@ -62,6 +64,8 @@ public:
 	void Dump(const tString &outputPath)
 	{
 		JsonDumper dumper(outputPath);
+
+		dump(dumper);
 
 		m_savePart1.Dump(dumper);
 		m_savePart2.Dump(dumper);
@@ -147,9 +151,7 @@ private:
 
 	bool validateName()
 	{
-		WORD nameLen = m_fw.ReadWord();
-		std::vector<BYTE> name(nameLen);
-		m_fw.ReadBytesVec(name);
+		initMemData(m_name, m_fw);
 
 		m_fileVersion = m_fw.ReadWord();
 
@@ -205,9 +207,29 @@ private:
 		return true;
 	}
 
+	void dump(JsonDumper& jd) const
+	{
+		jd.EnterSection("Header");
+
+		jd.Dump(m_header, JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH);
+
+		jd.Dump(m_name);
+
+		jd.Dump(m_fileVersion, JsonDumper::DO_NOT_TOUCH);
+
+		jd.LeaveSection();
+	}
+
 private:
+	FileWalker m_fw = FileWalker();
+
+	std::array<BYTE, 0x14> m_header;
+
+	BYTE m_var1 = 0;
+	MemData<WORD> m_name;
 	WORD m_fileVersion = 0;
-	FileWalker m_fw    = FileWalker();
+
 	SavePart1 m_savePart1;
 	SavePart2 m_savePart2;
 	SavePart3 m_savePart3;
