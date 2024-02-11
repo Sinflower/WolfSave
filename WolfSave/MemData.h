@@ -1,17 +1,16 @@
 #pragma once
 
-#include <vector>
 #include <Windows.h>
 #include <fstream>
+#include <vector>
 
 #include "FileWalker.h"
 #include "Types.h"
 
-template <typename T>
+template<typename T>
 struct MemData
 {
-	std::vector <BYTE> data;
-	DWORD offset;
+	std::vector<BYTE> data;
 	T size;
 	bool readSize = false;
 
@@ -25,7 +24,25 @@ struct MemData
 		return str;
 	}
 
-	friend std::ostream& operator << (std::ostream& os, MemData const& md)
+	void fromString(const std::string& str)
+	{
+		size = static_cast<T>(str.size()) + 1;
+		data.resize(size);
+		std::copy(str.begin(), str.end(), data.begin());
+
+		data.back() = 0x0;
+	}
+
+	void write(FileWriter& fw) const
+	{
+		if (readSize)
+			fw.Write(size);
+
+		if (size > 0)
+			fw.WriteBytesVec(data);
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, MemData const& md)
 	{
 		os << md.toString();
 
@@ -33,11 +50,9 @@ struct MemData
 	}
 };
 
-template <typename T>
+template<typename T>
 void initMemData(MemData<T>& memData, FileWalker& fw, const T& size = ~0)
 {
-	memData.offset = fw.GetOffset();
-
 	if (size == static_cast<T>(~0))
 	{
 		if (sizeof(T) == 1)
@@ -45,7 +60,7 @@ void initMemData(MemData<T>& memData, FileWalker& fw, const T& size = ~0)
 		else if (sizeof(T) == 2)
 			memData.size = fw.ReadWord();
 		else if (sizeof(T) == 4)
-		memData.size     = static_cast<T>(fw.ReadDWord());
+			memData.size = static_cast<T>(fw.ReadDWord());
 		memData.readSize = true;
 	}
 	else
@@ -56,4 +71,14 @@ void initMemData(MemData<T>& memData, FileWalker& fw, const T& size = ~0)
 		memData.data.resize(memData.size);
 		fw.ReadBytesVec(memData.data);
 	}
+}
+
+template<typename T>
+MemData<T> initFromData(const std::string& str, const bool& readSize)
+{
+	MemData<T> memData;
+	memData.fromString(str);
+	memData.readSize = readSize;
+
+	return memData;
 }

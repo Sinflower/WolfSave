@@ -140,7 +140,9 @@
   <ItemGroup>
     <ClInclude Include="3rdParty\nlohmann\json.hpp" />
     <ClInclude Include="FileWalker.h" />
+    <ClInclude Include="FileWriter.h" />
     <ClInclude Include="JsonDumper.h" />
+    <ClInclude Include="JsonReader.h" />
     <ClInclude Include="MemData.h" />
     <ClInclude Include="SaveBase.h" />
     <ClInclude Include="SavePart1.h" />

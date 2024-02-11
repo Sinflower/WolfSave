@@ -6,7 +6,9 @@
 #include <vector>
 
 #include "FileWalker.h"
+#include "FileWriter.h"
 #include "JsonDumper.h"
+#include "JsonReader.h"
 #include "Types.h"
 #include "Utils.h"
 
@@ -63,6 +65,8 @@ public:
 
 	void Dump(const tString &outputPath)
 	{
+		tcout << "Dumping Save to JSON: " << outputPath << std::endl;
+
 		JsonDumper dumper(outputPath);
 
 		dump(dumper);
@@ -76,6 +80,28 @@ public:
 		m_savePart7.Dump(dumper);
 
 		dumper.Write2File();
+
+		tcout << "Dumping finished" << std::endl;
+	}
+
+	void Json2Save(const tString &inputPath, const tString &outputPath)
+	{
+		tcout << "Converting JSON to Save: " << inputPath << " -> " << outputPath << std::endl;
+
+		JsonReader reader(inputPath);
+		FileWriter fileWriter(outputPath);
+
+		json2Save(reader, fileWriter);
+
+		// m_savePart1.Json2Save(reader);
+		// m_savePart2.Json2Save(reader);
+		// m_savePart3.Json2Save(reader);
+		// m_savePart4.Json2Save(reader);
+		// m_savePart5.Json2Save(reader);
+		// m_savePart6.Json2Save(reader);
+		// m_savePart7.Json2Save(reader);
+
+		tcout << "Conversion finished" << std::endl;
 	}
 
 private:
@@ -207,7 +233,7 @@ private:
 		return true;
 	}
 
-	void dump(JsonDumper& jd) const
+	void dump(JsonDumper &jd) const
 	{
 		jd.EnterSection("Header");
 
@@ -219,6 +245,25 @@ private:
 		jd.Dump(m_fileVersion, JsonDumper::DO_NOT_TOUCH);
 
 		jd.LeaveSection();
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw)
+	{
+		jr.EnterSection("Header");
+
+		m_header = jr.ReadArr<BYTE, 0x14>();
+		m_var1   = jr.Read<BYTE>();
+
+		m_name = jr.ReadMemData<WORD>();
+
+		m_fileVersion = jr.Read<WORD>();
+
+		fw.WriteBytesArr(m_header);
+		fw.Write(m_var1);
+		m_name.write(fw);
+		fw.Write(m_fileVersion);
+
+		jr.LeaveSection();
 	}
 
 private:

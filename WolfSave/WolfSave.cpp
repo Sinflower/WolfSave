@@ -20,5 +20,7 @@ int main()
 
 	parser.Dump(_T("dump.json"));
 
+	parser.Json2Save(_T("dump.json"), _T("SaveData02_new.sav"));
+
 	return 0;
 }
