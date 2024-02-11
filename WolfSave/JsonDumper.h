@@ -10,7 +10,18 @@
 
 class JsonDumper
 {
-	using SecPair = std::pair<std::string, nlohmann::ordered_json>;
+	struct Section
+	{
+		Section() = default;
+		Section(const std::string& name) :
+			name(name)
+		{
+		}
+
+		std::string name;
+		nlohmann::ordered_json json = nlohmann::ordered_json();
+		uint64_t varCnt             = 0;
+	};
 
 public:
 	enum Flags
@@ -33,20 +44,19 @@ public:
 		m_sectionCnt.try_emplace(section, 0);
 		m_sectionCnt[section]++;
 
-		m_sections.push_back({ section, nlohmann::ordered_json() });
+		m_sections.push_back({ section });
 	}
 
 	void LeaveSection()
 	{
+		const std::string secName = buildSecName(curSection()->name);
+		const nlohmann::ordered_json& secJson = curSection()->json;
+
 		// If the current section is a sub-section, add it to the parent section
 		if (m_sections.size() > 1)
-		{
-			SecPair& subSec = m_sections.back();
-
-			m_sections[m_sections.size() - 2].second[buildSecName(subSec.first)] = subSec.second;
-		}
+			m_sections[m_sections.size() - 2].json[secName] = secJson;
 		else
-			m_json[buildSecName(m_sections.back().first)] = m_sections.back().second;
+			m_json[secName] = secJson;
 
 		m_sections.pop_back();
 	}
@@ -120,18 +130,21 @@ public:
 	}
 
 private:
+	Section* curSection()
+	{
+		if (m_sections.empty()) return nullptr;
+
+		return &m_sections.back();
+	}
+
 	void addObj(const std::string& name, const nlohmann::ordered_json& j)
 	{
-		m_sections.back().second[name] = j;
+		curSection()->json[name] = j;
 	}
 
 	std::string buildObjName()
 	{
-		std::string name;
-		// for (const std::string& sec : m_sections)
-		//	name += sec + "-";
-
-		name += std::to_string(m_varCnt++);
+		std::string name = "var_#" + std::to_string(curSection()->varCnt++);
 		return name;
 	}
 
@@ -225,8 +238,7 @@ private:
 
 private:
 	tString m_filePath = _T("");
-	uint64_t m_varCnt  = 0;
-	std::vector<SecPair> m_sections;
+	std::vector<Section> m_sections;
 	std::map<std::string, uint32_t> m_sectionCnt;
 	nlohmann::ordered_json m_json;
 };
