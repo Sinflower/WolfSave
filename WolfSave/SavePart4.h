@@ -52,9 +52,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper& jd) const
+protected:
+	void dump(JsonDumper& jd) const
 	{
-		jd.EnterSection(Name());
 		m_savePart1_1.Dump(jd);
 
 		jd.Dump(m_var1, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
@@ -72,8 +72,6 @@ public:
 			jd.Dump(m_var5, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_vars2);
 		}
-
-		jd.LeaveSection();
 	}
 
 private:

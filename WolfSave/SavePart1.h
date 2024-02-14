@@ -7,7 +7,7 @@
 
 class SavePart1_1 : public SaveInterface
 {
-	class SavePart1_1_1_1
+	class SavePart1_1_1_1 : public SaveInterface
 	{
 	public:
 		SavePart1_1_1_1(FileWalker &fw)
@@ -25,15 +25,20 @@ class SavePart1_1 : public SaveInterface
 				m_vars2.push_back(fw.ReadByte());
 		}
 
-		void Dump(JsonDumper &jd) const
+		bool Parse(FileWalker &fw)
 		{
-			jd.EnterSection("SavePart1_1_1_1");
+			std::cerr << "SavePart1_1_1_1::Parse() should not be called" << std::endl;
+			return false;
+		}
+
+	protected:
+		void dump(JsonDumper &jd) const
+		{
 			jd.Dump(m_var1);
 			jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_vars1);
 			jd.Dump(m_var3, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_vars2);
-			jd.LeaveSection();
 		}
 
 	private:
@@ -44,12 +49,12 @@ class SavePart1_1 : public SaveInterface
 		std::vector<BYTE> m_vars2;
 	};
 
-	class SavePart1_1_1
+	class SavePart1_1_1 : public SaveInterface
 	{
 	public:
 		SavePart1_1_1() = default;
 
-		void Parse(FileWalker &fw)
+		bool Parse(FileWalker &fw)
 		{
 			m_var1 = fw.ReadByte();
 			m_var2 = fw.ReadByte();
@@ -61,15 +66,17 @@ class SavePart1_1 : public SaveInterface
 			m_var7 = fw.ReadDWord();
 
 			if (m_var7 > 0x10000)
-				return;
+				return false;
 
 			for (DWORD i = 0; i < m_var7; i++)
 				m_savePart1_1_1_1s.push_back(SavePart1_1_1_1(fw));
+
+			return true;
 		}
 
-		void Dump(JsonDumper &jd) const
+	protected:
+		void dump(JsonDumper &jd) const
 		{
-			jd.EnterSection("SavePart1_1_1");
 			jd.Dump(m_var1);
 			jd.Dump(m_var2);
 			jd.Dump(m_var3);
@@ -81,8 +88,6 @@ class SavePart1_1 : public SaveInterface
 
 			for (DWORD i = 0; i < m_var7; i++)
 				m_savePart1_1_1_1s[i].Dump(jd);
-
-			jd.LeaveSection();
 		}
 
 	private:
@@ -198,9 +203,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
 		jd.Dump(m_var1);
 		jd.Dump(m_var2);
 		jd.Dump(m_var3);
@@ -269,7 +274,6 @@ public:
 
 		if (m_fileVersion >= 0x8C)
 			jd.Dump(m_var39);
-		jd.LeaveSection();
 	}
 
 private:
@@ -432,9 +436,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
 		jd.Dump(m_var1);
 		jd.Dump(m_var2);
 		jd.Dump(m_var3);
@@ -475,7 +479,6 @@ public:
 
 		jd.Dump(m_var20, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 		jd.Dump(m_vars3);
-		jd.LeaveSection();
 	}
 
 private:

@@ -4,8 +4,10 @@
 #include <iostream>
 
 #include "FileWalker.h"
-#include "Utils.h"
+#include "FileWriter.h"
 #include "JsonDumper.h"
+#include "JsonReader.h"
+#include "Utils.h"
 
 class SaveInterface
 {
@@ -15,19 +17,23 @@ public:
 		m_fileVersion = fileVersion;
 	}
 
-	std::string Name() const
+	virtual bool Parse(FileWalker &fw) = 0;
+	virtual void Dump(JsonDumper &jd) const final
 	{
-		std::string name = typeid(*this).name();
-		// Remove the class name prefix
-		name = name.substr(name.find_first_of(" ") + 1);
+		jd.EnterSection(name());
 
-		return name;
+		dump(jd);
+
+		jd.LeaveSection();
 	}
 
-	virtual bool Parse(FileWalker &fw) = 0;
-	virtual void Dump(JsonDumper& jd) const
+	virtual void Json2Save(JsonReader &jr, FileWriter &fw) const final
 	{
-		std::cout << "IMPLEMENT ME: " << Name() << std::endl;
+		jr.EnterSection(name());
+
+		json2Save(jr, fw);
+
+		jr.LeaveSection();
 	}
 
 protected:
@@ -40,6 +46,30 @@ protected:
 		}
 
 		return true;
+	}
+
+	virtual void dump(JsonDumper &jd) const = 0;
+
+	virtual void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		std::cout << "IMPLEMENT ME: " << name() << std::endl;
+	}
+
+private:
+	std::string name() const
+	{
+		std::string name = typeid(*this).name();
+		// Remove the class name prefix
+		std::size_t p = name.find_first_of(" ");
+		if (p != std::string::npos)
+			name = name.substr(p + 1);
+
+		// Remove potential namespace prefixes
+		p = name.find_first_of("::");
+		if (p != std::string::npos)
+			name = name.substr(p + 2);
+
+		return name;
 	}
 
 protected:

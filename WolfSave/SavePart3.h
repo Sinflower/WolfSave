@@ -127,10 +127,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
-
 		jd.Dump(m_var1);
 		jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
@@ -174,8 +173,6 @@ public:
 				}
 			}
 		}
-
-		jd.LeaveSection();
 	}
 
 private:

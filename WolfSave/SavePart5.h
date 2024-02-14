@@ -7,11 +7,13 @@
 
 class SavePart5 : public SaveInterface
 {
-	class SavePart5_1
+	class SavePart5_1 : public SaveInterface
 	{
 	public:
 		SavePart5_1(const WORD &fileVersion, FileWalker &fw)
 		{
+			SetFileVersion(fileVersion);
+
 			m_var1 = fw.ReadDWord();
 
 			m_var2 = fw.ReadByte();
@@ -43,7 +45,7 @@ class SavePart5 : public SaveInterface
 					m_vals1.push_back(fw.ReadDWord());
 			}
 
-			if (fileVersion >= 0x69)
+			if (m_fileVersion >= 0x69)
 			{
 				m_var19 = fw.ReadDWord();
 				m_var20 = fw.ReadDWord();
@@ -64,10 +66,10 @@ class SavePart5 : public SaveInterface
 				m_var35 = fw.ReadDWord();
 				m_var36 = fw.ReadDWord();
 			}
-			if (fileVersion >= 0x6B)
+			if (m_fileVersion >= 0x6B)
 				m_var37 = fw.ReadByte();
 
-			if (fileVersion >= 0x72)
+			if (m_fileVersion >= 0x72)
 			{
 				m_var38 = fw.ReadByte();
 				m_var39 = fw.ReadByte();
@@ -79,14 +81,14 @@ class SavePart5 : public SaveInterface
 					m_vals3.push_back(fw.ReadDWord());
 			}
 
-			if (fileVersion >= 0x73)
+			if (m_fileVersion >= 0x73)
 			{
 				m_var40 = fw.ReadDWord();
 				m_var41 = fw.ReadDWord();
 				m_var42 = fw.ReadDWord();
 				m_var43 = fw.ReadDWord();
 
-				if (fileVersion >= 0x74)
+				if (m_fileVersion >= 0x74)
 				{
 					m_var44 = fw.ReadDWord();
 					m_var45 = fw.ReadDWord();
@@ -95,7 +97,7 @@ class SavePart5 : public SaveInterface
 					m_var48 = fw.ReadDWord();
 				}
 
-				if (fileVersion >= 0x75)
+				if (m_fileVersion >= 0x75)
 				{
 					m_var49 = fw.ReadDWord();
 					m_var50 = fw.ReadDWord();
@@ -113,14 +115,14 @@ class SavePart5 : public SaveInterface
 				m_var60 = fw.ReadDWord();
 			}
 
-			if (fileVersion >= 0x76)
+			if (m_fileVersion >= 0x76)
 			{
 				m_var61 = fw.ReadDWord();
 				m_var62 = fw.ReadDWord();
 				m_var63 = fw.ReadDWord();
 			}
 
-			if (fileVersion < 0x81)
+			if (m_fileVersion < 0x81)
 				return;
 
 			m_var64 = fw.ReadDWord();
@@ -146,7 +148,7 @@ class SavePart5 : public SaveInterface
 			m_var83 = fw.ReadDWord();
 			m_var84 = fw.ReadDWord();
 
-			if (fileVersion >= 0x87)
+			if (m_fileVersion >= 0x87)
 			{
 				m_var85 = fw.ReadDWord();
 				m_var86 = fw.ReadDWord();
@@ -155,7 +157,7 @@ class SavePart5 : public SaveInterface
 				m_var89 = fw.ReadDWord();
 			}
 
-			if (fileVersion >= 0x89)
+			if (m_fileVersion >= 0x89)
 			{
 				m_var90 = fw.ReadDWord();
 
@@ -184,10 +186,15 @@ class SavePart5 : public SaveInterface
 			}
 		}
 
-		void Dump(JsonDumper &jd, const WORD &fileVersion) const
+		bool Parse(FileWalker &fw)
 		{
-			jd.EnterSection("SavePart5_1");
+			std::cerr << "SavePart5_1::Parse() is not implemented" << std::endl;
+			return false;
+		}
 
+	protected:
+		void dump(JsonDumper &jd) const
+		{
 			jd.Dump(m_var1);
 
 			jd.Dump(m_var2);
@@ -215,7 +222,7 @@ class SavePart5 : public SaveInterface
 
 			jd.Dump(m_vals1);
 
-			if (fileVersion >= 0x69)
+			if (m_fileVersion >= 0x69)
 			{
 				jd.Dump(m_var19);
 				jd.Dump(m_var20);
@@ -236,10 +243,10 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_var35);
 				jd.Dump(m_var36);
 			}
-			if (fileVersion >= 0x6B)
+			if (m_fileVersion >= 0x6B)
 				jd.Dump(m_var37);
 
-			if (fileVersion >= 0x72)
+			if (m_fileVersion >= 0x72)
 			{
 				jd.Dump(m_var38);
 				jd.Dump(m_var39);
@@ -247,14 +254,14 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_vals3);
 			}
 
-			if (fileVersion >= 0x73)
+			if (m_fileVersion >= 0x73)
 			{
 				jd.Dump(m_var40);
 				jd.Dump(m_var41);
 				jd.Dump(m_var42);
 				jd.Dump(m_var43);
 
-				if (fileVersion >= 0x74)
+				if (m_fileVersion >= 0x74)
 				{
 					jd.Dump(m_var44);
 					jd.Dump(m_var45);
@@ -263,7 +270,7 @@ class SavePart5 : public SaveInterface
 					jd.Dump(m_var48);
 				}
 
-				if (fileVersion >= 0x75)
+				if (m_fileVersion >= 0x75)
 				{
 					jd.Dump(m_var49);
 					jd.Dump(m_var50);
@@ -281,14 +288,14 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_var60);
 			}
 
-			if (fileVersion >= 0x76)
+			if (m_fileVersion >= 0x76)
 			{
 				jd.Dump(m_var61);
 				jd.Dump(m_var62);
 				jd.Dump(m_var63);
 			}
 
-			if (fileVersion < 0x81)
+			if (m_fileVersion < 0x81)
 				return;
 
 			jd.Dump(m_var64);
@@ -314,7 +321,7 @@ class SavePart5 : public SaveInterface
 			jd.Dump(m_var83);
 			jd.Dump(m_var84);
 
-			if (fileVersion >= 0x87)
+			if (m_fileVersion >= 0x87)
 			{
 				jd.Dump(m_var85);
 				jd.Dump(m_var86);
@@ -323,7 +330,7 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_var89);
 			}
 
-			if (fileVersion >= 0x89)
+			if (m_fileVersion >= 0x89)
 			{
 				jd.Dump(m_var90, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
@@ -341,8 +348,6 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_var96);
 				jd.Dump(m_var97);
 			}
-
-			jd.LeaveSection();
 		}
 
 	private:
@@ -470,19 +475,16 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
-
 		jd.Dump(m_var1);
 
 		if ((m_var1 & 0x8000u) == 0)
 		{
 			for (const SavePart5_1 &sp : m_savePart5_1s)
-				sp.Dump(jd, m_fileVersion);
+				sp.Dump(jd);
 		}
-
-		jd.LeaveSection();
 	}
 
 private:

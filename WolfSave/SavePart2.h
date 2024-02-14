@@ -283,10 +283,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+	protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
-
 		jd.Dump(m_var1);
 		jd.Dump(m_var2);
 		jd.Dump(m_var3);
@@ -516,8 +515,6 @@ public:
 			jd.Dump(m_var121);
 			jd.Dump(m_var122);
 		}
-
-		jd.LeaveSection();
 	}
 
 private:

@@ -7,7 +7,7 @@
 
 class SavePart6 : public SaveInterface
 {
-	class SavePart6_1_1
+	class SavePart6_1_1 : public SaveInterface
 	{
 	public:
 		SavePart6_1_1(FileWalker &fw, const DWORD &a2, const DWORD &a3)
@@ -29,17 +29,20 @@ class SavePart6 : public SaveInterface
 			}
 		}
 
-		void Dump(JsonDumper &jd) const
+		bool Parse(FileWalker &fw)
 		{
-			jd.EnterSection("SavePart6_1_1");
+			std::cerr << "SavePart6_1_1::Parse() not implemented" << std::endl;
+			return false;
+		}
 
+	protected:
+		void dump(JsonDumper &jd) const
+		{
 			if (!m_vars.empty())
 				jd.Dump(m_vars);
 
 			if (!m_mds.empty())
 				jd.Dump(m_mds);
-
-			jd.LeaveSection();
 		}
 
 	private:
@@ -47,7 +50,7 @@ class SavePart6 : public SaveInterface
 		std::vector<MemData<DWORD>> m_mds;
 	};
 
-	class SavePart6_1
+	class SavePart6_1 : public SaveInterface
 	{
 	public:
 		// TODO: When saving this maybe include a flag if var3 was read or not
@@ -88,10 +91,15 @@ class SavePart6 : public SaveInterface
 				m_savePart6_1_1s.push_back(SavePart6_1_1(fw, v36, v35));
 		}
 
-		void Dump(JsonDumper &jd) const
+		bool Parse(FileWalker &fw)
 		{
-			jd.EnterSection("SavePart6_1");
+			std::cerr << "SavePart6_1::Parse() not implemented" << std::endl;
+			return false;
+		}
 
+	protected:
+		void dump(JsonDumper &jd) const
+		{
 			jd.Dump(m_var1);
 			if ((int)m_var1 <= -1)
 			{
@@ -108,8 +116,6 @@ class SavePart6 : public SaveInterface
 
 			for (const SavePart6_1_1 &sp : m_savePart6_1_1s)
 				sp.Dump(jd);
-
-			jd.LeaveSection();
 		}
 
 	private:
@@ -142,17 +148,14 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper &jd) const
+protected:
+	void dump(JsonDumper &jd) const
 	{
-		jd.EnterSection(Name());
-
 		jd.Dump(m_var1);
 		jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
 		for (const SavePart6_1 &sp : m_savePart6_1s)
 			sp.Dump(jd);
-
-		jd.LeaveSection();
 	}
 
 private:

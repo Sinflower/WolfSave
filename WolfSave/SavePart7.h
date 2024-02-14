@@ -34,10 +34,9 @@ public:
 		return true;
 	}
 
-	void Dump(JsonDumper& jd) const
+protected:
+	void dump(JsonDumper& jd) const
 	{
-		jd.EnterSection(Name());
-
 		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH);
 
 		if (m_var1 == 1)
@@ -54,8 +53,6 @@ public:
 				jd.LeaveSection();
 			}
 		}
-
-		jd.LeaveSection();
 	}
 
 private:
