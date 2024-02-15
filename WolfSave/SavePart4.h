@@ -74,6 +74,50 @@ protected:
 		}
 	}
 
+	void json2Save(JsonReader& jr, FileWriter& fw) const
+	{
+		SavePart1_1 sp1;
+		sp1.SetFileVersion(m_fileVersion);
+		sp1.Json2Save(jr, fw);
+
+		DWORD var1 = jr.Read<DWORD>();
+		fw.Write(var1);
+
+		for (DWORD i = 0; i < var1; i++)
+		{
+			SavePart1_1 sp;
+			sp.SetFileVersion(m_fileVersion);
+			sp.Json2Save(jr, fw);
+		}
+
+		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<BYTE>());
+
+		DWORD var4 = jr.Read<DWORD>();
+		fw.Write(var4);
+
+		if ((int)var4 > 0)
+		{
+			std::vector<DWORD> vec = jr.ReadVec<DWORD>();
+			for (const DWORD& v : vec)
+				fw.Write(v);
+		}
+
+		if (m_fileVersion < 0x8A)
+			return;
+
+		DWORD var5 = jr.Read<DWORD>();
+
+		fw.Write(var5);
+
+		if ((int)var5 > 0)
+		{
+			std::vector<QWORD> vec = jr.ReadVec<QWORD>();
+			for (const QWORD& v : vec)
+				fw.Write(v);
+		}
+	}
+
 private:
 	DWORD m_var1 = 0;
 	BYTE m_var2  = 0;

@@ -35,7 +35,7 @@ public:
 	}
 
 protected:
-	void dump(JsonDumper& jd) const
+	void dump(JsonDumper &jd) const
 	{
 		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH);
 
@@ -43,7 +43,7 @@ protected:
 		{
 			jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
-			for (const auto& bbd : m_sp7_bbds)
+			for (const auto &bbd : m_sp7_bbds)
 			{
 				jd.Dump(std::get<0>(bbd), JsonDumper::DO_NOT_TOUCH);
 				if (std::get<0>(bbd) < 0xFAu)
@@ -51,6 +51,29 @@ protected:
 				else
 					jd.Dump(std::get<2>(bbd));
 				jd.LeaveSection();
+			}
+		}
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		DWORD var1 = jr.Read<BYTE>();
+		fw.Write(var1);
+
+		if (var1 == 1)
+		{
+			DWORD var2 = jr.Read<DWORD>();
+			fw.Write(var2);
+
+			for (DWORD i = 0; i < var2; i++)
+			{
+				BYTE v = jr.Read<BYTE>();
+				fw.Write(v);
+
+				if (v < 0xFAu)
+					fw.Write(jr.Read<BYTE>());
+				else
+					fw.Write(jr.Read<DWORD>());
 			}
 		}
 	}

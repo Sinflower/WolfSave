@@ -49,7 +49,7 @@ public:
 		if (m_fw.GetOffset() + 1 > m_fw.GetSize())
 			return false;
 
-		BYTE m_var1 = m_fw.ReadByte();
+		m_var1 = m_fw.ReadByte();
 
 		if (m_var1 != 0x19)
 		{
@@ -93,13 +93,21 @@ public:
 
 		json2Save(reader, fileWriter);
 
-		// m_savePart1.Json2Save(reader);
-		// m_savePart2.Json2Save(reader);
-		// m_savePart3.Json2Save(reader);
-		// m_savePart4.Json2Save(reader);
-		// m_savePart5.Json2Save(reader);
-		// m_savePart6.Json2Save(reader);
-		// m_savePart7.Json2Save(reader);
+		m_savePart1.SetFileVersion(m_fileVersion);
+		m_savePart2.SetFileVersion(m_fileVersion);
+		m_savePart3.SetFileVersion(m_fileVersion);
+		m_savePart4.SetFileVersion(m_fileVersion);
+		m_savePart5.SetFileVersion(m_fileVersion);
+		m_savePart6.SetFileVersion(m_fileVersion);
+		m_savePart7.SetFileVersion(m_fileVersion);
+
+		m_savePart1.Json2Save(reader, fileWriter);
+		// m_savePart2.Json2Save(reader, fileWriter);
+		// m_savePart3.Json2Save(reader, fileWriter);
+		// m_savePart4.Json2Save(reader, fileWriter);
+		// m_savePart5.Json2Save(reader, fileWriter);
+		// m_savePart6.Json2Save(reader, fileWriter);
+		// m_savePart7.Json2Save(reader, fileWriter);
 
 		tcout << "Conversion finished" << std::endl;
 	}

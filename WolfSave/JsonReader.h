@@ -14,14 +14,17 @@ namespace fs = std::filesystem;
 
 // Use a variadic macro here to allow for std::array to be used
 // See: https://stackoverflow.com/a/38030284
-#define VALIDATE_JSON_OBJ(JSON, TYPE, ...)                                                 \
-	do                                                                                     \
-	{                                                                                      \
-		/* Check if the json object contains the value field */                            \
-		if (!JSON.contains("value")) return __VA_ARGS__();                                 \
-		/* Check if the typeSize field exists and matches the size of T */                 \
-		if (JSON.contains("typeSize") && JSON["typeSize"].get<uint32_t>() != sizeof(TYPE)) \
-			throw std::runtime_error(" [" __FUNCTION__ "] Type size mismatch");            \
+#define VALIDATE_JSON_OBJ(JSON, TYPE, ...)                                                                                                                           \
+	do                                                                                                                                                               \
+	{                                                                                                                                                                \
+		/* Check if the json object contains the value field */                                                                                                      \
+		if (!JSON.contains("value")) return __VA_ARGS__();                                                                                                           \
+		/* Check if the typeSize field exists and matches the size of T */                                                                                           \
+		if (JSON.contains("typeSize") && JSON["typeSize"].get<uint32_t>() != sizeof(TYPE))                                                                           \
+		{                                                                                                                                                            \
+			std::string msg = " [" __FUNCTION__ "] Type size mismatch: " + std::to_string(JSON["typeSize"].get<uint32_t>()) + " != " + std::to_string(sizeof(TYPE)); \
+			throw std::runtime_error(msg);                                                                                                                           \
+		}                                                                                                                                                            \
 	} while (0)
 
 class JsonReader
@@ -82,6 +85,13 @@ public:
 	{
 		const nlohmann::ordered_json json = getJson();
 		return getVecObj<T>(json);
+	}
+
+	template<typename T>
+	std::vector<MemData<T>> ReadMemDataVec()
+	{
+		const nlohmann::ordered_json json = getJson();
+		return getMemDataVecObj<T>(json);
 	}
 
 	template<typename T, size_t U>
@@ -152,7 +162,7 @@ private:
 	}
 
 	template<typename T>
-	std::vector<MemData<T>> getVecObj(const nlohmann::ordered_json& json) const
+	std::vector<MemData<T>> getMemDataVecObj(const nlohmann::ordered_json& json) const
 	{
 		VALIDATE_JSON_OBJ(json, T, std::vector<MemData<T>>);
 

@@ -10,7 +10,11 @@ class SavePart1_1 : public SaveInterface
 	class SavePart1_1_1_1 : public SaveInterface
 	{
 	public:
-		SavePart1_1_1_1(FileWalker &fw)
+		SavePart1_1_1_1()
+		{
+		}
+
+		bool Parse(FileWalker &fw)
 		{
 			m_var1 = fw.ReadByte();
 
@@ -23,12 +27,8 @@ class SavePart1_1 : public SaveInterface
 
 			for (BYTE i = 0; i < m_var3; i++)
 				m_vars2.push_back(fw.ReadByte());
-		}
 
-		bool Parse(FileWalker &fw)
-		{
-			std::cerr << "SavePart1_1_1_1::Parse() should not be called" << std::endl;
-			return false;
+			return true;
 		}
 
 	protected:
@@ -39,6 +39,15 @@ class SavePart1_1 : public SaveInterface
 			jd.Dump(m_vars1);
 			jd.Dump(m_var3, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_vars2);
+		}
+
+		void json2Save(JsonReader &jr, FileWriter &fw) const
+		{
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.ReadVec<DWORD>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.ReadVec<BYTE>());
 		}
 
 	private:
@@ -69,7 +78,11 @@ class SavePart1_1 : public SaveInterface
 				return false;
 
 			for (DWORD i = 0; i < m_var7; i++)
-				m_savePart1_1_1_1s.push_back(SavePart1_1_1_1(fw));
+			{
+				SavePart1_1_1_1 sp;
+				sp.Parse(fw);
+				m_savePart1_1_1_1s.push_back(sp);
+			}
 
 			return true;
 		}
@@ -88,6 +101,27 @@ class SavePart1_1 : public SaveInterface
 
 			for (DWORD i = 0; i < m_var7; i++)
 				m_savePart1_1_1_1s[i].Dump(jd);
+		}
+
+		void json2Save(JsonReader &jr, FileWriter &fw) const
+		{
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+
+			DWORD var = jr.Read<DWORD>();
+			fw.Write(var);
+
+			if (var > 0x10000) return;
+
+			for (DWORD i = 0; i < var; i++)
+			{
+				SavePart1_1_1_1 sp;
+				sp.Json2Save(jr, fw);
+			}
 		}
 
 	private:
@@ -276,6 +310,93 @@ protected:
 			jd.Dump(m_var39);
 	}
 
+	void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<DWORD>());
+
+		jr.ReadMemData<WORD>().write(fw);
+
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<BYTE>());
+
+		SavePart1_1_1 sp1;
+		sp1.Json2Save(jr, fw);
+
+		SavePart1_1_1 sp2;
+		sp2.Json2Save(jr, fw);
+
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<WORD>());
+		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<BYTE>());
+
+		fw.Write(jr.Read<DWORD>());
+
+		std::vector<DWORD> vars = jr.ReadVec<DWORD>();
+		for (const DWORD &var : vars)
+			fw.Write(var);
+
+		if (m_fileVersion >= 0x70)
+		{
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+		}
+
+		if (m_fileVersion >= 0x73)
+		{
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+		}
+
+		if (m_fileVersion >= 0x78)
+			fw.Write(jr.Read<DWORD>());
+
+		if (m_fileVersion >= 0x85)
+		{
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+		}
+
+		if (m_fileVersion >= 0x8A)
+		{
+			fw.Write(jr.Read<WORD>());
+
+			std::vector<MemData<WORD>> mds = jr.ReadMemDataVec<WORD>();
+			for (const MemData<WORD> &md : mds)
+				md.write(fw);
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+		}
+
+		if (m_fileVersion >= 0x8B)
+			fw.Write(jr.Read<DWORD>());
+
+		if (m_fileVersion < 0x8C)
+			return;
+
+		fw.Write(jr.Read<DWORD>());
+	}
+
 private:
 	DWORD m_var1  = 0;
 	DWORD m_var2  = 0;
@@ -447,6 +568,7 @@ protected:
 		{
 			jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_var5, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_var6, JsonDumper::DO_NOT_TOUCH);
 			jd.Dump(m_vars1);
 		}
 
@@ -479,6 +601,83 @@ protected:
 
 		jd.Dump(m_var20, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 		jd.Dump(m_vars3);
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<DWORD>());
+		fw.Write(jr.Read<DWORD>());
+
+		if (m_fileVersion >= 0x69)
+		{
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			// This read is only for the next check
+			DWORD v6 = jr.Read<DWORD>();
+
+			if (m_var6 != -1)
+			{
+				std::vector<DWORD> vars = jr.ReadVec<DWORD>();
+				for (const DWORD &var : vars)
+					fw.Write(var);
+			}
+			else
+				fw.Write(v6);
+		}
+
+		jr.ReadMemData<DWORD>().write(fw);
+
+		std::vector<MemData<DWORD>> mds = jr.ReadMemDataVec<DWORD>();
+		for (const MemData<DWORD> &md : mds)
+			md.write(fw);
+
+		fw.Write(jr.Read<DWORD>());
+
+		if (m_fileVersion >= 0x64)
+		{
+			std::vector<DWORD> vars = jr.ReadVec<DWORD>();
+			for (const DWORD &var : vars)
+				fw.Write(var);
+		}
+		else
+		{
+			std::vector<BYTE> vars = jr.ReadVec<BYTE>();
+			for (const BYTE &var : vars)
+				fw.Write(var);
+		}
+
+		DWORD v = jr.Read<DWORD>();
+		fw.Write(v);
+
+		for (DWORD i = 0; i < v; i++)
+		{
+			SavePart1_1 sp;
+			sp.SetFileVersion(m_fileVersion);
+			sp.Json2Save(jr, fw);
+		}
+
+		if (m_fileVersion >= 0x72)
+		{
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+		}
+
+		fw.Write(jr.Read<DWORD>());
+
+		std::vector<DWORD> vars = jr.ReadVec<DWORD>();
+		for (const DWORD &var : vars)
+			fw.Write(var);
 	}
 
 private:

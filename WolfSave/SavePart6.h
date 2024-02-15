@@ -10,29 +10,31 @@ class SavePart6 : public SaveInterface
 	class SavePart6_1_1 : public SaveInterface
 	{
 	public:
-		SavePart6_1_1(FileWalker &fw, const DWORD &a2, const DWORD &a3)
+		SavePart6_1_1(const DWORD &a2 = 0, const DWORD &a3 = 0) :
+			m_a2(a2),
+			m_a3(a3)
 		{
-			if (a2 > 0)
+		}
+
+		bool Parse(FileWalker &fw)
+		{
+			if (m_a2 > 0)
 			{
-				for (DWORD i = 0; i < a2; i++)
+				for (DWORD i = 0; i < m_a2; i++)
 					m_vars.push_back(fw.ReadDWord());
 			}
 
-			if (a3 > 0)
+			if (m_a3 > 0)
 			{
-				for (DWORD i = 0; i < a3; i++)
+				for (DWORD i = 0; i < m_a3; i++)
 				{
 					MemData<DWORD> memData;
 					initMemData(memData, fw);
 					m_mds.push_back(memData);
 				}
 			}
-		}
 
-		bool Parse(FileWalker &fw)
-		{
-			std::cerr << "SavePart6_1_1::Parse() not implemented" << std::endl;
-			return false;
+			return true;
 		}
 
 	protected:
@@ -45,16 +47,37 @@ class SavePart6 : public SaveInterface
 				jd.Dump(m_mds);
 		}
 
+		void json2Save(JsonReader &jr, FileWriter &fw) const
+		{
+			if (m_a2 > 0)
+			{
+				for (const DWORD &val : jr.ReadVec<DWORD>())
+					fw.Write(val);
+			}
+
+			if (m_a3 > 0)
+			{
+				for (const MemData<DWORD> &md : jr.ReadMemDataVec<DWORD>())
+					md.write(fw);
+			}
+		}
+
 	private:
 		std::vector<DWORD> m_vars;
 		std::vector<MemData<DWORD>> m_mds;
+		DWORD m_a2;
+		DWORD m_a3;
 	};
 
 	class SavePart6_1 : public SaveInterface
 	{
 	public:
 		// TODO: When saving this maybe include a flag if var3 was read or not
-		SavePart6_1(FileWalker &fw)
+		SavePart6_1()
+		{
+		}
+
+		bool Parse(FileWalker &fw)
 		{
 			m_var1   = fw.ReadDWord();
 			DWORD v6 = m_var1;
@@ -88,13 +111,13 @@ class SavePart6 : public SaveInterface
 			m_var4 = fw.ReadDWord();
 
 			for (DWORD i = 0; i < m_var4; i++)
-				m_savePart6_1_1s.push_back(SavePart6_1_1(fw, v36, v35));
-		}
+			{
+				SavePart6_1_1 sp(v36, v35);
+				sp.Parse(fw);
+				m_savePart6_1_1s.push_back(sp);
+			}
 
-		bool Parse(FileWalker &fw)
-		{
-			std::cerr << "SavePart6_1::Parse() not implemented" << std::endl;
-			return false;
+			return true;
 		}
 
 	protected:
@@ -118,6 +141,48 @@ class SavePart6 : public SaveInterface
 				sp.Dump(jd);
 		}
 
+		void json2Save(JsonReader &jr, FileWriter &fw) const
+		{
+			DWORD var1 = jr.Read<DWORD>();
+			fw.Write(var1);
+
+			if ((int)var1 <= -1)
+			{
+				if ((int)var1 <= -2)
+					fw.Write(jr.Read<DWORD>());
+
+				var1 = jr.Read<DWORD>();
+				fw.Write(var1);
+			}
+
+			DWORD v36 = 0;
+			DWORD v35 = 0;
+
+			if ((int)var1 > 0)
+			{
+				std::vector<DWORD> vars = jr.Read<std::vector<DWORD>>();
+
+				for (const DWORD &val : vars)
+				{
+					fw.Write(val);
+
+					if (val < 0x7D0)
+						v36++;
+					else
+						v35++;
+				}
+			}
+
+			DWORD var4 = jr.Read<DWORD>();
+			fw.Write(var4);
+
+			for (DWORD i = 0; i < var4; i++)
+			{
+				SavePart6_1_1 sp(v36, v35);
+				sp.Json2Save(jr, fw);
+			}
+		}
+
 	private:
 		DWORD m_var1 = 0;
 		DWORD m_var2 = 0;
@@ -139,7 +204,11 @@ public:
 
 		m_var2 = fw.ReadDWord();
 		for (DWORD i = 0; i < m_var2; i++)
-			m_savePart6_1s.push_back(SavePart6_1(fw));
+		{
+			SavePart6_1 sp;
+			sp.Parse(fw);
+			m_savePart6_1s.push_back(sp);
+		}
 
 		// TODO: Here soemthing is done with CDataBase -- Maybe mapping of custom variables, look into it later
 		// sub_69CDF0("BasicData/CDataBase");
@@ -156,6 +225,20 @@ protected:
 
 		for (const SavePart6_1 &sp : m_savePart6_1s)
 			sp.Dump(jd);
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		fw.Write(jr.Read<BYTE>());
+
+		DWORD size = jr.Read<DWORD>();
+		fw.Write(size);
+
+		for (DWORD i = 0; i < size; i++)
+		{
+			SavePart6_1 sp;
+			sp.Json2Save(jr, fw);
+		}
 	}
 
 private:
