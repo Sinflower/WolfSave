@@ -23,6 +23,7 @@ namespace fs = std::filesystem;
 		if (JSON.contains("typeSize") && JSON["typeSize"].get<uint32_t>() != sizeof(TYPE))                                                                           \
 		{                                                                                                                                                            \
 			std::string msg = " [" __FUNCTION__ "] Type size mismatch: " + std::to_string(JSON["typeSize"].get<uint32_t>()) + " != " + std::to_string(sizeof(TYPE)); \
+			std::cerr << msg << std::endl;                                                                                                                           \
 			throw std::runtime_error(msg);                                                                                                                           \
 		}                                                                                                                                                            \
 	} while (0)

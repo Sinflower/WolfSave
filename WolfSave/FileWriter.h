@@ -63,6 +63,13 @@ public:
 		write<T>(data);
 	}
 
+	template<typename T>
+	void Write(const std::vector<T>& data)
+	{
+		for (const T& d : data)
+			write<T>(d);
+	}
+
 	template<std::size_t S>
 	void WriteBytesArr(const std::array<BYTE, S>& buffer, const DWORD& size = -1)
 	{

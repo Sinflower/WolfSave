@@ -10,10 +10,13 @@ class SavePart5 : public SaveInterface
 	class SavePart5_1 : public SaveInterface
 	{
 	public:
-		SavePart5_1(const WORD &fileVersion, FileWalker &fw)
+		SavePart5_1(const WORD &fileVersion)
 		{
 			SetFileVersion(fileVersion);
+		}
 
+		bool Parse(FileWalker &fw)
+		{
 			m_var1 = fw.ReadDWord();
 
 			m_var2 = fw.ReadByte();
@@ -123,7 +126,7 @@ class SavePart5 : public SaveInterface
 			}
 
 			if (m_fileVersion < 0x81)
-				return;
+				return true;
 
 			m_var64 = fw.ReadDWord();
 			m_var65 = fw.ReadDWord();
@@ -184,12 +187,8 @@ class SavePart5 : public SaveInterface
 				m_var96 = fw.ReadDWord();
 				m_var97 = fw.ReadDWord();
 			}
-		}
 
-		bool Parse(FileWalker &fw)
-		{
-			std::cerr << "SavePart5_1::Parse() is not implemented" << std::endl;
-			return false;
+			return true;
 		}
 
 	protected:
@@ -334,11 +333,8 @@ class SavePart5 : public SaveInterface
 			{
 				jd.Dump(m_var90, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
-				if ((int)m_var90 > 0)
-				{
-					jd.Dump(m_vals4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
-					jd.Dump(m_vals5);
-				}
+				jd.Dump(m_vals4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+				jd.Dump(m_vals5);
 
 				jd.Dump(m_var91);
 				jd.Dump(m_var92);
@@ -347,6 +343,182 @@ class SavePart5 : public SaveInterface
 				jd.Dump(m_var95);
 				jd.Dump(m_var96);
 				jd.Dump(m_var97);
+			}
+		}
+
+		void json2Save(JsonReader &jr, FileWriter &fw) const
+		{
+			fw.Write(jr.Read<DWORD>());
+
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<WORD>());
+			fw.Write(jr.Read<BYTE>());
+			fw.Write(jr.Read<BYTE>());
+
+			jr.ReadMemData<WORD>().write(fw);
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			fw.Write(jr.ReadVec<DWORD>());
+
+			if (m_fileVersion >= 0x69)
+			{
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+			}
+			if (m_fileVersion >= 0x6B)
+				fw.Write(jr.Read<BYTE>());
+
+			if (m_fileVersion >= 0x72)
+			{
+				fw.Write(jr.Read<BYTE>());
+				fw.Write(jr.Read<BYTE>());
+
+				fw.Write(jr.ReadVec<DWORD>());
+				fw.Write(jr.ReadVec<DWORD>());
+			}
+
+			if (m_fileVersion >= 0x73)
+			{
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+
+				if (m_fileVersion >= 0x74)
+				{
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+				}
+
+				if (m_fileVersion >= 0x75)
+				{
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+					fw.Write(jr.Read<DWORD>());
+				}
+
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+			}
+
+			if (m_fileVersion >= 0x76)
+			{
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+			}
+
+			if (m_fileVersion < 0x81)
+				return;
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+			fw.Write(jr.Read<DWORD>());
+
+			if (m_fileVersion >= 0x87)
+			{
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+			}
+
+			if (m_fileVersion >= 0x89)
+			{
+				DWORD var90 = jr.Read<DWORD>();
+				fw.Write(var90);
+
+				std::vector<DWORD> vals4 = jr.ReadVec<DWORD>();
+				std::vector<DWORD> vals5 = jr.ReadVec<DWORD>();
+
+				// Get an iterator to the first element of the vector
+				auto it4 = vals4.begin();
+				auto it5 = vals4.begin();
+
+				for (DWORD i = 0; i < var90; i++)
+				{
+					fw.Write(*it4);
+
+					if ((int)(*it4) > 0)
+					{
+						for (DWORD j = 0; j < *it4; j++)
+						{
+							fw.Write(*it5);
+							it5++;
+						}
+
+						it4++;
+					}
+				}
+
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
+				fw.Write(jr.Read<DWORD>());
 			}
 		}
 
@@ -469,7 +641,11 @@ public:
 		if ((m_var1 & 0x8000u) == 0)
 		{
 			for (WORD i = 0; i < m_var1; i++)
-				m_savePart5_1s.push_back(SavePart5_1(m_fileVersion, fw));
+			{
+				SavePart5_1 sp(m_fileVersion);
+				if (!sp.Parse(fw)) return false;
+				m_savePart5_1s.push_back(sp);
+			}
 		}
 
 		return true;
@@ -484,6 +660,21 @@ protected:
 		{
 			for (const SavePart5_1 &sp : m_savePart5_1s)
 				sp.Dump(jd);
+		}
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw) const
+	{
+		WORD var1 = jr.Read<WORD>();
+		fw.Write(var1);
+
+		if ((var1 & 0x8000u) == 0)
+		{
+			for (WORD i = 0; i < var1; i++)
+			{
+				SavePart5_1 sp(m_fileVersion);
+				sp.Json2Save(jr, fw);
+			}
 		}
 	}
 

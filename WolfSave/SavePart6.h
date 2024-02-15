@@ -160,7 +160,7 @@ class SavePart6 : public SaveInterface
 
 			if ((int)var1 > 0)
 			{
-				std::vector<DWORD> vars = jr.Read<std::vector<DWORD>>();
+				std::vector<DWORD> vars = jr.ReadVec<DWORD>();
 
 				for (const DWORD &val : vars)
 				{

@@ -18,16 +18,16 @@ int main()
 		return -1;
 	}
 
-	try
+	//try
 	{
 		parser.Dump(_T("dump.json"));
 
 		parser.Json2Save(_T("dump.json"), _T("SaveData02_new.sav"));
 	}
-	catch (std::exception& e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+	//catch (std::exception& e)
+	//{
+	//	std::cout << e.what() << std::endl;
+	//}
 
 	return 0;
 }

@@ -102,12 +102,14 @@ public:
 		m_savePart7.SetFileVersion(m_fileVersion);
 
 		m_savePart1.Json2Save(reader, fileWriter);
-		// m_savePart2.Json2Save(reader, fileWriter);
-		// m_savePart3.Json2Save(reader, fileWriter);
-		// m_savePart4.Json2Save(reader, fileWriter);
-		// m_savePart5.Json2Save(reader, fileWriter);
-		// m_savePart6.Json2Save(reader, fileWriter);
-		// m_savePart7.Json2Save(reader, fileWriter);
+		m_savePart2.Json2Save(reader, fileWriter);
+		m_savePart3.Json2Save(reader, fileWriter);
+		m_savePart4.Json2Save(reader, fileWriter);
+		m_savePart5.Json2Save(reader, fileWriter);
+		m_savePart6.Json2Save(reader, fileWriter);
+		m_savePart7.Json2Save(reader, fileWriter);
+
+		fileWriter.Write(m_endByte);
 
 		tcout << "Conversion finished" << std::endl;
 	}
@@ -231,10 +233,10 @@ private:
 			return false;
 		}
 
-		BYTE v3 = m_fw.ReadByte();
-		if (v3 != 0x19)
+		m_endByte = m_fw.ReadByte();
+		if (m_endByte != 0x19)
 		{
-			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << v3 << std::dec << std::endl;
+			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << m_endByte << std::dec << std::endl;
 			return false;
 		}
 
@@ -252,6 +254,8 @@ private:
 
 		jd.Dump(m_fileVersion, JsonDumper::DO_NOT_TOUCH);
 
+		jd.Dump(m_endByte, JsonDumper::DO_NOT_TOUCH);
+
 		jd.LeaveSection();
 	}
 
@@ -266,6 +270,14 @@ private:
 
 		m_fileVersion = jr.Read<WORD>();
 
+		m_endByte = jr.Read<BYTE>();
+
+		if (m_endByte != 0x19)
+		{
+			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << m_endByte << std::dec << std::endl;
+			exit(-1);
+		}
+
 		fw.WriteBytesArr(m_header);
 		fw.Write(m_var1);
 		m_name.write(fw);
@@ -279,7 +291,8 @@ private:
 
 	std::array<BYTE, 0x14> m_header;
 
-	BYTE m_var1 = 0;
+	BYTE m_var1    = 0;
+	BYTE m_endByte = 0;
 	MemData<WORD> m_name;
 	WORD m_fileVersion = 0;
 

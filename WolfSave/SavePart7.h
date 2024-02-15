@@ -57,7 +57,7 @@ protected:
 
 	void json2Save(JsonReader &jr, FileWriter &fw) const
 	{
-		DWORD var1 = jr.Read<BYTE>();
+		BYTE var1 = jr.Read<BYTE>();
 		fw.Write(var1);
 
 		if (var1 == 1)
