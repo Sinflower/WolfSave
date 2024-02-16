@@ -96,8 +96,6 @@ public:
 
 		json2Save(reader, m_fileWriter);
 
-		memData::g_isUTF8 = m_isUTF8;
-
 		m_savePart1.SetFileVersion(m_fileVersion);
 		m_savePart2.SetFileVersion(m_fileVersion);
 		m_savePart3.SetFileVersion(m_fileVersion);
@@ -293,6 +291,7 @@ private:
 		jd.EnterSection("Header");
 
 		jd.Dump(m_header, JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_isUTF8, JsonDumper::DO_NOT_TOUCH);
 		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
 
 		jd.Dump(m_name);
@@ -300,7 +299,6 @@ private:
 		jd.Dump(m_fileVersion, JsonDumper::DO_NOT_TOUCH);
 
 		jd.Dump(m_endByte, JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
-		jd.Dump(m_isUTF8, JsonDumper::DO_NOT_TOUCH);
 
 		jd.LeaveSection();
 	}
@@ -310,14 +308,16 @@ private:
 		jr.EnterSection("Header");
 
 		m_header = jr.ReadArr<BYTE, START_OFFSET>();
+		m_isUTF8 = jr.Read<bool>();
 		m_var1   = jr.Read<BYTE>();
+
+		memData::g_isUTF8 = m_isUTF8;
 
 		m_name = jr.ReadMemData<WORD>();
 
 		m_fileVersion = jr.Read<WORD>();
 
 		m_endByte = jr.Read<BYTE>();
-		m_isUTF8 = jr.Read<bool>();
 
 		if (m_endByte != 0x19)
 		{

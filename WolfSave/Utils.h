@@ -44,7 +44,7 @@ static inline std::string sjis2utf8(const std::string& sjis)
 {
 	std::string utf8String = "";
 
-	LPCCH pSJIS   = sjis.c_str();
+	LPCCH pSJIS             = sjis.c_str();
 	const int32_t utf16Size = ::MultiByteToWideChar(932, MB_ERR_INVALID_CHARS, pSJIS, -1, 0, 0);
 	if (utf16Size != 0)
 	{
@@ -73,7 +73,7 @@ static inline std::string utf82sjis(const std::string& utf8)
 {
 	std::string sjisString = "";
 
-	LPCCH pUTF8   = utf8.c_str();
+	LPCCH pUTF8             = utf8.c_str();
 	const int32_t utf16Size = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, pUTF8, -1, 0, 0);
 	if (utf16Size != 0)
 	{
