@@ -51,6 +51,18 @@ public:
 	FileWalker(const FileWalker&) = delete;
 	FileWalker& operator=(const FileWalker&) = delete;
 
+	~FileWalker()
+	{
+		if (m_pMapView != nullptr)
+			UnmapViewOfFile(m_pMapView);
+
+		if (m_pFileMap != nullptr)
+			CloseHandle(m_pFileMap);
+
+		if (m_pFile != nullptr)
+			CloseHandle(m_pFile);
+	}
+
 	void InitData(const std::vector<BYTE>& dataVec)
 	{
 		m_dataVec = dataVec;
@@ -88,18 +100,6 @@ public:
 			m_offset = startOffset;
 
 		m_init = true;
-	}
-
-	~FileWalker()
-	{
-		if (m_pMapView != nullptr)
-			UnmapViewOfFile(m_pMapView);
-
-		if (m_pFileMap != nullptr)
-			CloseHandle(m_pFileMap);
-
-		if (m_pFile != nullptr)
-			CloseHandle(m_pFile);
 	}
 
 	QWORD ReadQWord()
@@ -188,12 +188,12 @@ public:
 		return m_pData + m_offset;
 	}
 
-	DWORD GetOffset()
+	const DWORD& GetOffset() const
 	{
 		return m_offset;
 	}
 
-	DWORD GetSize()
+	const DWORD& GetSize() const
 	{
 		return m_size;
 	}
@@ -203,7 +203,7 @@ public:
 		return m_offset >= m_size;
 	}
 
-	BYTE At(const DWORD& offset)
+	BYTE At(const DWORD& offset) const
 	{
 		if (!m_init)
 			throw(FileWalkerException("FileWalker not initialized"));

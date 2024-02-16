@@ -38,18 +38,20 @@ public:
 			return false;
 		}
 
-		m_fw.InitData(data);
+		m_fileWalker.InitData(data);
 
 		decryptSave();
 
-		m_fw.Seek(0);
+		m_fileWalker.Seek(0);
 
-		m_fw.ReadBytesArr(m_header);
+		m_isUTF8 = (m_fileWalker.At(6) == 0x55);
 
-		if (m_fw.GetOffset() + 1 > m_fw.GetSize())
+		m_fileWalker.ReadBytesArr(m_header);
+
+		if (m_fileWalker.GetOffset() + 1 > m_fileWalker.GetSize())
 			return false;
 
-		m_var1 = m_fw.ReadByte();
+		m_var1 = m_fileWalker.ReadByte();
 
 		if (m_var1 != 0x19)
 		{
@@ -89,9 +91,8 @@ public:
 		tcout << "Converting JSON to Save: " << inputPath << " -> " << outputPath << std::endl;
 
 		JsonReader reader(inputPath);
-		FileWriter fileWriter(outputPath);
 
-		json2Save(reader, fileWriter);
+		json2Save(reader, m_fileWriter);
 
 		m_savePart1.SetFileVersion(m_fileVersion);
 		m_savePart2.SetFileVersion(m_fileVersion);
@@ -101,17 +102,21 @@ public:
 		m_savePart6.SetFileVersion(m_fileVersion);
 		m_savePart7.SetFileVersion(m_fileVersion);
 
-		m_savePart1.Json2Save(reader, fileWriter);
-		m_savePart2.Json2Save(reader, fileWriter);
-		m_savePart3.Json2Save(reader, fileWriter);
-		m_savePart4.Json2Save(reader, fileWriter);
-		m_savePart5.Json2Save(reader, fileWriter);
-		m_savePart6.Json2Save(reader, fileWriter);
-		m_savePart7.Json2Save(reader, fileWriter);
+		m_savePart1.Json2Save(reader, m_fileWriter);
+		m_savePart2.Json2Save(reader, m_fileWriter);
+		m_savePart3.Json2Save(reader, m_fileWriter);
+		m_savePart4.Json2Save(reader, m_fileWriter);
+		m_savePart5.Json2Save(reader, m_fileWriter);
+		m_savePart6.Json2Save(reader, m_fileWriter);
+		m_savePart7.Json2Save(reader, m_fileWriter);
 
-		fileWriter.Write(m_endByte);
+		m_fileWriter.Write(m_endByte);
 
 		tcout << "Conversion finished" << std::endl;
+
+		encryptSave();
+
+		m_fileWriter.WriteToFile(outputPath);
 	}
 
 private:
@@ -156,7 +161,7 @@ private:
 
 		DWORD dwBytesRead = 0;
 
-		PBYTE pBytes = m_fw.Get();
+		PBYTE pBytes = m_fileWalker.Get();
 
 		seeds[0] = pBytes[0];
 		seeds[1] = pBytes[3];
@@ -177,9 +182,45 @@ private:
 			if (i == 1) inc = 2;
 			if (i == 2) inc = 5;
 
-			if (START_OFFSET < m_fw.GetSize())
+			if (START_OFFSET < m_fileWalker.GetSize())
 			{
-				for (std::size_t j = START_OFFSET; j < m_fw.GetSize(); j += inc)
+				for (std::size_t j = START_OFFSET; j < m_fileWalker.GetSize(); j += inc)
+					pBytes[j] ^= static_cast<uint8_t>(rand() >> 12);
+			}
+		}
+	}
+
+	void encryptSave()
+	{
+		std::array<uint8_t, SEED_COUNT> seeds;
+		uint32_t projSeed = 0;
+
+		DWORD dwBytesRead = 0;
+
+		PBYTE pBytes = m_fileWriter.Get();
+
+		seeds[0] = pBytes[9];
+		seeds[1] = pBytes[3];
+		seeds[2] = pBytes[0];
+
+		std::cout << "Seeds: " << std::hex << std::flush;
+		for (const uint8_t &seed : seeds)
+			std::cout << "0x" << static_cast<uint32_t>(seed) << " " << std::flush;
+
+		std::cout << std::dec << std::endl;
+
+		for (std::size_t i = 0; i < seeds.size(); i++)
+		{
+			srand(seeds[i]);
+
+			std::size_t inc = 5;
+
+			if (i == 1) inc = 2;
+			if (i == 2) inc = 1;
+
+			if (START_OFFSET < m_fileWriter.GetSize())
+			{
+				for (uint64_t j = START_OFFSET; j < m_fileWriter.GetSize(); j += inc)
 					pBytes[j] ^= static_cast<uint8_t>(rand() >> 12);
 			}
 		}
@@ -187,9 +228,9 @@ private:
 
 	bool validateName()
 	{
-		initMemData(m_name, m_fw);
+		initMemData(m_name, m_fileWalker);
 
-		m_fileVersion = m_fw.ReadWord();
+		m_fileVersion = m_fileWalker.ReadWord();
 
 		if (m_fileVersion > 0x8D)
 		{
@@ -210,30 +251,30 @@ private:
 
 	bool parseSave()
 	{
-		std::cout << "Starting save parse at offset: 0x" << std::hex << m_fw.GetOffset() << std::dec << std::endl;
+		std::cout << "Starting save parse at offset: 0x" << std::hex << m_fileWalker.GetOffset() << std::dec << std::endl;
 
-		m_savePart1.Parse(m_fw);
-		std::cout << "Offset After Step 1: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
-		m_savePart2.Parse(m_fw);
-		std::cout << "Offset After Step 2: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
-		m_savePart3.Parse(m_fw);
-		std::cout << "Offset After Step 3: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
-		m_savePart4.Parse(m_fw);
-		std::cout << "Offset After Step 4: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
-		m_savePart5.Parse(m_fw);
-		std::cout << "Offset After Step 5: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0xC6EA7" << std::dec << std::endl;
-		m_savePart6.Parse(m_fw);
-		std::cout << "Offset After Step 6: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0xFC73D" << std::dec << std::endl;
-		m_savePart7.Parse(m_fw);
-		std::cout << "Offset After Step 7: 0x" << std::hex << m_fw.GetOffset() << " - Expected: 0xFC73E" << std::dec << std::endl;
+		m_savePart1.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 1: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
+		m_savePart2.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 2: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
+		m_savePart3.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 3: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
+		m_savePart4.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 4: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
+		m_savePart5.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 5: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC6EA7" << std::dec << std::endl;
+		m_savePart6.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 6: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xFC73D" << std::dec << std::endl;
+		m_savePart7.Parse(m_fileWalker);
+		//std::cout << "Offset After Step 7: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xFC73E" << std::dec << std::endl;
 
-		if (m_fw.GetOffset() + 1 != m_fw.GetSize())
+		if (m_fileWalker.GetOffset() + 1 != m_fileWalker.GetSize())
 		{
-			std::cerr << "Error: m_fw.GetOffset() + 1 != m_fw.GetSize()" << std::endl;
+			std::cerr << "Error: m_fileWalker.GetOffset() + 1 != m_fileWalker.GetSize()" << std::endl;
 			return false;
 		}
 
-		m_endByte = m_fw.ReadByte();
+		m_endByte = m_fileWalker.ReadByte();
 		if (m_endByte != 0x19)
 		{
 			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << m_endByte << std::dec << std::endl;
@@ -263,7 +304,7 @@ private:
 	{
 		jr.EnterSection("Header");
 
-		m_header = jr.ReadArr<BYTE, 0x14>();
+		m_header = jr.ReadArr<BYTE, START_OFFSET>();
 		m_var1   = jr.Read<BYTE>();
 
 		m_name = jr.ReadMemData<WORD>();
@@ -287,9 +328,12 @@ private:
 	}
 
 private:
-	FileWalker m_fw = FileWalker();
+	FileWalker m_fileWalker = FileWalker();
+	FileWriter m_fileWriter = FileWriter();
 
-	std::array<BYTE, 0x14> m_header;
+	std::array<BYTE, START_OFFSET> m_header = { 0 };
+
+	bool m_isUTF8 = true;
 
 	BYTE m_var1    = 0;
 	BYTE m_endByte = 0;

@@ -47,14 +47,39 @@ public:
 	void Open(const std::wstring& filename)
 	{
 		m_file = std::fstream(filename, std::ios::out | std::ios::binary);
-
-		m_init = true;
+		if (!m_file.is_open())
+			throw(FileWriterException("Failed to open file"));
+		m_bufferMode = false;
 	}
 
 	~FileWriter()
 	{
 		if (m_file.is_open())
 			m_file.close();
+	}
+
+	PBYTE Get()
+	{
+		return m_buffer.data();
+	}
+
+	const uint64_t& GetSize() const
+	{
+		return m_size;
+	}
+
+	void WriteToFile(const std::string& filename)
+	{
+		WriteToFile(s2ws(filename));
+	}
+
+	void WriteToFile(const std::wstring& filename)
+	{
+		if (m_bufferMode)
+		{
+			std::ofstream file(filename, std::ios::out | std::ios::binary);
+			file.write(reinterpret_cast<const char*>(m_buffer.data()), m_buffer.size());
+		}
 	}
 
 	template<typename T>
@@ -103,26 +128,31 @@ public:
 
 	void WriteBytes(LPCVOID pBuffer, const DWORD& size)
 	{
-		if (!m_init)
-			throw(FileWriterException("FileWriter not initialized"));
-
 		m_size += size;
-		m_file.write(static_cast<const char*>(pBuffer), size);
+		if (m_bufferMode)
+			m_buffer.insert(m_buffer.end(), static_cast<const BYTE*>(pBuffer), static_cast<const BYTE*>(pBuffer) + size);
+		else if (m_file.is_open())
+			m_file.write(static_cast<const char*>(pBuffer), size);
+		else
+			throw(FileWriterException("FileWriter not initialized"));
 	}
 
 private:
 	template<typename T>
 	void write(const T& data)
 	{
-		if (!m_init)
-			throw(FileWriterException("FileWriter not initialized"));
-
 		m_size += sizeof(T);
-		m_file.write(reinterpret_cast<const char*>(&data), sizeof(T));
+		if (m_bufferMode)
+			m_buffer.insert(m_buffer.end(), reinterpret_cast<const BYTE*>(&data), reinterpret_cast<const BYTE*>(&data) + sizeof(T));
+		else if (m_file.is_open())
+			m_file.write(reinterpret_cast<const char*>(&data), sizeof(T));
+		else
+			throw(FileWriterException("FileWriter not initialized"));
 	}
 
 private:
-	bool m_init         = false;
-	uint64_t m_size     = 0;
-	std::fstream m_file = {};
+	bool m_bufferMode          = true;
+	uint64_t m_size            = 0;
+	std::fstream m_file        = {};
+	std::vector<BYTE> m_buffer = {};
 };
