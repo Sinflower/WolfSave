@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 
 int main(int argc, char* argv[])
 {
-#if 0
+#if 1
 	if (argc == 1)
 	{
 		std::cout << "Usage: " << argv[0] << " <.sav|.json>" << std::endl;

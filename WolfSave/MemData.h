@@ -7,12 +7,17 @@
 #include "FileWalker.h"
 #include "Types.h"
 
+namespace memData
+{
+static bool g_isUTF8 = true;
+}
+
 template<typename T>
 struct MemData
 {
-	std::vector<BYTE> data;
-	T size;
-	bool readSize = false;
+	std::vector<BYTE> data = {};
+	T size                 = 0;
+	bool readSize          = false;
 
 	std::string toString() const
 	{
@@ -21,14 +26,21 @@ struct MemData
 		if (!data.empty() && data.size() > 1)
 			str = std::string(reinterpret_cast<const char*>(data.data()), data.size() - ((data.back() == 0x0) ? 1 : 0));
 
+		if (!memData::g_isUTF8)
+			str = sjis2utf8(str);
+
 		return str;
 	}
 
 	void fromString(const std::string& str)
 	{
-		size = static_cast<T>(str.size()) + 1;
+		std::string s = str;
+		if (!memData::g_isUTF8)
+			s = utf82sjis(str);
+
+		size = static_cast<T>(s.size()) + 1;
 		data.resize(size);
-		std::copy(str.begin(), str.end(), data.begin());
+		std::copy(s.begin(), s.end(), data.begin());
 
 		data.back() = 0x0;
 	}
