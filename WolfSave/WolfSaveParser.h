@@ -258,19 +258,12 @@ private:
 		std::cout << "Starting save parse at offset: 0x" << std::hex << m_fileWalker.GetOffset() << std::dec << std::endl;
 
 		m_savePart1.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 1: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0x35BA" << std::dec << std::endl;
 		m_savePart2.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 2: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0x3906" << std::dec << std::endl;
 		m_savePart3.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 3: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC1EEF" << std::dec << std::endl;
 		m_savePart4.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 4: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC23CF" << std::dec << std::endl;
 		m_savePart5.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 5: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xC6EA7" << std::dec << std::endl;
 		m_savePart6.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 6: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xFC73D" << std::dec << std::endl;
 		m_savePart7.Parse(m_fileWalker);
-		//std::cout << "Offset After Step 7: 0x" << std::hex << m_fileWalker.GetOffset() << " - Expected: 0xFC73E" << std::dec << std::endl;
 
 		if (m_fileWalker.GetOffset() + 1 != m_fileWalker.GetSize())
 		{

@@ -35,7 +35,7 @@ class FileWalker
 public:
 	FileWalker() {}
 	FileWalker(const std::string& filename, const DWORD& startOffset = -1) :
-		FileWalker(s2ws(filename), startOffset) { }
+		FileWalker(s2ws(filename), startOffset) {}
 
 	FileWalker(const std::wstring& filename, const DWORD& startOffset = -1)
 	{
@@ -48,7 +48,7 @@ public:
 	}
 
 	// Disable copy constructor and copy assignment operator
-	FileWalker(const FileWalker&) = delete;
+	FileWalker(const FileWalker&)            = delete;
 	FileWalker& operator=(const FileWalker&) = delete;
 
 	~FileWalker()
@@ -66,9 +66,9 @@ public:
 	void InitData(const std::vector<BYTE>& dataVec)
 	{
 		m_dataVec = dataVec;
-		m_pData = m_dataVec.data();
-		m_size = static_cast<DWORD>(m_dataVec.size());
-		m_init = true;
+		m_pData   = m_dataVec.data();
+		m_size    = static_cast<DWORD>(m_dataVec.size());
+		m_init    = true;
 	}
 
 	void Open(const std::wstring& filename, const DWORD& startOffset = -1)
@@ -169,7 +169,6 @@ public:
 			ReadBytes(buffer.data(), dwordCnt * sizeof(T));
 		else
 			throw(FileWalkerException("ReadVec: size is larger than buffer size"));
-
 	}
 
 	void Seek(const DWORD& offset)
@@ -230,15 +229,15 @@ private:
 	}
 
 private:
-	bool m_init = false;
-	HANDLE m_pFile = nullptr;
+	bool m_init       = false;
+	HANDLE m_pFile    = nullptr;
 	LPVOID m_pMapView = nullptr;
 	HANDLE m_pFileMap = nullptr;
 
 	PBYTE m_pData = nullptr;
 
 	DWORD m_offset = 0;
-	DWORD m_size = 0;
+	DWORD m_size   = 0;
 
 	std::vector<BYTE> m_dataVec = {};
 };

@@ -1,34 +1,33 @@
 #pragma once
 
+#include <cstdint>
+#include <iostream>
+#include <ostream>
+#include <sstream>
 #include <tchar.h>
 #include <vector>
-#include <ostream>
-#include <iostream>
-#include <cstdint>
-#include <sstream>
 
-static inline std::basic_ostream <TCHAR>& tcout =
+static inline std::basic_ostream<TCHAR>& tcout =
 #ifdef _UNICODE
-std::wcout;
+	std::wcout;
 #else
-std::cout;
+	std::cout;
 #endif // _UNICODE
 
-static inline std::basic_ostream <TCHAR>& tcerr =
+static inline std::basic_ostream<TCHAR>& tcerr =
 #ifdef _UNICODE
-std::wcerr;
+	std::wcerr;
 #else
-std::cerr;
+	std::cerr;
 #endif // _UNICODE
 
-
 #ifdef _UNICODE
-using tString = std::wstring;
-using tOstream = std::wostream;
+using tString       = std::wstring;
+using tOstream      = std::wostream;
 using tStringStream = std::wstringstream;
 #else
-using tString = std::string;
-using tOstream = std::ostream;
+using tString       = std::string;
+using tOstream      = std::ostream;
 using tStringStream = std::stringstream;
 #endif // _UNICODE
 
