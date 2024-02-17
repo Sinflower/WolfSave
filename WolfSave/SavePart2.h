@@ -280,6 +280,11 @@ public:
 
 		m_var121 = fw.ReadByte();
 		m_var122 = fw.ReadByte();
+
+		if (m_fileVersion < 0x8E) return true;
+
+		m_var123 = fw.ReadDWord();
+
 		return true;
 	}
 
@@ -512,6 +517,9 @@ protected:
 			jd.Dump(m_var121);
 			jd.Dump(m_var122);
 		}
+
+		if (m_fileVersion >= 0x8E)
+			jd.Dump(m_var123);
 	}
 
 	void json2Save(JsonReader& jr, FileWriter& fw) const
@@ -757,6 +765,10 @@ protected:
 
 		fw.Write(jr.Read<BYTE>());
 		fw.Write(jr.Read<BYTE>());
+
+		if (m_fileVersion < 0x8E) return;
+
+		fw.Write(jr.Read<DWORD>());
 	}
 
 private:
@@ -882,6 +894,8 @@ private:
 	BYTE m_var120  = 0;
 	BYTE m_var121  = 0;
 	BYTE m_var122  = 0;
+
+	DWORD m_var123 = 0;
 
 	MemData<WORD> m_md1;
 	MemData<WORD> m_md2;

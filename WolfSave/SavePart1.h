@@ -51,9 +51,9 @@ class SavePart1_1 : public SaveInterface
 		}
 
 	private:
-		BYTE m_var1;
-		BYTE m_var2;
-		BYTE m_var3;
+		BYTE m_var1 = 0;
+		BYTE m_var2 = 0;
+		BYTE m_var3 = 0;
 		std::vector<DWORD> m_vars1;
 		std::vector<BYTE> m_vars2;
 	};

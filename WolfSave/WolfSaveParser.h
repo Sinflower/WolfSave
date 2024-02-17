@@ -25,6 +25,8 @@ class WolfSaveParser
 	static constexpr uint32_t SEED_COUNT      = 3;
 	static constexpr std::size_t START_OFFSET = 0x14;
 
+	static constexpr WORD HIGHEST_SUPPORTED_VERSION = 0x8E;
+
 public:
 	WolfSaveParser() = default;
 
@@ -234,9 +236,9 @@ private:
 
 		m_fileVersion = m_fileWalker.ReadWord();
 
-		if (m_fileVersion > 0x8D)
+		if (m_fileVersion > HIGHEST_SUPPORTED_VERSION)
 		{
-			std::cerr << "File Version: 0x" << std::hex << m_fileVersion << std::dec << " is not supported" << std::endl;
+			std::cerr << "File Version: 0x" << std::hex << m_fileVersion << " is not supported, highest supported version: 0x" << HIGHEST_SUPPORTED_VERSION << std::dec << std::endl;
 			return false;
 		}
 
