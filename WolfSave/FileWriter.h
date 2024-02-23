@@ -89,6 +89,14 @@ public:
 		return m_buffer.data();
 	}
 
+	void SetAt(const uint64_t& offset, const BYTE& value)
+	{
+		if (offset < m_buffer.size())
+			m_buffer[offset] = value;
+		else
+			throw(FileWriterException("SetAt: offset is larger than buffer size"));
+	}
+
 	const uint64_t& GetSize() const
 	{
 		return m_size;

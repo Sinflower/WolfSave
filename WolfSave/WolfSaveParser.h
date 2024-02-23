@@ -72,7 +72,7 @@ public:
 
 		m_fileWalker.Seek(0);
 
-		m_isUTF8 = (m_fileWalker.At(6) == 0x55);
+		m_isUTF8   = (m_fileWalker.At(6) == 0x55);
 
 		memData::g_isUTF8 = m_isUTF8;
 
@@ -118,7 +118,7 @@ public:
 
 	void Json2Save(const tString &inputPath, const tString &outputPath)
 	{
-		tcout << "Converting JSON to Save: " << inputPath << " -> " << outputPath << std::endl;
+		tcout << "Loading JSON File: " << inputPath << " ... " << std::flush;
 
 		JsonReader reader(inputPath);
 
@@ -142,11 +142,19 @@ public:
 
 		m_fileWriter.Write(m_endByte);
 
-		tcout << "Conversion finished" << std::endl;
+		tcout << "Done" << std::endl;
 
+		tcout << "Fixing Checksum ... " << std::flush;
+		fixCheckSum();
+		tcout << "Done" << std::endl;
+
+		tcout << "Encrypting Save ... " << std::flush;
 		encryptSave();
+		tcout << "Done" << std::endl;
 
+		tcout << "Writing Save to file: " << outputPath << " ... " << std::flush;
 		m_fileWriter.WriteToFile(outputPath);
+		tcout << "Done" << std::endl;
 	}
 
 private:
@@ -354,6 +362,18 @@ private:
 		jr.LeaveSection();
 	}
 
+	void fixCheckSum()
+	{
+		PBYTE pData = m_fileWriter.Get();
+
+		BYTE checkSum = 0;
+
+		for (std::size_t i = 0x14; i < m_fileWriter.GetSize(); i++)
+			checkSum += pData[i];
+
+		m_fileWriter.SetAt(0x2, checkSum);
+	}
+
 private:
 	FileWalker m_fileWalker = FileWalker();
 	FileWriter m_fileWriter = FileWriter();
@@ -362,8 +382,8 @@ private:
 
 	bool m_isUTF8 = true;
 
-	BYTE m_var1    = 0;
-	BYTE m_endByte = 0;
+	BYTE m_var1     = 0;
+	BYTE m_endByte  = 0;
 	MemData<WORD> m_name;
 	WORD m_fileVersion = 0;
 
