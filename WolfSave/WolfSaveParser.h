@@ -43,7 +43,7 @@
 #include "SavePart3.h"
 #include "SavePart4.h"
 #include "SavePart5.h"
-#include "SavePart6.h"
+#include "VariableDatabase.h"
 #include "SavePart7.h"
 
 class WolfSaveParser
@@ -108,7 +108,7 @@ public:
 		m_savePart3.Dump(dumper);
 		m_savePart4.Dump(dumper);
 		m_savePart5.Dump(dumper);
-		m_savePart6.Dump(dumper);
+		m_variableDB.Dump(dumper);
 		m_savePart7.Dump(dumper);
 
 		dumper.Write2File();
@@ -129,7 +129,7 @@ public:
 		m_savePart3.SetFileVersion(m_fileVersion);
 		m_savePart4.SetFileVersion(m_fileVersion);
 		m_savePart5.SetFileVersion(m_fileVersion);
-		m_savePart6.SetFileVersion(m_fileVersion);
+		m_variableDB.SetFileVersion(m_fileVersion);
 		m_savePart7.SetFileVersion(m_fileVersion);
 
 		m_savePart1.Json2Save(reader, m_fileWriter);
@@ -137,7 +137,7 @@ public:
 		m_savePart3.Json2Save(reader, m_fileWriter);
 		m_savePart4.Json2Save(reader, m_fileWriter);
 		m_savePart5.Json2Save(reader, m_fileWriter);
-		m_savePart6.Json2Save(reader, m_fileWriter);
+		m_variableDB.Json2Save(reader, m_fileWriter);
 		m_savePart7.Json2Save(reader, m_fileWriter);
 
 		m_fileWriter.Write(m_endByte);
@@ -281,7 +281,7 @@ private:
 		m_savePart3.SetFileVersion(m_fileVersion);
 		m_savePart4.SetFileVersion(m_fileVersion);
 		m_savePart5.SetFileVersion(m_fileVersion);
-		m_savePart6.SetFileVersion(m_fileVersion);
+		m_variableDB.SetFileVersion(m_fileVersion);
 		m_savePart7.SetFileVersion(m_fileVersion);
 
 		return true;
@@ -296,7 +296,7 @@ private:
 		m_savePart3.Parse(m_fileWalker);
 		m_savePart4.Parse(m_fileWalker);
 		m_savePart5.Parse(m_fileWalker);
-		m_savePart6.Parse(m_fileWalker);
+		m_variableDB.Parse(m_fileWalker);
 		m_savePart7.Parse(m_fileWalker);
 
 		if (m_fileWalker.GetOffset() + 1 != m_fileWalker.GetSize())
@@ -392,6 +392,6 @@ private:
 	SavePart3 m_savePart3;
 	SavePart4 m_savePart4;
 	SavePart5 m_savePart5;
-	SavePart6 m_savePart6;
+	VariableDatabase m_variableDB;
 	SavePart7 m_savePart7;
 };

@@ -154,7 +154,7 @@
     <ClInclude Include="SavePart3.h" />
     <ClInclude Include="SavePart4.h" />
     <ClInclude Include="SavePart5.h" />
-    <ClInclude Include="SavePart6.h" />
+    <ClInclude Include="VariableDatabase.h" />
     <ClInclude Include="SavePart7.h" />
     <ClInclude Include="WolfSaveParser.h" />
     <ClInclude Include="Types.h" />

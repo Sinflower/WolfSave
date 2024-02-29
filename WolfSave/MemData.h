@@ -112,6 +112,15 @@ void initMemData(MemData<T>& memData, FileWalker& fw, const T& size = ~0)
 }
 
 template<typename T>
+MemData<T> initMemData(FileWalker& fw, const T& size = ~0)
+{
+	MemData<T> memData;
+	initMemData(memData, fw, size);
+
+	return memData;
+}
+
+template<typename T>
 MemData<T> initFromData(const std::string& str, const bool& readSize)
 {
 	MemData<T> memData;

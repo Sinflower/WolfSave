@@ -56,7 +56,7 @@
     <ClInclude Include="SavePart5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SavePart6.h">
+    <ClInclude Include="VariableDatabase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SavePart7.h">

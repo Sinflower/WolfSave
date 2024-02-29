@@ -1,5 +1,5 @@
-/*
- *  File: SavePart6.h
+﻿/*
+ *  File: VariableDatabase.h
  *  Copyright (c) 2024 Sinflower
  *
  *  MIT License
@@ -24,6 +24,17 @@
  *
  */
 
+/*
+Save_Part6 looks like it's the Variable DataBase
+m_var2 is the number of Types
+SavePart6_1 is the container for a Type
+ - m_var0 = ? -- Negative number -> Signed
+ - m_var1 = Data ID Specification
+ - m_var2 = Number of Fields
+ - m_var3 = Array containing the Field configuration, i.e., if string (2xxx) or number (1xxx) -- Lower numbers are the Field IDs
+ - m_var4 = Number of Data entries for the current Type
+*/
+
 #pragma once
 
 #include <vector>
@@ -31,33 +42,39 @@
 #include "MemData.h"
 #include "SaveBase.h"
 
-class SavePart6 : public SaveInterface
+class VariableDatabase : public SaveInterface
 {
-	class SavePart6_1_1 : public SaveInterface
+	class TypeData : public SaveInterface
 	{
+		struct FieldData
+		{
+			DWORD ID = 0;
+			DWORD Type = 1; // 1 - Number, 2 - String
+			DWORD Number = 0;
+			MemData<DWORD> String = MemData<DWORD>();
+		};
+
 	public:
-		SavePart6_1_1(const DWORD &a2 = 0, const DWORD &a3 = 0) :
-			m_a2(a2),
-			m_a3(a3)
+		TypeData(const std::vector<DWORD>& typeDefinition) :
+			m_typeDefinition(typeDefinition)
 		{
 		}
 
 		bool Parse(FileWalker &fw)
 		{
-			if (m_a2 > 0)
+			// First all numbers, then all strings
+			for (const DWORD& def : m_typeDefinition)
 			{
-				for (DWORD i = 0; i < m_a2; i++)
-					m_vars.push_back(fw.ReadDWord());
+				if (def >= 2000) continue;
+
+				m_fieldData.push_back({def - 1000, 1,  fw.ReadDWord() });
 			}
 
-			if (m_a3 > 0)
+			for (const DWORD &def : m_typeDefinition)
 			{
-				for (DWORD i = 0; i < m_a3; i++)
-				{
-					MemData<DWORD> memData;
-					initMemData(memData, fw);
-					m_mds.push_back(memData);
-				}
+				if (def < 2000) continue;
+
+				m_fieldData.push_back({ def - 2000, 2, 0, initMemData<DWORD>(fw) });
 			}
 
 			return true;
@@ -66,42 +83,47 @@ class SavePart6 : public SaveInterface
 	protected:
 		void dump(JsonDumper &jd) const
 		{
-			if (!m_vars.empty())
-				jd.Dump(m_vars);
+			// Not the best in terms of performance or style but ¯\_(ツ)_/¯
+			for (const FieldData& fd : m_fieldData)
+			{
+				if (fd.Type == 1)
+					jd.Dump(fd.Number);
+			}
 
-			if (!m_mds.empty())
-				jd.Dump(m_mds);
+			for (const FieldData& fd : m_fieldData)
+			{
+				if (fd.Type == 2)
+					jd.Dump(fd.String);
+			}
 		}
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
-			if (m_a2 > 0)
+			for (const DWORD &def : m_typeDefinition)
 			{
-				for (const DWORD &val : jr.ReadVec<DWORD>())
-					fw.Write(val);
+				if (def >= 2000) continue;
+
+				fw.Write(jr.Read<DWORD>());
 			}
 
-			if (m_a3 > 0)
+			for (const DWORD &def : m_typeDefinition)
 			{
-				for (const MemData<DWORD> &md : jr.ReadMemDataVec<DWORD>())
-					md.write(fw);
+				if (def < 2000) continue;
+
+				jr.ReadMemData<DWORD>().write(fw);
 			}
 		}
 
 	private:
-		std::vector<DWORD> m_vars;
-		std::vector<MemData<DWORD>> m_mds;
-		DWORD m_a2;
-		DWORD m_a3;
+		std::vector<FieldData> m_fieldData;
+		std::vector<DWORD> m_typeDefinition;
 	};
 
-	class SavePart6_1 : public SaveInterface
+	class VariableType : public SaveInterface
 	{
 	public:
 		// TODO: When saving this maybe include a flag if var3 was read or not
-		SavePart6_1()
-		{
-		}
+		VariableType() = default;
 
 		bool Parse(FileWalker &fw)
 		{
@@ -117,30 +139,22 @@ class SavePart6 : public SaveInterface
 				v6     = m_var3;
 			}
 
-			DWORD v36 = 0;
-			DWORD v35 = 0;
+			DWORD numberCount = 0;
+			DWORD stringCount = 0;
 
 			if ((int)v6 > 0)
 			{
 				for (DWORD i = 0; i < v6; i++)
-				{
-					DWORD val = fw.ReadDWord();
-					m_vars.push_back(val);
-
-					if (val < 0x7D0)
-						v36++;
-					else
-						v35++;
-				}
+					m_vars.push_back(fw.ReadDWord());
 			}
 
 			m_var4 = fw.ReadDWord();
 
 			for (DWORD i = 0; i < m_var4; i++)
 			{
-				SavePart6_1_1 sp(v36, v35);
-				sp.Parse(fw);
-				m_savePart6_1_1s.push_back(sp);
+				TypeData td(m_vars);
+				td.Parse(fw);
+				m_typeDatas.push_back(td);
 			}
 
 			return true;
@@ -155,7 +169,7 @@ class SavePart6 : public SaveInterface
 				if ((int)m_var1 <= -2)
 					jd.Dump(m_var2);
 
-				jd.Dump(m_var3);
+				jd.Dump(m_var3, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			}
 
 			if (!m_vars.empty())
@@ -163,8 +177,8 @@ class SavePart6 : public SaveInterface
 
 			jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
-			for (const SavePart6_1_1 &sp : m_savePart6_1_1s)
-				sp.Dump(jd);
+			for (const TypeData &td : m_typeDatas)
+				td.Dump(jd);
 		}
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
@@ -181,22 +195,12 @@ class SavePart6 : public SaveInterface
 				fw.Write(var1);
 			}
 
-			DWORD v36 = 0;
-			DWORD v35 = 0;
+			std::vector<DWORD> vars;
 
 			if ((int)var1 > 0)
 			{
-				std::vector<DWORD> vars = jr.ReadVec<DWORD>();
-
-				for (const DWORD &val : vars)
-				{
-					fw.Write(val);
-
-					if (val < 0x7D0)
-						v36++;
-					else
-						v35++;
-				}
+				vars = jr.ReadVec<DWORD>();
+				fw.Write(vars);
 			}
 
 			DWORD var4 = jr.Read<DWORD>();
@@ -204,8 +208,8 @@ class SavePart6 : public SaveInterface
 
 			for (DWORD i = 0; i < var4; i++)
 			{
-				SavePart6_1_1 sp(v36, v35);
-				sp.Json2Save(jr, fw);
+				TypeData td(vars);
+				td.Json2Save(jr, fw);
 			}
 		}
 
@@ -216,11 +220,11 @@ class SavePart6 : public SaveInterface
 		DWORD m_var4 = 0;
 
 		std::vector<DWORD> m_vars;
-		std::vector<SavePart6_1_1> m_savePart6_1_1s;
+		std::vector<TypeData> m_typeDatas;
 	};
 
 public:
-	SavePart6() = default;
+	VariableDatabase() = default;
 	bool Parse(FileWalker &fw)
 	{
 		if (!check()) return false;
@@ -231,9 +235,9 @@ public:
 		m_var2 = fw.ReadDWord();
 		for (DWORD i = 0; i < m_var2; i++)
 		{
-			SavePart6_1 sp;
-			sp.Parse(fw);
-			m_savePart6_1s.push_back(sp);
+			VariableType vt;
+			vt.Parse(fw);
+			m_variableTypes.push_back(vt);
 		}
 
 		// TODO: Here soemthing is done with CDataBase -- Maybe mapping of custom variables, look into it later
@@ -249,8 +253,8 @@ protected:
 		jd.Dump(m_var1);
 		jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
-		for (const SavePart6_1 &sp : m_savePart6_1s)
-			sp.Dump(jd);
+		for (const VariableType &vt : m_variableTypes)
+			vt.Dump(jd);
 	}
 
 	void json2Save(JsonReader &jr, FileWriter &fw) const
@@ -262,13 +266,13 @@ protected:
 
 		for (DWORD i = 0; i < size; i++)
 		{
-			SavePart6_1 sp;
-			sp.Json2Save(jr, fw);
+			VariableType vt;
+			vt.Json2Save(jr, fw);
 		}
 	}
 
 private:
 	BYTE m_var1  = 0;
 	DWORD m_var2 = 0;
-	std::vector<SavePart6_1> m_savePart6_1s;
+	std::vector<VariableType> m_variableTypes;
 };
