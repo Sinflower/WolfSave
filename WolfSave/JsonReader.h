@@ -66,6 +66,8 @@ class JsonReader
 
 		nlohmann::ordered_json json;
 		uint64_t varCnt = 0;
+
+		std::map<std::string, uint32_t> sectionCnt = std::map<std::string, uint32_t>();
 	};
 
 public:
@@ -81,8 +83,11 @@ public:
 
 	void EnterSection(const std::string& section)
 	{
-		m_sectionCnt.try_emplace(section, 0);
-		m_sectionCnt[section]++;
+		if (curSection())
+		{
+			curSection()->sectionCnt.try_emplace(section, 0);
+			curSection()->sectionCnt[section]++;
+		}
 
 		const std::string secName = buildSecName(section);
 		nlohmann::ordered_json secJson;
@@ -101,9 +106,9 @@ public:
 	}
 
 	template<typename T>
-	T Read()
+	T Read(const std::string& name = "")
 	{
-		const nlohmann::ordered_json json = getJson();
+		const nlohmann::ordered_json json = getJson(name);
 		return getObj<T>(json);
 	}
 
@@ -143,10 +148,16 @@ private:
 		return &m_sections.back();
 	}
 
-	nlohmann::ordered_json getJson()
+	const Section* curSection() const
 	{
-		const std::string objName = buildObjName();
-		return curSection()->json[objName];
+		if (m_sections.empty()) return nullptr;
+
+		return &m_sections.back();
+	}
+
+	nlohmann::ordered_json getJson(const std::string& name = "")
+	{
+		return curSection()->json[(name.empty() ? buildObjName() : name)];
 	}
 
 	std::string buildObjName()
@@ -159,7 +170,8 @@ private:
 	{
 		std::string name = secName;
 
-		name += "_#" + std::to_string(m_sectionCnt.at(secName));
+		if (curSection() != nullptr)
+			name += "_#" + std::to_string(curSection()->sectionCnt.at(secName));
 
 		return name;
 	}
@@ -211,6 +223,5 @@ private:
 
 private:
 	std::vector<Section> m_sections;
-	std::map<std::string, uint32_t> m_sectionCnt;
 	nlohmann::ordered_json m_json;
 };

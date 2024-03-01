@@ -46,6 +46,8 @@
 #include "VariableDatabase.h"
 #include "SavePart7.h"
 
+static const std::string g_version = "0.2.0";
+
 class WolfSaveParser
 {
 	static constexpr uint32_t SEED_COUNT      = 3;
@@ -317,10 +319,15 @@ private:
 
 	void dump(JsonDumper &jd) const
 	{
+		dumpConfig(jd);
+		dumpHeader(jd);
+	}
+
+	void dumpHeader(JsonDumper &jd) const
+	{
 		jd.EnterSection("Header");
 
 		jd.Dump(m_header, JsonDumper::DO_NOT_TOUCH);
-		jd.Dump(m_isUTF8, JsonDumper::DO_NOT_TOUCH);
 		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
 
 		jd.Dump(m_name);
@@ -332,15 +339,43 @@ private:
 		jd.LeaveSection();
 	}
 
-	void json2Save(JsonReader &jr, FileWriter &fw)
+	void dumpConfig(JsonDumper &jd) const
+	{
+		jd.EnterSection("Config");
+		jd.Dump(g_version, "Version", JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_isUTF8, "UTF-8", JsonDumper::DO_NOT_TOUCH);
+		jd.LeaveSection();
+	}
+
+	void json2Save(JsonReader& jr, FileWriter& fw)
+	{
+		loadConfig(jr);
+		json2SaveHeader(jr, fw);
+	}
+
+	void loadConfig(JsonReader &jr)
+	{
+		jr.EnterSection("Config");
+
+		std::string version = jr.Read<std::string>("Version");
+		m_isUTF8            = jr.Read<bool>("UTF-8");
+		memData::g_isUTF8 = m_isUTF8;
+
+		if (version != g_version)
+		{
+			std::cerr << "Error: Invalid version - Expected: " << g_version << ", got: " << version << std::endl;
+			exit(-1);
+		}
+
+		jr.LeaveSection();
+	}
+
+	void json2SaveHeader(JsonReader &jr, FileWriter &fw)
 	{
 		jr.EnterSection("Header");
 
 		m_header = jr.ReadArr<BYTE, START_OFFSET>();
-		m_isUTF8 = jr.Read<bool>();
 		m_var1   = jr.Read<BYTE>();
-
-		memData::g_isUTF8 = m_isUTF8;
 
 		m_name = jr.ReadMemData<WORD>();
 

@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 	}
 
 	LPWSTR* szArglist;
-	int nArgs;
+	int32_t nArgs;
 
 	szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
 	if (szArglist == nullptr)
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	for (int i = 0; i < nArgs; i++)
+	for (int32_t i = 1; i < nArgs; i++)
 	{
 		std::wstring arg = szArglist[i];
 
@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			std::cout << "Invalid file extension" << std::endl;
+			std::cerr << "Invalid file extension" << std::endl;
 		}
 	}
 

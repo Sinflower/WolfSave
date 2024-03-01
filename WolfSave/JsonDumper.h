@@ -46,7 +46,10 @@ class JsonDumper
 
 		std::string name;
 		nlohmann::ordered_json json = nlohmann::ordered_json();
-		uint64_t varCnt             = 0;
+
+		uint64_t varCnt = 0;
+
+		std::map<std::string, uint32_t> sectionCnt = std::map<std::string, uint32_t>();
 	};
 
 public:
@@ -67,8 +70,13 @@ public:
 
 	void EnterSection(const std::string& section)
 	{
-		m_sectionCnt.try_emplace(section, 0);
-		m_sectionCnt[section]++;
+		//m_sectionCnt.try_emplace(section, 0);
+		//m_sectionCnt[section]++;
+		if (curSection())
+		{
+			curSection()->sectionCnt.try_emplace(section, 0);
+			curSection()->sectionCnt[section]++;
+		}
 
 		m_sections.push_back(Section(section));
 	}
@@ -96,6 +104,17 @@ public:
 			j["flags"] = flags2Strings(flags);
 
 		addObj(j);
+	}
+
+	template<typename T>
+	void Dump(const T& data, const std::string& name, const uint32_t& flags = Flags::NON)
+	{
+		nlohmann::ordered_json j = buildObj(data);
+
+		if (flags != Flags::NON)
+			j["flags"] = flags2Strings(flags);
+
+		addObj(j, name);
 	}
 
 	template<typename T>
@@ -159,10 +178,16 @@ private:
 		return &m_sections.back();
 	}
 
-	void addObj(const nlohmann::ordered_json& j)
+	const Section* parentSection() const
 	{
-		const std::string objName   = buildObjName();
-		curSection()->json[objName] = j;
+		if (m_sections.size() < 2) return nullptr;
+
+		return &m_sections[m_sections.size() - 2];
+	}
+
+	void addObj(const nlohmann::ordered_json& j, const std::string& name = "")
+	{
+		curSection()->json[(name.empty() ? buildObjName() : name)] = j;
 	}
 
 	std::string buildObjName()
@@ -175,7 +200,8 @@ private:
 	{
 		std::string name = secName;
 
-		name += "_#" + std::to_string(m_sectionCnt.at(secName));
+		if (parentSection() != nullptr)
+			name += "_#" + std::to_string(parentSection()->sectionCnt.at(secName));
 
 		return name;
 	}
@@ -264,6 +290,6 @@ private:
 private:
 	tString m_filePath = _T("");
 	std::vector<Section> m_sections;
-	std::map<std::string, uint32_t> m_sectionCnt;
+	//std::map<std::string, uint32_t> m_sectionCnt;
 	nlohmann::ordered_json m_json;
 };
