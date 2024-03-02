@@ -94,11 +94,11 @@ void initMemData(MemData<T>& memData, FileWalker& fw, const T& size = ~0)
 	if (size == static_cast<T>(~0))
 	{
 		if (sizeof(T) == 1)
-			memData.size = fw.ReadByte();
+			memData.size = fw.ReadUInt8();
 		else if (sizeof(T) == 2)
-			memData.size = fw.ReadWord();
+			memData.size = fw.ReadUInt16();
 		else if (sizeof(T) == 4)
-			memData.size = static_cast<T>(fw.ReadDWord());
+			memData.size = static_cast<T>(fw.ReadUInt32());
 		memData.readSize = true;
 	}
 	else

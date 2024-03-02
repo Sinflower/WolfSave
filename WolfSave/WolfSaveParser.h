@@ -83,7 +83,7 @@ public:
 		if (m_fileWalker.GetOffset() + 1 > m_fileWalker.GetSize())
 			return false;
 
-		m_var1 = m_fileWalker.ReadByte();
+		m_var1 = m_fileWalker.ReadUInt8();
 
 		if (m_var1 != 0x19)
 		{
@@ -270,7 +270,7 @@ private:
 	{
 		initMemData(m_name, m_fileWalker);
 
-		m_fileVersion = m_fileWalker.ReadWord();
+		m_fileVersion = m_fileWalker.ReadUInt16();
 
 		if (m_fileVersion > HIGHEST_SUPPORTED_VERSION)
 		{
@@ -307,7 +307,7 @@ private:
 			return false;
 		}
 
-		m_endByte = m_fileWalker.ReadByte();
+		m_endByte = m_fileWalker.ReadUInt8();
 		if (m_endByte != 0x19)
 		{
 			std::cerr << "Error: Invalid final byte - Expected 0x19, got: 0x" << std::hex << m_endByte << std::dec << std::endl;

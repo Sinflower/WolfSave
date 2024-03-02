@@ -43,175 +43,175 @@ class SavePart5 : public SaveInterface
 
 		bool Parse(FileWalker &fw)
 		{
-			m_var1 = fw.ReadDWord();
+			m_var1 = fw.ReadUInt32();
 
-			m_var2 = fw.ReadByte();
-			m_var3 = fw.ReadByte();
-			m_var4 = fw.ReadWord();
-			m_var5 = fw.ReadByte();
-			m_var6 = fw.ReadByte();
+			m_var2 = fw.ReadUInt8();
+			m_var3 = fw.ReadUInt8();
+			m_var4 = fw.ReadUInt16();
+			m_var5 = fw.ReadUInt8();
+			m_var6 = fw.ReadUInt8();
 
 			initMemData(m_md1, fw);
 
-			m_var7 = fw.ReadDWord();
-			m_var8 = fw.ReadDWord();
+			m_var7 = fw.ReadUInt32();
+			m_var8 = fw.ReadUInt32();
 
-			m_var9  = fw.ReadDWord();
-			m_var10 = fw.ReadDWord();
+			m_var9  = fw.ReadUInt32();
+			m_var10 = fw.ReadUInt32();
 
-			m_var11 = fw.ReadDWord();
-			m_var12 = fw.ReadDWord();
-			m_var13 = fw.ReadDWord();
-			m_var14 = fw.ReadDWord();
-			m_var15 = fw.ReadDWord();
-			m_var16 = fw.ReadDWord();
-			m_var17 = fw.ReadDWord();
-			m_var18 = fw.ReadDWord();
+			m_var11 = fw.ReadUInt32();
+			m_var12 = fw.ReadUInt32();
+			m_var13 = fw.ReadUInt32();
+			m_var14 = fw.ReadUInt32();
+			m_var15 = fw.ReadUInt32();
+			m_var16 = fw.ReadUInt32();
+			m_var17 = fw.ReadUInt32();
+			m_var18 = fw.ReadUInt32();
 
 			for (uint32_t i = 0; i < 2; i++)
 			{
 				for (uint32_t j = 0; j < 3; j++)
-					m_vals1.push_back(fw.ReadDWord());
+					m_vals1.push_back(fw.ReadUInt32());
 			}
 
 			if (m_fileVersion >= 0x69)
 			{
-				m_var19 = fw.ReadDWord();
-				m_var20 = fw.ReadDWord();
-				m_var21 = fw.ReadDWord();
-				m_var22 = fw.ReadDWord();
-				m_var23 = fw.ReadDWord();
-				m_var24 = fw.ReadDWord();
-				m_var25 = fw.ReadDWord();
-				m_var26 = fw.ReadDWord();
-				m_var27 = fw.ReadDWord();
-				m_var28 = fw.ReadDWord();
-				m_var29 = fw.ReadDWord();
-				m_var30 = fw.ReadDWord();
-				m_var31 = fw.ReadDWord();
-				m_var32 = fw.ReadDWord();
-				m_var33 = fw.ReadDWord();
-				m_var34 = fw.ReadDWord();
-				m_var35 = fw.ReadDWord();
-				m_var36 = fw.ReadDWord();
+				m_var19 = fw.ReadUInt32();
+				m_var20 = fw.ReadUInt32();
+				m_var21 = fw.ReadUInt32();
+				m_var22 = fw.ReadUInt32();
+				m_var23 = fw.ReadUInt32();
+				m_var24 = fw.ReadUInt32();
+				m_var25 = fw.ReadUInt32();
+				m_var26 = fw.ReadUInt32();
+				m_var27 = fw.ReadUInt32();
+				m_var28 = fw.ReadUInt32();
+				m_var29 = fw.ReadUInt32();
+				m_var30 = fw.ReadUInt32();
+				m_var31 = fw.ReadUInt32();
+				m_var32 = fw.ReadUInt32();
+				m_var33 = fw.ReadUInt32();
+				m_var34 = fw.ReadUInt32();
+				m_var35 = fw.ReadUInt32();
+				m_var36 = fw.ReadUInt32();
 			}
 			if (m_fileVersion >= 0x6B)
-				m_var37 = fw.ReadByte();
+				m_var37 = fw.ReadUInt8();
 
 			if (m_fileVersion >= 0x72)
 			{
-				m_var38 = fw.ReadByte();
-				m_var39 = fw.ReadByte();
+				m_var38 = fw.ReadUInt8();
+				m_var39 = fw.ReadUInt8();
 
 				for (uint32_t i = 0; i < 4; i++)
-					m_vals2.push_back(fw.ReadDWord());
+					m_vals2.push_back(fw.ReadUInt32());
 
 				for (uint32_t i = 0; i < 4; i++)
-					m_vals3.push_back(fw.ReadDWord());
+					m_vals3.push_back(fw.ReadUInt32());
 			}
 
 			if (m_fileVersion >= 0x73)
 			{
-				m_var40 = fw.ReadDWord();
-				m_var41 = fw.ReadDWord();
-				m_var42 = fw.ReadDWord();
-				m_var43 = fw.ReadDWord();
+				m_var40 = fw.ReadUInt32();
+				m_var41 = fw.ReadUInt32();
+				m_var42 = fw.ReadUInt32();
+				m_var43 = fw.ReadUInt32();
 
 				if (m_fileVersion >= 0x74)
 				{
-					m_var44 = fw.ReadDWord();
-					m_var45 = fw.ReadDWord();
-					m_var46 = fw.ReadDWord();
-					m_var47 = fw.ReadDWord();
-					m_var48 = fw.ReadDWord();
+					m_var44 = fw.ReadUInt32();
+					m_var45 = fw.ReadUInt32();
+					m_var46 = fw.ReadUInt32();
+					m_var47 = fw.ReadUInt32();
+					m_var48 = fw.ReadUInt32();
 				}
 
 				if (m_fileVersion >= 0x75)
 				{
-					m_var49 = fw.ReadDWord();
-					m_var50 = fw.ReadDWord();
-					m_var51 = fw.ReadDWord();
-					m_var52 = fw.ReadDWord();
-					m_var53 = fw.ReadDWord();
-					m_var54 = fw.ReadDWord();
+					m_var49 = fw.ReadUInt32();
+					m_var50 = fw.ReadUInt32();
+					m_var51 = fw.ReadUInt32();
+					m_var52 = fw.ReadUInt32();
+					m_var53 = fw.ReadUInt32();
+					m_var54 = fw.ReadUInt32();
 				}
 
-				m_var55 = fw.ReadDWord();
-				m_var56 = fw.ReadDWord();
-				m_var57 = fw.ReadDWord();
-				m_var58 = fw.ReadDWord();
-				m_var59 = fw.ReadDWord();
-				m_var60 = fw.ReadDWord();
+				m_var55 = fw.ReadUInt32();
+				m_var56 = fw.ReadUInt32();
+				m_var57 = fw.ReadUInt32();
+				m_var58 = fw.ReadUInt32();
+				m_var59 = fw.ReadUInt32();
+				m_var60 = fw.ReadUInt32();
 			}
 
 			if (m_fileVersion >= 0x76)
 			{
-				m_var61 = fw.ReadDWord();
-				m_var62 = fw.ReadDWord();
-				m_var63 = fw.ReadDWord();
+				m_var61 = fw.ReadUInt32();
+				m_var62 = fw.ReadUInt32();
+				m_var63 = fw.ReadUInt32();
 			}
 
 			if (m_fileVersion < 0x81)
 				return true;
 
-			m_var64 = fw.ReadDWord();
-			m_var65 = fw.ReadDWord();
-			m_var66 = fw.ReadDWord();
-			m_var67 = fw.ReadDWord();
-			m_var68 = fw.ReadDWord();
-			m_var69 = fw.ReadDWord();
+			m_var64 = fw.ReadUInt32();
+			m_var65 = fw.ReadUInt32();
+			m_var66 = fw.ReadUInt32();
+			m_var67 = fw.ReadUInt32();
+			m_var68 = fw.ReadUInt32();
+			m_var69 = fw.ReadUInt32();
 
-			m_var70 = fw.ReadDWord();
-			m_var71 = fw.ReadDWord();
-			m_var72 = fw.ReadDWord();
-			m_var73 = fw.ReadDWord();
-			m_var74 = fw.ReadDWord();
-			m_var75 = fw.ReadDWord();
-			m_var76 = fw.ReadDWord();
-			m_var77 = fw.ReadDWord();
-			m_var78 = fw.ReadDWord();
-			m_var79 = fw.ReadDWord();
-			m_var80 = fw.ReadDWord();
-			m_var81 = fw.ReadDWord();
-			m_var82 = fw.ReadDWord();
-			m_var83 = fw.ReadDWord();
-			m_var84 = fw.ReadDWord();
+			m_var70 = fw.ReadUInt32();
+			m_var71 = fw.ReadUInt32();
+			m_var72 = fw.ReadUInt32();
+			m_var73 = fw.ReadUInt32();
+			m_var74 = fw.ReadUInt32();
+			m_var75 = fw.ReadUInt32();
+			m_var76 = fw.ReadUInt32();
+			m_var77 = fw.ReadUInt32();
+			m_var78 = fw.ReadUInt32();
+			m_var79 = fw.ReadUInt32();
+			m_var80 = fw.ReadUInt32();
+			m_var81 = fw.ReadUInt32();
+			m_var82 = fw.ReadUInt32();
+			m_var83 = fw.ReadUInt32();
+			m_var84 = fw.ReadUInt32();
 
 			if (m_fileVersion >= 0x87)
 			{
-				m_var85 = fw.ReadDWord();
-				m_var86 = fw.ReadDWord();
-				m_var87 = fw.ReadDWord();
-				m_var88 = fw.ReadDWord();
-				m_var89 = fw.ReadDWord();
+				m_var85 = fw.ReadUInt32();
+				m_var86 = fw.ReadUInt32();
+				m_var87 = fw.ReadUInt32();
+				m_var88 = fw.ReadUInt32();
+				m_var89 = fw.ReadUInt32();
 			}
 
 			if (m_fileVersion >= 0x89)
 			{
-				m_var90 = fw.ReadDWord();
+				m_var90 = fw.ReadUInt32();
 
 				if ((int)m_var90 > 0)
 				{
 					for (DWORD i = 0; i < m_var90; i++)
 					{
-						DWORD v = fw.ReadDWord();
+						DWORD v = fw.ReadUInt32();
 						m_vals4.push_back(v);
 
 						if ((int)v > 0)
 						{
 							for (DWORD j = 0; j < v; j++)
-								m_vals5.push_back(fw.ReadDWord());
+								m_vals5.push_back(fw.ReadUInt32());
 						}
 					}
 				}
 
-				m_var91 = fw.ReadDWord();
-				m_var92 = fw.ReadDWord();
-				m_var93 = fw.ReadDWord();
-				m_var94 = fw.ReadDWord();
-				m_var95 = fw.ReadDWord();
-				m_var96 = fw.ReadDWord();
-				m_var97 = fw.ReadDWord();
+				m_var91 = fw.ReadUInt32();
+				m_var92 = fw.ReadUInt32();
+				m_var93 = fw.ReadUInt32();
+				m_var94 = fw.ReadUInt32();
+				m_var95 = fw.ReadUInt32();
+				m_var96 = fw.ReadUInt32();
+				m_var97 = fw.ReadUInt32();
 			}
 
 			return true;
@@ -662,7 +662,7 @@ public:
 	{
 		if (!check()) return false;
 
-		m_var1 = fw.ReadWord();
+		m_var1 = fw.ReadUInt16();
 
 		if ((m_var1 & 0x8000u) == 0)
 		{

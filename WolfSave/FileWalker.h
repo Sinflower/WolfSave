@@ -34,8 +34,6 @@
 
 #include "Utils.h"
 
-using QWORD = uint64_t;
-
 class FileWalkerException : public std::exception
 {
 public:
@@ -128,14 +126,9 @@ public:
 		m_init = true;
 	}
 
-	QWORD ReadQWord()
+	uint64_t ReadUInt64()
 	{
-		return read<QWORD>();
-	}
-
-	DWORD ReadDWord()
-	{
-		return read<DWORD>();
+		return read<uint64_t>();
 	}
 
 	uint32_t ReadUInt32()
@@ -143,14 +136,34 @@ public:
 		return read<uint32_t>();
 	}
 
-	WORD ReadWord()
+	uint16_t ReadUInt16()
 	{
-		return read<WORD>();
+		return read<uint16_t>();
 	}
 
-	BYTE ReadByte()
+	uint8_t ReadUInt8()
 	{
-		return read<BYTE>();
+		return read<uint8_t>();
+	}
+	
+	int64_t ReadInt64()
+	{
+		return read<int64_t>();
+	}
+
+	int32_t ReadInt32()
+	{
+		return read<int32_t>();
+	}
+
+	int16_t ReadInt16()
+	{
+		return read<int16_t>();
+	}
+
+	int8_t ReadInt8()
+	{
+		return read<int8_t>();
 	}
 
 	template<std::size_t S>

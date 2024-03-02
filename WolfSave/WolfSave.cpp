@@ -34,7 +34,6 @@ namespace fs = std::filesystem;
 
 
 // TUDOs:
-// - Maybe replace DWORD and other Microsoft types with standard types (uint32_t, etc)
 
 /////////////////////////////////////////////////////
 ////////////////////// MAIN /////////////////////////

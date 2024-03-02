@@ -43,7 +43,7 @@ public:
 		m_savePart1_1.SetFileVersion(m_fileVersion);
 		m_savePart1_1.Parse(fw);
 
-		m_var1 = fw.ReadDWord();
+		m_var1 = fw.ReadUInt32();
 
 		for (DWORD i = 0; i < m_var1; i++)
 		{
@@ -53,26 +53,26 @@ public:
 			m_savePart1_1s.push_back(sp);
 		}
 
-		m_var2 = fw.ReadByte();
-		m_var3 = fw.ReadByte();
+		m_var2 = fw.ReadUInt8();
+		m_var3 = fw.ReadUInt8();
 
-		m_var4 = fw.ReadDWord();
+		m_var4 = fw.ReadUInt32();
 
 		if ((int)m_var4 > 0)
 		{
 			for (DWORD i = 0; i < m_var4; i++)
-				m_vars1.push_back(fw.ReadDWord());
+				m_vars1.push_back(fw.ReadUInt32());
 		}
 
 		if (m_fileVersion < 0x8A)
 			return true;
 
-		m_var5 = fw.ReadDWord();
+		m_var5 = fw.ReadUInt32();
 
 		if ((int)m_var5 > 0)
 		{
 			for (DWORD i = 0; i < m_var5; i++)
-				m_vars2.push_back(fw.ReadQWord());
+				m_vars2.push_back(fw.ReadUInt64());
 		}
 
 		return true;

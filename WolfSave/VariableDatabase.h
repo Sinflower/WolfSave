@@ -49,14 +49,14 @@ class VariableDatabase : public SaveInterface
 	{
 		struct FieldData
 		{
-			DWORD ID              = 0;
-			DWORD Type            = 1; // 1 - Number, 2 - String
-			DWORD Number          = 0;
+			uint32_t ID           = 0;
+			uint32_t Type         = 1; // 1 - Number, 2 - String
+			int32_t Number        = 0;
 			MemData<DWORD> String = MemData<DWORD>();
 		};
 
 	public:
-		TypeData(const std::vector<DWORD> &typeDefinition) :
+		TypeData(const std::vector<uint32_t> &typeDefinition) :
 			m_typeDefinition(typeDefinition)
 		{
 		}
@@ -70,17 +70,17 @@ class VariableDatabase : public SaveInterface
 		{
 			uint32_t id = 0;
 			// First all numbers, then all strings
-			for (const DWORD &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeDefinition)
 			{
 				if (def < 2000)
-					m_fieldData.push_back({ id, 1, fw.ReadDWord() });
+					m_fieldData.push_back({ id, 1, fw.ReadInt32() });
 
 				id++;
 			}
 
 			id = 0;
 
-			for (const DWORD &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeDefinition)
 			{
 				if (def >= 2000)
 					m_fieldData.push_back({ id, 2, 0, initMemData<DWORD>(fw) });
@@ -110,14 +110,14 @@ class VariableDatabase : public SaveInterface
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
-			for (const DWORD &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeDefinition)
 			{
 				if (def >= 2000) continue;
 
 				fw.Write(jr.Read<DWORD>());
 			}
 
-			for (const DWORD &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeDefinition)
 			{
 				if (def < 2000) continue;
 
@@ -127,7 +127,7 @@ class VariableDatabase : public SaveInterface
 
 	private:
 		std::vector<FieldData> m_fieldData;
-		std::vector<DWORD> m_typeDefinition;
+		std::vector<uint32_t> m_typeDefinition;
 		wolfrpg::Type m_type;
 	};
 
@@ -144,30 +144,27 @@ class VariableDatabase : public SaveInterface
 
 		bool Parse(FileWalker &fw)
 		{
-			m_var1   = fw.ReadDWord();
-			DWORD v6 = m_var1;
+			m_var1     = fw.ReadInt32();
+			int32_t v6 = m_var1;
 
-			if ((int)m_var1 <= -1)
+			if (m_var1 <= -1)
 			{
-				if ((int)m_var1 <= -2)
-					m_var2 = fw.ReadDWord();
+				if (m_var1 <= -2)
+					m_var2 = fw.ReadInt32();
 
-				m_var3 = fw.ReadDWord();
+				m_var3 = fw.ReadUInt32();
 				v6     = m_var3;
 			}
 
-			DWORD numberCount = 0;
-			DWORD stringCount = 0;
-
-			if ((int)v6 > 0)
+			if (v6 > 0)
 			{
-				for (DWORD i = 0; i < v6; i++)
-					m_vars.push_back(fw.ReadDWord());
+				for (int32_t i = 0; i < v6; i++)
+					m_vars.push_back(fw.ReadUInt32());
 			}
 
-			m_var4 = fw.ReadDWord();
+			m_var4 = fw.ReadUInt32();
 
-			for (DWORD i = 0; i < m_var4; i++)
+			for (uint32_t i = 0; i < m_var4; i++)
 			{
 				TypeData td(m_vars);
 				td.SetType(m_type);
@@ -206,30 +203,30 @@ class VariableDatabase : public SaveInterface
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
-			DWORD var1 = jr.Read<DWORD>();
+			int32_t var1 = jr.Read<int32_t>();
 			fw.Write(var1);
 
-			if ((int)var1 <= -1)
+			if (var1 <= -1)
 			{
-				if ((int)var1 <= -2)
-					fw.Write(jr.Read<DWORD>());
+				if (var1 <= -2)
+					fw.Write(jr.Read<int32_t>());
 
-				var1 = jr.Read<DWORD>();
+				var1 = jr.Read<int32_t>();
 				fw.Write(var1);
 			}
 
-			std::vector<DWORD> vars;
+			std::vector<uint32_t> vars;
 
-			if ((int)var1 > 0)
+			if (var1 > 0)
 			{
-				vars = jr.ReadVec<DWORD>();
+				vars = jr.ReadVec<uint32_t>();
 				fw.Write(vars);
 			}
 
-			DWORD var4 = jr.Read<DWORD>();
+			uint32_t var4 = jr.Read<uint32_t>();
 			fw.Write(var4);
 
-			for (DWORD i = 0; i < var4; i++)
+			for (uint32_t i = 0; i < var4; i++)
 			{
 				TypeData td(vars);
 				td.Json2Save(jr, fw);
@@ -237,12 +234,12 @@ class VariableDatabase : public SaveInterface
 		}
 
 	private:
-		DWORD m_var1 = 0;
-		DWORD m_var2 = 0;
-		DWORD m_var3 = 0;
-		DWORD m_var4 = 0;
+		int32_t m_var1  = 0;
+		int32_t m_var2  = 0;
+		int32_t m_var3  = 0;
+		uint32_t m_var4 = 0;
 
-		std::vector<DWORD> m_vars;
+		std::vector<uint32_t> m_vars;
 		std::vector<TypeData> m_typeDatas;
 		wolfrpg::Type m_type;
 	};
@@ -256,10 +253,10 @@ public:
 		wolfrpg::Database db(_T("CDataBase.project"));
 
 		// Is here 1 byte just skipped?
-		m_var1 = fw.ReadByte();
+		m_unknown = fw.ReadUInt8();
 
-		m_var2 = fw.ReadDWord();
-		for (DWORD i = 0; i < m_var2; i++)
+		m_typeCount = fw.ReadUInt32();
+		for (uint32_t i = 0; i < m_typeCount; i++)
 		{
 			VariableType vt;
 			vt.SetType(db.GetTypes().at(i));
@@ -277,8 +274,8 @@ public:
 protected:
 	void dump(JsonDumper &jd) const
 	{
-		jd.Dump(m_var1);
-		jd.Dump(m_var2, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_unknown, JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_typeCount, "Number of Types", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
 		for (const VariableType &vt : m_variableTypes)
 			vt.Dump(jd);
@@ -286,12 +283,12 @@ protected:
 
 	void json2Save(JsonReader &jr, FileWriter &fw) const
 	{
-		fw.Write(jr.Read<BYTE>());
+		fw.Write(jr.Read<uint8_t>());
 
-		DWORD size = jr.Read<DWORD>();
+		uint32_t size = jr.Read<uint32_t>();
 		fw.Write(size);
 
-		for (DWORD i = 0; i < size; i++)
+		for (uint32_t i = 0; i < size; i++)
 		{
 			VariableType vt;
 			vt.Json2Save(jr, fw);
@@ -299,7 +296,7 @@ protected:
 	}
 
 private:
-	BYTE m_var1  = 0;
-	DWORD m_var2 = 0;
+	uint8_t m_unknown  = 0;
+	uint32_t m_typeCount = 0;
 	std::vector<VariableType> m_variableTypes;
 };

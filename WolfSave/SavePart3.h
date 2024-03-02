@@ -39,27 +39,27 @@ public:
 	{
 		if (!check()) return false;
 
-		m_var1 = fw.ReadDWord();
-		m_var2 = fw.ReadDWord();
+		m_var1 = fw.ReadUInt32();
+		m_var2 = fw.ReadUInt32();
 
 		if ((int)m_var2 >= 0)
 		{
 			for (DWORD i = 0; i < m_var2; i++)
 			{
-				DWORD v1 = fw.ReadDWord();
+				DWORD v1 = fw.ReadUInt32();
 				if ((int)v1 < 0) return false;
 				m_vars1.push_back(v1);
 
 				for (DWORD j = 0; j < v1; j++)
 				{
-					BYTE v2 = fw.ReadByte();
+					BYTE v2 = fw.ReadUInt8();
 					m_vars2.push_back(v2);
 					for (BYTE k = 0; k < v2; k++)
-						m_vars3.push_back(fw.ReadDWord());
+						m_vars3.push_back(fw.ReadUInt32());
 				}
 			}
 
-			m_var3 = fw.ReadDWord();
+			m_var3 = fw.ReadUInt32();
 
 			if (m_var3 <= 0x270F)
 			{
@@ -67,17 +67,17 @@ public:
 				{
 					for (DWORD i = 0; i < m_var3; i++)
 					{
-						DWORD v = fw.ReadDWord();
+						DWORD v = fw.ReadUInt32();
 						if ((int)v < 0) return false;
 
 						m_vars4.push_back(v);
 
 						for (DWORD j = 0; j < v; j++)
-							m_vars5.push_back(fw.ReadDWord());
+							m_vars5.push_back(fw.ReadUInt32());
 					}
 				}
 
-				m_var4 = fw.ReadDWord();
+				m_var4 = fw.ReadUInt32();
 
 				if ((int)m_var4 >= 0)
 				{
@@ -98,21 +98,21 @@ public:
 						}
 					}
 
-					m_var5 = fw.ReadDWord();
+					m_var5 = fw.ReadUInt32();
 
 					if ((int)m_var5 < 0 || m_var5 > 10000)
 						return false;
 
 					for (DWORD i = 0; i < m_var5; i++)
 					{
-						BYTE v = fw.ReadByte();
+						BYTE v = fw.ReadUInt8();
 						m_vars6.push_back(v);
 
 						for (BYTE j = 0; j < v; j++)
-							m_vars7.push_back(fw.ReadDWord());
+							m_vars7.push_back(fw.ReadUInt32());
 					}
 
-					m_var6 = fw.ReadDWord();
+					m_var6 = fw.ReadUInt32();
 
 					if (m_var6 <= 10000)
 					{
@@ -120,7 +120,7 @@ public:
 
 						for (DWORD i = 0; i < m_var6; i++)
 						{
-							BYTE v = fw.ReadByte();
+							BYTE v = fw.ReadUInt8();
 							m_vars8.push_back(v);
 
 							if (v)

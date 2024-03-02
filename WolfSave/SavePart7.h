@@ -41,20 +41,20 @@ public:
 	{
 		if (!check()) return false;
 
-		m_var1 = fw.ReadByte();
+		m_var1 = fw.ReadUInt8();
 		if (m_var1 != 1)
 			return true;
 
-		m_var2 = fw.ReadDWord();
+		m_var2 = fw.ReadUInt32();
 
 		for (DWORD i = 0; i < m_var2; i++)
 		{
-			BYTE v = fw.ReadByte();
+			BYTE v = fw.ReadUInt8();
 
 			if (v < 0xFAu)
-				m_sp7_bbds.push_back(SP7_BBD(v, fw.ReadByte(), 0));
+				m_sp7_bbds.push_back(SP7_BBD(v, fw.ReadUInt8(), 0));
 			else
-				m_sp7_bbds.push_back(SP7_BBD(v, 0, fw.ReadDWord()));
+				m_sp7_bbds.push_back(SP7_BBD(v, 0, fw.ReadUInt32()));
 		}
 
 		return true;

@@ -133,51 +133,51 @@ public:
 	explicit Type(FileWalker& fw)
 	{
 		m_name         = initMemData<DWORD>(fw);
-		DWORD fieldCnt = fw.ReadDWord();
+		DWORD fieldCnt = fw.ReadUInt32();
 		for (DWORD i = 0; i < fieldCnt; i++)
 			m_fields.push_back(Field(fw));
 
-		DWORD dataCnt = fw.ReadDWord();
+		DWORD dataCnt = fw.ReadUInt32();
 		for (DWORD i = 0; i < dataCnt; i++)
 			m_data.push_back(Data(fw));
 
 		m_description = initMemData<DWORD>(fw);
 
-		m_fieldTypeListSize = fw.ReadDWord();
+		m_fieldTypeListSize = fw.ReadUInt32();
 		DWORD index         = 0;
 
 		for (index = 0; index < m_fields.size(); index++)
-			fw.ReadByte();
+			fw.ReadUInt8();
 
 		fw.Skip(m_fieldTypeListSize - index);
 
-		index = fw.ReadDWord();
+		index = fw.ReadUInt32();
 		for (DWORD i = 0; i < index; i++)
 			m_fields[i].SetUnknown1(initMemData<DWORD>(fw));
 
-		index = fw.ReadDWord();
+		index = fw.ReadUInt32();
 		for (DWORD i = 0; i < index; i++)
 		{
 			MemDataVec<DWORD> stringArgs;
-			DWORD argsCnt = fw.ReadDWord();
+			DWORD argsCnt = fw.ReadUInt32();
 			for (DWORD j = 0; j < argsCnt; j++)
 				stringArgs.push_back(initMemData<DWORD>(fw));
 			m_fields[i].SetStringArgs(stringArgs);
 		}
 
-		index = fw.ReadDWord();
+		index = fw.ReadUInt32();
 		for (DWORD i = 0; i < index; i++)
 		{
 			DWORDS args;
-			DWORD argsCnt = fw.ReadDWord();
+			DWORD argsCnt = fw.ReadUInt32();
 			for (DWORD j = 0; j < argsCnt; j++)
-				args.push_back(fw.ReadDWord());
+				args.push_back(fw.ReadUInt32());
 			m_fields[i].SetArgs(args);
 		}
 
-		index = fw.ReadDWord();
+		index = fw.ReadUInt32();
 		for (DWORD i = 0; i < index; i++)
-			fw.ReadDWord();
+			fw.ReadUInt32();
 	}
 
 	const Datas& GetData() const
@@ -255,7 +255,7 @@ private:
 	bool init(const tString& projectFileName)
 	{
 		FileWalker fw(projectFileName);
-		DWORD typeCnt = fw.ReadDWord();
+		DWORD typeCnt = fw.ReadUInt32();
 		for (DWORD i = 0; i < typeCnt; i++)
 			m_types.push_back(Type(fw));
 
