@@ -81,8 +81,7 @@ protected:
 		std::cout << "IMPLEMENT ME: " << name() << std::endl;
 	}
 
-private:
-	std::string name() const
+	virtual std::string name() const
 	{
 		std::string name = typeid(*this).name();
 		// Remove the class name prefix

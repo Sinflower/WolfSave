@@ -19,6 +19,9 @@
     <Filter Include="Header Files\3rdParty\nlohmann">
       <UniqueIdentifier>{da686062-eabf-426b-b39b-af2a5cf3154a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\WolfRPG">
+      <UniqueIdentifier>{c0368209-5b7d-4b3e-8f6a-2fe717501843}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WolfSave.cpp">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="FileWriter.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>Header Files\WolfRPG</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

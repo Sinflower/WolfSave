@@ -138,6 +138,11 @@ public:
 		return read<DWORD>();
 	}
 
+	uint32_t ReadUInt32()
+	{
+		return read<uint32_t>();
+	}
+
 	WORD ReadWord()
 	{
 		return read<WORD>();
@@ -206,6 +211,17 @@ public:
 			throw(FileWalkerException("Seek: Attempted to seek past end of file"));
 
 		m_offset = offset;
+	}
+
+	void Skip(const DWORD& size)
+	{
+		if (!m_init)
+			throw(FileWalkerException("FileWalker not initialized"));
+
+		if (m_offset + size > m_size)
+			throw(FileWalkerException("Skip: Attempted to skip past end of file"));
+
+		m_offset += size;
 	}
 
 	const PBYTE Get() const

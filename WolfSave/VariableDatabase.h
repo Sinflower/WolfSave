@@ -39,6 +39,7 @@ SavePart6_1 is the container for a Type
 
 #include <vector>
 
+#include "Database.h"
 #include "MemData.h"
 #include "SaveBase.h"
 
@@ -48,33 +49,43 @@ class VariableDatabase : public SaveInterface
 	{
 		struct FieldData
 		{
-			DWORD ID = 0;
-			DWORD Type = 1; // 1 - Number, 2 - String
-			DWORD Number = 0;
+			DWORD ID              = 0;
+			DWORD Type            = 1; // 1 - Number, 2 - String
+			DWORD Number          = 0;
 			MemData<DWORD> String = MemData<DWORD>();
 		};
 
 	public:
-		TypeData(const std::vector<DWORD>& typeDefinition) :
+		TypeData(const std::vector<DWORD> &typeDefinition) :
 			m_typeDefinition(typeDefinition)
 		{
 		}
 
+		void SetType(const wolfrpg::Type &type)
+		{
+			m_type = type;
+		}
+
 		bool Parse(FileWalker &fw)
 		{
+			uint32_t id = 0;
 			// First all numbers, then all strings
-			for (const DWORD& def : m_typeDefinition)
+			for (const DWORD &def : m_typeDefinition)
 			{
-				if (def >= 2000) continue;
+				if (def < 2000)
+					m_fieldData.push_back({ id, 1, fw.ReadDWord() });
 
-				m_fieldData.push_back({def - 1000, 1,  fw.ReadDWord() });
+				id++;
 			}
+
+			id = 0;
 
 			for (const DWORD &def : m_typeDefinition)
 			{
-				if (def < 2000) continue;
+				if (def >= 2000)
+					m_fieldData.push_back({ id, 2, 0, initMemData<DWORD>(fw) });
 
-				m_fieldData.push_back({ def - 2000, 2, 0, initMemData<DWORD>(fw) });
+				id++;
 			}
 
 			return true;
@@ -84,16 +95,16 @@ class VariableDatabase : public SaveInterface
 		void dump(JsonDumper &jd) const
 		{
 			// Not the best in terms of performance or style but ¯\_(ツ)_/¯
-			for (const FieldData& fd : m_fieldData)
+			for (const FieldData &fd : m_fieldData)
 			{
 				if (fd.Type == 1)
-					jd.Dump(fd.Number);
+					jd.Dump(fd.Number, m_type.GetFieldName(fd.ID));
 			}
 
-			for (const FieldData& fd : m_fieldData)
+			for (const FieldData &fd : m_fieldData)
 			{
 				if (fd.Type == 2)
-					jd.Dump(fd.String);
+					jd.Dump(fd.String, m_type.GetFieldName(fd.ID));
 			}
 		}
 
@@ -117,6 +128,7 @@ class VariableDatabase : public SaveInterface
 	private:
 		std::vector<FieldData> m_fieldData;
 		std::vector<DWORD> m_typeDefinition;
+		wolfrpg::Type m_type;
 	};
 
 	class VariableType : public SaveInterface
@@ -124,6 +136,11 @@ class VariableDatabase : public SaveInterface
 	public:
 		// TODO: When saving this maybe include a flag if var3 was read or not
 		VariableType() = default;
+
+		void SetType(const wolfrpg::Type &type)
+		{
+			m_type = type;
+		}
 
 		bool Parse(FileWalker &fw)
 		{
@@ -153,6 +170,7 @@ class VariableDatabase : public SaveInterface
 			for (DWORD i = 0; i < m_var4; i++)
 			{
 				TypeData td(m_vars);
+				td.SetType(m_type);
 				td.Parse(fw);
 				m_typeDatas.push_back(td);
 			}
@@ -163,22 +181,27 @@ class VariableDatabase : public SaveInterface
 	protected:
 		void dump(JsonDumper &jd) const
 		{
-			jd.Dump(m_var1);
+			jd.Dump(m_var1, "Unknown Flag #1", JsonDumper::DO_NOT_TOUCH);
 			if ((int)m_var1 <= -1)
 			{
 				if ((int)m_var1 <= -2)
-					jd.Dump(m_var2);
+					jd.Dump(m_var2, "Unknown Flag #2", JsonDumper::DO_NOT_TOUCH);
 
-				jd.Dump(m_var3, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+				jd.Dump(m_var3, "Field Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			}
 
 			if (!m_vars.empty())
-				jd.Dump(m_vars);
+				jd.Dump(m_vars, "Field Configuration", JsonDumper::DO_NOT_TOUCH);
 
-			jd.Dump(m_var4, JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_var4, "TypeData Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
 			for (const TypeData &td : m_typeDatas)
 				td.Dump(jd);
+		}
+
+		std::string name() const
+		{
+			return m_type.GetName();
 		}
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
@@ -221,6 +244,7 @@ class VariableDatabase : public SaveInterface
 
 		std::vector<DWORD> m_vars;
 		std::vector<TypeData> m_typeDatas;
+		wolfrpg::Type m_type;
 	};
 
 public:
@@ -229,6 +253,8 @@ public:
 	{
 		if (!check()) return false;
 
+		wolfrpg::Database db(_T("CDataBase.project"));
+
 		// Is here 1 byte just skipped?
 		m_var1 = fw.ReadByte();
 
@@ -236,6 +262,7 @@ public:
 		for (DWORD i = 0; i < m_var2; i++)
 		{
 			VariableType vt;
+			vt.SetType(db.GetTypes().at(i));
 			vt.Parse(fw);
 			m_variableTypes.push_back(vt);
 		}

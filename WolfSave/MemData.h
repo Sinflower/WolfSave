@@ -129,3 +129,6 @@ MemData<T> initFromData(const std::string& str, const bool& readSize)
 
 	return memData;
 }
+
+template<typename T>
+using MemDataVec = std::vector<MemData<T>>;

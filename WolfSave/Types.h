@@ -58,3 +58,7 @@ using tStringStream = std::stringstream;
 #endif // _UNICODE
 
 using tStrings = std::vector<tString>;
+
+using DWORDS = std::vector<DWORD>;
+using WORDS = std::vector<WORD>;
+using BYTES = std::vector<BYTE>;

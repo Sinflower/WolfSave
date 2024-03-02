@@ -48,6 +48,7 @@ class JsonDumper
 		nlohmann::ordered_json json = nlohmann::ordered_json();
 
 		uint64_t varCnt = 0;
+		std::map<std::string, uint64_t> cstmVarCnt = std::map<std::string, uint64_t>();
 
 		std::map<std::string, uint32_t> sectionCnt = std::map<std::string, uint32_t>();
 	};
@@ -187,13 +188,26 @@ private:
 
 	void addObj(const nlohmann::ordered_json& j, const std::string& name = "")
 	{
-		curSection()->json[(name.empty() ? buildObjName() : name)] = j;
+		curSection()->json[buildObjName(name)] = j;
 	}
 
-	std::string buildObjName()
+	std::string buildObjName(const std::string& name = "")
 	{
-		std::string name = "var_#" + std::to_string(curSection()->varCnt++);
-		return name;
+		std::string objName = "";
+		if (name.empty())
+			objName = "var_#" + std::to_string(curSection()->varCnt++);
+		else
+		{
+			curSection()->cstmVarCnt.try_emplace(name, 0);
+			if (curSection()->cstmVarCnt[name] == 0)
+				objName = name;
+			else
+				objName = name + "_#" + std::to_string(curSection()->cstmVarCnt[name]);
+
+			curSection()->cstmVarCnt[name]++;
+		}
+
+		return objName;
 	}
 
 	std::string buildSecName(const std::string& secName) const

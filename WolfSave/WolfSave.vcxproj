@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdParty\nlohmann\json.hpp" />
+    <ClInclude Include="Database.h" />
     <ClInclude Include="FileWalker.h" />
     <ClInclude Include="FileWriter.h" />
     <ClInclude Include="JsonDumper.h" />
