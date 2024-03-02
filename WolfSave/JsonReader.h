@@ -64,9 +64,10 @@ class JsonReader
 		{
 		}
 
-		nlohmann::ordered_json json;
-		uint64_t varCnt = 0;
+		nlohmann::ordered_json json = nlohmann::ordered_json();
+		uint64_t varCnt             = 0;
 
+		std::map<std::string, uint64_t> cstmVarCnt = std::map<std::string, uint64_t>();
 		std::map<std::string, uint32_t> sectionCnt = std::map<std::string, uint32_t>();
 	};
 
@@ -113,30 +114,30 @@ public:
 	}
 
 	template<typename T>
-	std::vector<T> ReadVec()
+	std::vector<T> ReadVec(const std::string& name = "")
 	{
-		const nlohmann::ordered_json json = getJson();
+		const nlohmann::ordered_json json = getJson(name);
 		return getVecObj<T>(json);
 	}
 
 	template<typename T>
-	std::vector<MemData<T>> ReadMemDataVec()
+	std::vector<MemData<T>> ReadMemDataVec(const std::string& name = "")
 	{
-		const nlohmann::ordered_json json = getJson();
+		const nlohmann::ordered_json json = getJson(name);
 		return getMemDataVecObj<T>(json);
 	}
 
 	template<typename T, size_t U>
-	std::array<T, U> ReadArr()
+	std::array<T, U> ReadArr(const std::string& name = "")
 	{
-		const nlohmann::ordered_json json = getJson();
+		const nlohmann::ordered_json json = getJson(name);
 		return getArrObj<T, U>(json);
 	}
 
 	template<typename T>
-	MemData<T> ReadMemData()
+	MemData<T> ReadMemData(const std::string& name = "")
 	{
-		const nlohmann::ordered_json json = getJson();
+		const nlohmann::ordered_json json = getJson(name);
 		return getMemDataObj<T>(json);
 	}
 
@@ -157,13 +158,26 @@ private:
 
 	nlohmann::ordered_json getJson(const std::string& name = "")
 	{
-		return curSection()->json[(name.empty() ? buildObjName() : name)];
+		return curSection()->json[buildObjName(name)];
 	}
 
-	std::string buildObjName()
+	std::string buildObjName(const std::string& name = "")
 	{
-		std::string name = "var_#" + std::to_string(curSection()->varCnt++);
-		return name;
+		std::string objName = "";
+		if (name.empty())
+			objName = "var_#" + std::to_string(curSection()->varCnt++);
+		else
+		{
+			curSection()->cstmVarCnt.try_emplace(name, 0);
+			if (curSection()->cstmVarCnt[name] == 0)
+				objName = name;
+			else
+				objName = name + "_#" + std::to_string(curSection()->cstmVarCnt[name]);
+
+			curSection()->cstmVarCnt[name]++;
+		}
+
+		return objName;
 	}
 
 	std::string buildSecName(const std::string& secName) const

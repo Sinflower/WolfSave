@@ -56,14 +56,10 @@ class VariableDatabase : public SaveInterface
 		};
 
 	public:
-		TypeData(const std::vector<uint32_t> &typeDefinition) :
+		TypeData(const wolfrpg::Type& type, const std::vector<uint32_t> &typeDefinition) :
+			m_type(type),
 			m_typeDefinition(typeDefinition)
 		{
-		}
-
-		void SetType(const wolfrpg::Type &type)
-		{
-			m_type = type;
 		}
 
 		bool Parse(FileWalker &fw)
@@ -110,36 +106,39 @@ class VariableDatabase : public SaveInterface
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
+			uint32_t id = 0;
 			for (const uint32_t &def : m_typeDefinition)
 			{
-				if (def >= 2000) continue;
+				if (def < 2000)
+					fw.Write(jr.Read<DWORD>(m_type.GetFieldName(id)));
 
-				fw.Write(jr.Read<DWORD>());
+				id++;
 			}
 
+			id = 0;
+
 			for (const uint32_t &def : m_typeDefinition)
 			{
-				if (def < 2000) continue;
+				if (def >= 2000)
+					jr.ReadMemData<DWORD>(m_type.GetFieldName(id)).write(fw);
 
-				jr.ReadMemData<DWORD>().write(fw);
+				id++;
 			}
 		}
 
 	private:
-		std::vector<FieldData> m_fieldData;
-		std::vector<uint32_t> m_typeDefinition;
 		wolfrpg::Type m_type;
+		std::vector<FieldData> m_fieldData = {};
+		std::vector<uint32_t> m_typeDefinition;
 	};
 
 	class VariableType : public SaveInterface
 	{
 	public:
 		// TODO: When saving this maybe include a flag if var3 was read or not
-		VariableType() = default;
-
-		void SetType(const wolfrpg::Type &type)
+		VariableType(const wolfrpg::Type &type) :
+			m_type(type)
 		{
-			m_type = type;
 		}
 
 		bool Parse(FileWalker &fw)
@@ -166,8 +165,7 @@ class VariableDatabase : public SaveInterface
 
 			for (uint32_t i = 0; i < m_var4; i++)
 			{
-				TypeData td(m_vars);
-				td.SetType(m_type);
+				TypeData td(m_type, m_vars);
 				td.Parse(fw);
 				m_typeDatas.push_back(td);
 			}
@@ -203,15 +201,15 @@ class VariableDatabase : public SaveInterface
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
-			int32_t var1 = jr.Read<int32_t>();
+			int32_t var1 = jr.Read<int32_t>("Unknown Flag #1");
 			fw.Write(var1);
 
 			if (var1 <= -1)
 			{
 				if (var1 <= -2)
-					fw.Write(jr.Read<int32_t>());
+					fw.Write(jr.Read<int32_t>("Unknown Flag #2"));
 
-				var1 = jr.Read<int32_t>();
+				var1 = jr.Read<int32_t>("Field Count");
 				fw.Write(var1);
 			}
 
@@ -219,16 +217,16 @@ class VariableDatabase : public SaveInterface
 
 			if (var1 > 0)
 			{
-				vars = jr.ReadVec<uint32_t>();
+				vars = jr.ReadVec<uint32_t>("Field Configuration");
 				fw.Write(vars);
 			}
 
-			uint32_t var4 = jr.Read<uint32_t>();
+			uint32_t var4 = jr.Read<uint32_t>("TypeData Count");
 			fw.Write(var4);
 
 			for (uint32_t i = 0; i < var4; i++)
 			{
-				TypeData td(vars);
+				TypeData td(m_type, vars);
 				td.Json2Save(jr, fw);
 			}
 		}
@@ -245,12 +243,14 @@ class VariableDatabase : public SaveInterface
 	};
 
 public:
-	VariableDatabase() = default;
+	VariableDatabase()
+	{
+		m_db = wolfrpg::Database(_T("CDataBase.project"));
+	}
+
 	bool Parse(FileWalker &fw)
 	{
 		if (!check()) return false;
-
-		wolfrpg::Database db(_T("CDataBase.project"));
 
 		// Is here 1 byte just skipped?
 		m_unknown = fw.ReadUInt8();
@@ -258,8 +258,7 @@ public:
 		m_typeCount = fw.ReadUInt32();
 		for (uint32_t i = 0; i < m_typeCount; i++)
 		{
-			VariableType vt;
-			vt.SetType(db.GetTypes().at(i));
+			VariableType vt(m_db.GetType(i));
 			vt.Parse(fw);
 			m_variableTypes.push_back(vt);
 		}
@@ -285,12 +284,12 @@ protected:
 	{
 		fw.Write(jr.Read<uint8_t>());
 
-		uint32_t size = jr.Read<uint32_t>();
+		uint32_t size = jr.Read<uint32_t>("Number of Types");
 		fw.Write(size);
 
 		for (uint32_t i = 0; i < size; i++)
 		{
-			VariableType vt;
+			VariableType vt(m_db.GetType(i));
 			vt.Json2Save(jr, fw);
 		}
 	}
@@ -299,4 +298,6 @@ private:
 	uint8_t m_unknown  = 0;
 	uint32_t m_typeCount = 0;
 	std::vector<VariableType> m_variableTypes;
+
+	wolfrpg::Database m_db;
 };

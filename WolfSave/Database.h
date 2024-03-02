@@ -238,6 +238,14 @@ public:
 		return m_types;
 	}
 
+	const Type& GetType(const uint32_t& index) const
+	{
+		if (index < m_types.size())
+			return m_types[index];
+
+		return m_invalidType;
+	}
+
 	const bool& IsValid() const
 	{
 		return m_valid;
@@ -264,6 +272,7 @@ private:
 
 private:
 	Types m_types;
+	Type m_invalidType = Type();
 
 	bool m_valid = false;
 };
