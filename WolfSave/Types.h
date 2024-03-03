@@ -51,10 +51,12 @@ static inline std::basic_ostream<TCHAR>& tcerr =
 using tString       = std::wstring;
 using tOstream      = std::wostream;
 using tStringStream = std::wstringstream;
+#define FS_PATH_TO_TSTRING(P) P.wstring()
 #else
 using tString       = std::string;
 using tOstream      = std::ostream;
 using tStringStream = std::stringstream;
+#define FS_PATH_TO_TSTRING(P) P.string()
 #endif // _UNICODE
 
 using tStrings = std::vector<tString>;

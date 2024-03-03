@@ -56,9 +56,9 @@ class VariableDatabase : public SaveInterface
 		};
 
 	public:
-		TypeData(const wolfrpg::Type& type, const std::vector<uint32_t> &typeDefinition) :
+		TypeData(const wolfrpg::Type &type, const std::vector<uint32_t> &typeConfig) :
 			m_type(type),
-			m_typeDefinition(typeDefinition)
+			m_typeConfig(typeConfig)
 		{
 		}
 
@@ -66,7 +66,7 @@ class VariableDatabase : public SaveInterface
 		{
 			uint32_t id = 0;
 			// First all numbers, then all strings
-			for (const uint32_t &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def < 2000)
 					m_fieldData.push_back({ id, 1, fw.ReadInt32() });
@@ -76,7 +76,7 @@ class VariableDatabase : public SaveInterface
 
 			id = 0;
 
-			for (const uint32_t &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def >= 2000)
 					m_fieldData.push_back({ id, 2, 0, initMemData<DWORD>(fw) });
@@ -107,7 +107,7 @@ class VariableDatabase : public SaveInterface
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
 			uint32_t id = 0;
-			for (const uint32_t &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def < 2000)
 					fw.Write(jr.Read<DWORD>(m_type.GetFieldName(id)));
@@ -117,7 +117,7 @@ class VariableDatabase : public SaveInterface
 
 			id = 0;
 
-			for (const uint32_t &def : m_typeDefinition)
+			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def >= 2000)
 					jr.ReadMemData<DWORD>(m_type.GetFieldName(id)).write(fw);
@@ -129,13 +129,12 @@ class VariableDatabase : public SaveInterface
 	private:
 		wolfrpg::Type m_type;
 		std::vector<FieldData> m_fieldData = {};
-		std::vector<uint32_t> m_typeDefinition;
+		std::vector<uint32_t> m_typeConfig;
 	};
 
 	class VariableType : public SaveInterface
 	{
 	public:
-		// TODO: When saving this maybe include a flag if var3 was read or not
 		VariableType(const wolfrpg::Type &type) :
 			m_type(type)
 		{
@@ -143,29 +142,30 @@ class VariableDatabase : public SaveInterface
 
 		bool Parse(FileWalker &fw)
 		{
-			m_var1     = fw.ReadInt32();
-			int32_t v6 = m_var1;
+			m_unknown = fw.ReadInt32();
 
-			if (m_var1 <= -1)
+			int32_t fieldCount = m_unknown;
+
+			if (m_unknown <= -1)
 			{
-				if (m_var1 <= -2)
-					m_var2 = fw.ReadInt32();
+				if (m_unknown <= -2)
+					m_dis = fw.ReadInt32();
 
-				m_var3 = fw.ReadUInt32();
-				v6     = m_var3;
+				m_fieldCount = fw.ReadUInt32();
+				fieldCount   = m_fieldCount;
 			}
 
-			if (v6 > 0)
+			if (fieldCount > 0)
 			{
-				for (int32_t i = 0; i < v6; i++)
-					m_vars.push_back(fw.ReadUInt32());
+				for (int32_t i = 0; i < fieldCount; i++)
+					m_typeConfig.push_back(fw.ReadUInt32());
 			}
 
-			m_var4 = fw.ReadUInt32();
+			m_typeDataCount = fw.ReadUInt32();
 
-			for (uint32_t i = 0; i < m_var4; i++)
+			for (uint32_t i = 0; i < m_typeDataCount; i++)
 			{
-				TypeData td(m_type, m_vars);
+				TypeData td(m_type, m_typeConfig);
 				td.Parse(fw);
 				m_typeDatas.push_back(td);
 			}
@@ -176,19 +176,19 @@ class VariableDatabase : public SaveInterface
 	protected:
 		void dump(JsonDumper &jd) const
 		{
-			jd.Dump(m_var1, "Unknown Flag #1", JsonDumper::DO_NOT_TOUCH);
-			if ((int)m_var1 <= -1)
+			jd.Dump(m_unknown, "Unknown Flag", JsonDumper::DO_NOT_TOUCH);
+			if (m_unknown <= -1)
 			{
-				if ((int)m_var1 <= -2)
-					jd.Dump(m_var2, "Unknown Flag #2", JsonDumper::DO_NOT_TOUCH);
+				if (m_unknown <= -2)
+					jd.Dump(m_dis, "Data ID Specification", JsonDumper::DO_NOT_TOUCH);
 
-				jd.Dump(m_var3, "Field Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+				jd.Dump(m_fieldCount, "Field Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 			}
 
-			if (!m_vars.empty())
-				jd.Dump(m_vars, "Field Configuration", JsonDumper::DO_NOT_TOUCH);
+			if (!m_typeConfig.empty())
+				jd.Dump(m_typeConfig, "Type Configuration", JsonDumper::DO_NOT_TOUCH);
 
-			jd.Dump(m_var4, "TypeData Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
+			jd.Dump(m_typeDataCount, "TypeData Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
 			for (const TypeData &td : m_typeDatas)
 				td.Dump(jd);
@@ -196,18 +196,22 @@ class VariableDatabase : public SaveInterface
 
 		std::string name() const
 		{
+			// If the type is empty, call the base class method
+			if(m_type.GetName().empty())
+				return SaveInterface::name();
+
 			return m_type.GetName();
 		}
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
-			int32_t var1 = jr.Read<int32_t>("Unknown Flag #1");
+			int32_t var1 = jr.Read<int32_t>("Unknown Flag");
 			fw.Write(var1);
 
 			if (var1 <= -1)
 			{
 				if (var1 <= -2)
-					fw.Write(jr.Read<int32_t>("Unknown Flag #2"));
+					fw.Write(jr.Read<int32_t>("Data ID Specification"));
 
 				var1 = jr.Read<int32_t>("Field Count");
 				fw.Write(var1);
@@ -217,7 +221,7 @@ class VariableDatabase : public SaveInterface
 
 			if (var1 > 0)
 			{
-				vars = jr.ReadVec<uint32_t>("Field Configuration");
+				vars = jr.ReadVec<uint32_t>("Type Configuration");
 				fw.Write(vars);
 			}
 
@@ -232,20 +236,22 @@ class VariableDatabase : public SaveInterface
 		}
 
 	private:
-		int32_t m_var1  = 0;
-		int32_t m_var2  = 0;
-		int32_t m_var3  = 0;
-		uint32_t m_var4 = 0;
+		int32_t m_unknown        = 0;
+		int32_t m_dis            = 0;
+		int32_t m_fieldCount     = 0;
+		uint32_t m_typeDataCount = 0;
 
-		std::vector<uint32_t> m_vars;
+		std::vector<uint32_t> m_typeConfig;
 		std::vector<TypeData> m_typeDatas;
 		wolfrpg::Type m_type;
 	};
 
 public:
-	VariableDatabase()
+	VariableDatabase() = default;
+
+	void SetDB(const wolfrpg::Database &db)
 	{
-		m_db = wolfrpg::Database(_T("CDataBase.project"));
+		m_db = db;
 	}
 
 	bool Parse(FileWalker &fw)
@@ -262,10 +268,6 @@ public:
 			vt.Parse(fw);
 			m_variableTypes.push_back(vt);
 		}
-
-		// TODO: Here soemthing is done with CDataBase -- Maybe mapping of custom variables, look into it later
-		// sub_69CDF0("BasicData/CDataBase");
-		// sub_69CDF0(".project");
 
 		return true;
 	}
@@ -295,7 +297,7 @@ protected:
 	}
 
 private:
-	uint8_t m_unknown  = 0;
+	uint8_t m_unknown    = 0;
 	uint32_t m_typeCount = 0;
 	std::vector<VariableType> m_variableTypes;
 

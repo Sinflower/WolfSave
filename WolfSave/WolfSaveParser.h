@@ -30,6 +30,7 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <filesystem>
 
 #include "FileWalker.h"
 #include "FileWriter.h"
@@ -45,6 +46,8 @@
 #include "SavePart5.h"
 #include "VariableDatabase.h"
 #include "SavePart7.h"
+
+namespace fs = std::filesystem;
 
 static const std::string g_version = "0.2.0";
 
@@ -67,6 +70,8 @@ public:
 			tcerr << TEXT("Failed to load input file: ") << filePath << std::endl;
 			return false;
 		}
+
+		init(filePath);
 
 		m_fileWalker.InitData(data);
 
@@ -160,6 +165,24 @@ public:
 	}
 
 private:
+	void init(const tString& saveFilePath)
+	{
+		// Search for "CDataBase.project" in ../Data/BasicData relative to the base folder of the provided save file
+		fs::path projPath = saveFilePath;
+		projPath.remove_filename();
+		projPath /= "../Data/BasicData/CDataBase.project";
+
+		if (!fs::exists(projPath))
+		{
+			std::cerr << "Warning: Unable to find CDataBase.project" << std::endl;
+			std::cerr << "         Search Path: " << projPath << std::endl;
+			return;
+		}
+
+		m_varDB = wolfrpg::Database(FS_PATH_TO_TSTRING(projPath));
+		m_variableDB.SetDB(m_varDB);
+	}
+
 	bool read2Buffer(const tString &pFilePath, std::vector<BYTE> &buffer)
 	{
 		HANDLE hFile = CreateFile(pFilePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
@@ -327,14 +350,14 @@ private:
 	{
 		jd.EnterSection("Header");
 
-		jd.Dump(m_header, JsonDumper::DO_NOT_TOUCH);
-		jd.Dump(m_var1, JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
+		jd.Dump(m_header, "Header Data", JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_var1, "Start Byte", JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
 
-		jd.Dump(m_name);
+		jd.Dump(m_name, "Game Name");
 
-		jd.Dump(m_fileVersion, JsonDumper::DO_NOT_TOUCH);
+		jd.Dump(m_fileVersion, "File Version", JsonDumper::DO_NOT_TOUCH);
 
-		jd.Dump(m_endByte, JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
+		jd.Dump(m_endByte, "End Byte", JsonDumper::DO_NOT_TOUCH | JsonDumper::MAGIC_NUMBER);
 
 		jd.LeaveSection();
 	}
@@ -374,14 +397,14 @@ private:
 	{
 		jr.EnterSection("Header");
 
-		m_header = jr.ReadArr<BYTE, START_OFFSET>();
-		m_var1   = jr.Read<BYTE>();
+		m_header = jr.ReadArr<BYTE, START_OFFSET>("Header Data");
+		m_var1   = jr.Read<BYTE>("Start Byte");
 
-		m_name = jr.ReadMemData<WORD>();
+		m_name = jr.ReadMemData<WORD>("Game Name");
 
-		m_fileVersion = jr.Read<WORD>();
+		m_fileVersion = jr.Read<WORD>("File Version");
 
-		m_endByte = jr.Read<BYTE>();
+		m_endByte = jr.Read<BYTE>("End Byte");
 
 		if (m_endByte != 0x19)
 		{
@@ -429,4 +452,6 @@ private:
 	SavePart5 m_savePart5;
 	VariableDatabase m_variableDB;
 	SavePart7 m_savePart7;
+
+	wolfrpg::Database m_varDB = wolfrpg::Database();
 };

@@ -33,8 +33,6 @@
 namespace fs = std::filesystem;
 
 
-// TUDOs:
-
 /////////////////////////////////////////////////////
 ////////////////////// MAIN /////////////////////////
 /////////////////////////////////////////////////////
@@ -98,7 +96,7 @@ int main(int argc, char* argv[])
 #else
 	WolfSaveParser parser;
 
-	if (parser.Parse(TEXT("SaveData31.sav")))
+	if (parser.Parse(TEXT("SaveData04.sav")))
 		std::cout << "Parsing successful" << std::endl;
 	else
 	{
@@ -110,7 +108,7 @@ int main(int argc, char* argv[])
 	{
 		parser.Dump(_T("dump.json"));
 
-		parser.Json2Save(_T("dump.json"), _T("SaveData31_new.sav"));
+		parser.Json2Save(_T("dump.json"), _T("SaveData04_new.sav"));
 	}
 	// catch (std::exception& e)
 	//{
