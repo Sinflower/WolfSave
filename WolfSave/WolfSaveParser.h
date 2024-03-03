@@ -27,10 +27,10 @@
 #pragma once
 
 #include <array>
+#include <filesystem>
 #include <iostream>
 #include <tuple>
 #include <vector>
-#include <filesystem>
 
 #include "FileWalker.h"
 #include "FileWriter.h"
@@ -44,8 +44,8 @@
 #include "SavePart3.h"
 #include "SavePart4.h"
 #include "SavePart5.h"
-#include "VariableDatabase.h"
 #include "SavePart7.h"
+#include "VariableDatabase.h"
 
 namespace fs = std::filesystem;
 
@@ -79,7 +79,7 @@ public:
 
 		m_fileWalker.Seek(0);
 
-		m_isUTF8   = (m_fileWalker.At(6) == 0x55);
+		m_isUTF8 = (m_fileWalker.At(6) == 0x55);
 
 		memData::g_isUTF8 = m_isUTF8;
 
@@ -118,6 +118,8 @@ public:
 		m_variableDB.Dump(dumper);
 		m_savePart7.Dump(dumper);
 
+		dumpMappings(dumper);
+
 		dumper.Write2File();
 
 		tcout << "Dumping finished" << std::endl;
@@ -126,8 +128,6 @@ public:
 	void Json2Save(const tString &inputPath, const tString &outputPath)
 	{
 		tcout << "Loading JSON File: " << inputPath << " ... " << std::flush;
-
-		init(inputPath);
 
 		JsonReader reader(inputPath);
 
@@ -167,7 +167,7 @@ public:
 	}
 
 private:
-	void init(const tString& saveFilePath)
+	void init(const tString &saveFilePath)
 	{
 		// Search for "CDataBase.project" in ../Data/BasicData relative to the base folder of the provided save file
 		fs::path projPath = saveFilePath;
@@ -372,10 +372,21 @@ private:
 		jd.LeaveSection();
 	}
 
-	void json2Save(JsonReader& jr, FileWriter& fw)
+	void dumpMappings(JsonDumper &jd) const
+	{
+		jd.EnterSection("Mappings");
+
+		if (m_varDB.IsValid())
+			m_varDB.ToJson(jd);
+
+		jd.LeaveSection();
+	}
+
+	void json2Save(JsonReader &jr, FileWriter &fw)
 	{
 		loadConfig(jr);
 		json2SaveHeader(jr, fw);
+		loadMappings(jr);
 	}
 
 	void loadConfig(JsonReader &jr)
@@ -384,13 +395,23 @@ private:
 
 		std::string version = jr.Read<std::string>("Version");
 		m_isUTF8            = jr.Read<bool>("UTF-8");
-		memData::g_isUTF8 = m_isUTF8;
+		memData::g_isUTF8   = m_isUTF8;
 
 		if (version != g_version)
 		{
 			std::cerr << "Error: Invalid version - Expected: " << g_version << ", got: " << version << std::endl;
 			exit(-1);
 		}
+
+		jr.LeaveSection();
+	}
+
+	void loadMappings(JsonReader& jr)
+	{
+		jr.EnterSection("Mappings");
+
+		m_varDB.FromJson(jr);
+		m_variableDB.SetDB(m_varDB);
 
 		jr.LeaveSection();
 	}
@@ -442,8 +463,8 @@ private:
 
 	bool m_isUTF8 = true;
 
-	BYTE m_var1     = 0;
-	BYTE m_endByte  = 0;
+	BYTE m_var1    = 0;
+	BYTE m_endByte = 0;
 	MemData<WORD> m_name;
 	WORD m_fileVersion = 0;
 

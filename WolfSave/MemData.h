@@ -122,7 +122,7 @@ MemData<T> initMemData(FileWalker& fw, const T& size = ~0)
 }
 
 template<typename T>
-MemData<T> initFromData(const std::string& str, const bool& readSize)
+MemData<T> initFromData(const std::string& str, const bool& readSize = true)
 {
 	MemData<T> memData;
 	memData.fromString(str);

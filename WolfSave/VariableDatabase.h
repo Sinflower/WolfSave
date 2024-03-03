@@ -24,10 +24,6 @@
  *
  */
 
-/*
-TODO: Maybe write the type mapping to the json file -- will make converting back to the original format easier and not require the original database file
-*/
-
 #pragma once
 
 #include <vector>

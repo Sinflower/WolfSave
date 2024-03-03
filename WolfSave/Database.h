@@ -31,7 +31,6 @@
 
 // TODO:
 //  - Implement decryption
-//  - Field can be empty, handle accordingly -- should auto trigger use of var_#x
 
 namespace wolfrpg
 {
@@ -44,6 +43,11 @@ public:
 	explicit Field(FileWalker& fw)
 	{
 		m_name = initMemData<DWORD>(fw);
+	}
+
+	explicit Field(const MemData<DWORD>& name)
+		: m_name(name)
+	{
 	}
 
 	void SetUnknown1(const MemData<DWORD>& unknown1)
@@ -204,6 +208,30 @@ public:
 		return "";
 	}
 
+	void ToJson(JsonDumper& jd) const
+	{
+		jd.EnterSection("Type");
+
+		jd.Dump(m_name.toString(), "Name");
+		jd.Dump(static_cast<DWORD>(m_fields.size()), "FieldCount");
+		for (const auto& field : m_fields)
+			jd.Dump(field.GetName().toString(), "Field");
+
+		jd.LeaveSection();
+	}
+
+	void FromJson(JsonReader& jr)
+	{
+		jr.EnterSection("Type");
+
+		m_name         = initFromData<DWORD>(jr.Read<std::string>("Name"));
+		DWORD fieldCnt = jr.Read<DWORD>("FieldCount");
+		for (DWORD i = 0; i < fieldCnt; i++)
+			m_fields.push_back(Field(initFromData<DWORD>(jr.Read<std::string>("Field"))));
+
+		jr.LeaveSection();
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const Type& type)
 	{
 		os << "Type: " << type.m_name;
@@ -249,6 +277,34 @@ public:
 	const bool& IsValid() const
 	{
 		return m_valid;
+	}
+
+	void ToJson(JsonDumper& jd) const
+	{
+		jd.EnterSection("Database");
+
+		jd.Dump(static_cast<DWORD>(m_types.size()), "TypeCount");
+		for (const auto& type : m_types)
+			type.ToJson(jd);
+
+		jd.LeaveSection();
+	}
+
+	void FromJson(JsonReader& jr)
+	{
+		jr.EnterSection("Database");
+
+		DWORD typeCnt = jr.Read<DWORD>("TypeCount");
+		for (DWORD i = 0; i < typeCnt; i++)
+		{
+			Type type;
+			type.FromJson(jr);
+			m_types.push_back(type);
+		}
+
+		jr.LeaveSection();
+
+		m_valid = true;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Database& db)
