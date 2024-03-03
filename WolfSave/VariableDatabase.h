@@ -25,14 +25,7 @@
  */
 
 /*
-Save_Part6 looks like it's the Variable DataBase
-m_var2 is the number of Types
-SavePart6_1 is the container for a Type
- - m_var0 = ? -- Negative number -> Signed
- - m_var1 = Data ID Specification
- - m_var2 = Number of Fields
- - m_var3 = Array containing the Field configuration, i.e., if string (2xxx) or number (1xxx) -- Lower numbers are the Field IDs
- - m_var4 = Number of Data entries for the current Type
+TODO: Maybe write the type mapping to the json file -- will make converting back to the original format easier and not require the original database file
 */
 
 #pragma once
@@ -84,33 +77,44 @@ class VariableDatabase : public SaveInterface
 				id++;
 			}
 
+			// Sort the fieldData vector by ID
+			std::sort(m_fieldData.begin(), m_fieldData.end(), [](const FieldData &a, const FieldData &b) { return a.ID < b.ID; });
+
 			return true;
 		}
 
 	protected:
 		void dump(JsonDumper &jd) const
 		{
-			// Not the best in terms of performance or style but ¯\_(ツ)_/¯
 			for (const FieldData &fd : m_fieldData)
 			{
 				if (fd.Type == 1)
 					jd.Dump(fd.Number, m_type.GetFieldName(fd.ID));
-			}
-
-			for (const FieldData &fd : m_fieldData)
-			{
-				if (fd.Type == 2)
+				else
 					jd.Dump(fd.String, m_type.GetFieldName(fd.ID));
 			}
 		}
 
 		void json2Save(JsonReader &jr, FileWriter &fw) const
 		{
+			std::vector<FieldData> fieldData = {};
+
 			uint32_t id = 0;
 			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def < 2000)
-					fw.Write(jr.Read<DWORD>(m_type.GetFieldName(id)));
+					fieldData.push_back({ id, 1, jr.Read<int32_t>(m_type.GetFieldName(id)) });
+				else if (def >= 2000)
+					fieldData.push_back({ id, 2, 0, jr.ReadMemData<DWORD>(m_type.GetFieldName(id)) });
+
+				id++;
+			}
+			
+			id = 0;
+			for (const uint32_t &def : m_typeConfig)
+			{
+				if (def < 2000)
+					fw.Write(fieldData[id].Number);
 
 				id++;
 			}
@@ -120,7 +124,7 @@ class VariableDatabase : public SaveInterface
 			for (const uint32_t &def : m_typeConfig)
 			{
 				if (def >= 2000)
-					jr.ReadMemData<DWORD>(m_type.GetFieldName(id)).write(fw);
+					fieldData[id].String.write(fw);
 
 				id++;
 			}
@@ -167,7 +171,7 @@ class VariableDatabase : public SaveInterface
 			{
 				TypeData td(m_type, m_typeConfig);
 				td.Parse(fw);
-				m_typeDatas.push_back(td);
+				m_typeData.push_back(td);
 			}
 
 			return true;
@@ -190,14 +194,14 @@ class VariableDatabase : public SaveInterface
 
 			jd.Dump(m_typeDataCount, "TypeData Count", JsonDumper::COUNTER | JsonDumper::DO_NOT_TOUCH);
 
-			for (const TypeData &td : m_typeDatas)
+			for (const TypeData &td : m_typeData)
 				td.Dump(jd);
 		}
 
 		std::string name() const
 		{
 			// If the type is empty, call the base class method
-			if(m_type.GetName().empty())
+			if (m_type.GetName().empty())
 				return SaveInterface::name();
 
 			return m_type.GetName();
@@ -242,7 +246,7 @@ class VariableDatabase : public SaveInterface
 		uint32_t m_typeDataCount = 0;
 
 		std::vector<uint32_t> m_typeConfig;
-		std::vector<TypeData> m_typeDatas;
+		std::vector<TypeData> m_typeData;
 		wolfrpg::Type m_type;
 	};
 

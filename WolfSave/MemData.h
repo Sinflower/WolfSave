@@ -31,6 +31,7 @@
 #include <vector>
 
 #include "FileWalker.h"
+#include "FileWriter.h"
 #include "Types.h"
 
 namespace memData
