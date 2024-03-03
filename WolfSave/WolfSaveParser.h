@@ -127,6 +127,8 @@ public:
 	{
 		tcout << "Loading JSON File: " << inputPath << " ... " << std::flush;
 
+		init(inputPath);
+
 		JsonReader reader(inputPath);
 
 		json2Save(reader, m_fileWriter);
