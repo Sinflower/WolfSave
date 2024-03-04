@@ -319,9 +319,86 @@ private:
 	bool init(const tString& projectFileName)
 	{
 		FileWalker fw(projectFileName);
+
+		if(!decrypt(fw))
+			return false;
+
 		DWORD typeCnt = fw.ReadUInt32();
 		for (DWORD i = 0; i < typeCnt; i++)
 			m_types.push_back(Type(fw));
+
+		return true;
+	}
+
+	bool isEncrypted(const DWORD& header)
+	{
+		return (header > 0xFF);
+	}
+
+	bool decrypt(FileWalker& fw)
+	{
+		fw.Seek(0);
+		// Get the first 4 bytes of the file
+		const uint32_t header = fw.ReadUInt32();
+
+		if (!isEncrypted(header))
+		{
+			fw.Seek(0);
+			return true;
+		}
+
+		std::cout << "Trying to find the decryption seed ... " << std::flush;
+		// A rough estimation of the min size of the type data
+		const uint32_t MIN_TYPE_SIZE = 74;
+
+		uint32_t seed;
+		bool found = false;
+
+		for (seed = 0x0; seed <= 0xFF; seed++)
+		{
+			srand(static_cast<int8_t>(seed));
+			uint32_t typeCnt = header;
+			uint8_t* pPtr = reinterpret_cast<uint8_t*>(&typeCnt);
+	
+			for (uint32_t i = 0; i < 4; i++)
+			{
+				pPtr[i] ^= static_cast<uint8_t>(rand());
+				//std::cout << " 0x" << std::hex << static_cast<uint32_t>(pPtr[i]);
+			}
+
+			if (typeCnt <= 0xFF)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			std::cout << "Failed" << std::endl;
+			std::cerr << "Failed to detect the decryption seed" << std::endl;
+			return false;
+		}
+
+		std::cout << "Successful" << std::endl;
+
+		std::cout << "Decryption Seed: 0x" << std::hex << seed << std::dec << std::endl;
+
+		srand(static_cast<int8_t>(seed));
+
+		fw.Seek(0);
+		PBYTE ptr = fw.Get();
+		std::vector<BYTE> data = std::vector<BYTE>(fw.GetSize());
+		std::memcpy(data.data(), ptr, fw.GetSize());
+
+		fw.InitData(data);
+
+		ptr = fw.Get();
+
+		for (uint32_t i = 0; i < fw.GetSize(); i++)
+			ptr[i] ^= static_cast<uint8_t>(rand());
+
+		fw.Seek(0);
 
 		return true;
 	}

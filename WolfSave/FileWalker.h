@@ -77,18 +77,13 @@ public:
 
 	~FileWalker()
 	{
-		if (m_pMapView != nullptr)
-			UnmapViewOfFile(m_pMapView);
-
-		if (m_pFileMap != nullptr)
-			CloseHandle(m_pFileMap);
-
-		if (m_pFile != nullptr)
-			CloseHandle(m_pFile);
+		close();
 	}
 
 	void InitData(const std::vector<BYTE>& dataVec)
 	{
+		close();
+
 		m_dataVec = dataVec;
 		m_pData   = m_dataVec.data();
 		m_size    = static_cast<DWORD>(m_dataVec.size());
@@ -145,7 +140,7 @@ public:
 	{
 		return read<uint8_t>();
 	}
-	
+
 	int64_t ReadInt64()
 	{
 		return read<int64_t>();
@@ -269,6 +264,27 @@ public:
 	}
 
 private:
+	void close()
+	{
+		if (m_pMapView != nullptr)
+		{
+			UnmapViewOfFile(m_pMapView);
+			m_pMapView = nullptr;
+		}
+
+		if (m_pFileMap != nullptr)
+		{
+			CloseHandle(m_pFileMap);
+			m_pFileMap = nullptr;
+		}
+
+		if (m_pFile != nullptr)
+		{
+			CloseHandle(m_pFile);
+			m_pFile = nullptr;
+		}
+	}
+
 	template<typename T>
 	T read()
 	{
