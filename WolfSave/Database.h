@@ -111,6 +111,11 @@ public:
 		m_name = initMemData<DWORD>(fw);
 	}
 
+	explicit Data(const MemData<DWORD>& name)
+		: m_name(name)
+	{
+	}
+
 	const MemData<DWORD>& GetName() const
 	{
 		return m_name;
@@ -189,6 +194,18 @@ public:
 		return m_data;
 	}
 
+	const std::string GetDataStr(const uint32_t index) const
+	{
+		if (index < m_data.size())
+		{
+			std::string str = m_data[index].GetName().toString();
+			if (str.empty()) str = "BLANK";
+			return str;
+		}
+
+		return "";
+	}
+
 	const std::string GetName() const
 	{
 		return m_name.toString();
@@ -217,6 +234,10 @@ public:
 		for (const auto& field : m_fields)
 			jd.Dump(field.GetName().toString(), "Field");
 
+		jd.Dump(static_cast<DWORD>(m_data.size()), "DataCount");
+		for (const auto& data : m_data)
+			jd.Dump(data.GetName().toString(), "Data");
+
 		jd.LeaveSection();
 	}
 
@@ -228,6 +249,11 @@ public:
 		DWORD fieldCnt = jr.Read<DWORD>("FieldCount");
 		for (DWORD i = 0; i < fieldCnt; i++)
 			m_fields.push_back(Field(initFromData<DWORD>(jr.Read<std::string>("Field"))));
+
+		DWORD dataCnt = jr.Read<DWORD>("DataCount");
+		for (DWORD i = 0; i < dataCnt; i++)
+			m_data.push_back(Data(initFromData<DWORD>(jr.Read<std::string>("Data"))));
+
 
 		jr.LeaveSection();
 	}

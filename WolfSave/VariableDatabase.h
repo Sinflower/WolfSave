@@ -45,9 +45,11 @@ class VariableDatabase : public SaveInterface
 		};
 
 	public:
-		TypeData(const wolfrpg::Type &type, const std::vector<uint32_t> &typeConfig) :
+		TypeData(const wolfrpg::Type &type, const std::vector<uint32_t> &typeConfig, const uint32_t& idx, const int32_t& dis) :
 			m_type(type),
-			m_typeConfig(typeConfig)
+			m_typeConfig(typeConfig),
+			m_idx(idx),
+			m_dis(dis)
 		{
 		}
 
@@ -126,10 +128,27 @@ class VariableDatabase : public SaveInterface
 			}
 		}
 
+		std::string name() const
+		{
+			// TODO: Implement type name processing for other dis types
+			// Will require reference to previous type / other databases
+			if (m_dis > 1)
+				return SaveInterface::name();
+
+			// If the type is empty, call the base class method
+			if (m_type.GetDataStr(m_idx).empty())
+				return SaveInterface::name();
+
+			return m_type.GetDataStr(m_idx);
+		}
+
+
 	private:
 		wolfrpg::Type m_type;
 		std::vector<FieldData> m_fieldData = {};
 		std::vector<uint32_t> m_typeConfig;
+		uint32_t m_idx = 0;
+		int32_t m_dis = 0;
 	};
 
 	class VariableType : public SaveInterface
@@ -165,7 +184,7 @@ class VariableDatabase : public SaveInterface
 
 			for (uint32_t i = 0; i < m_typeDataCount; i++)
 			{
-				TypeData td(m_type, m_typeConfig);
+				TypeData td(m_type, m_typeConfig, i, m_dis);
 				td.Parse(fw);
 				m_typeData.push_back(td);
 			}
@@ -208,10 +227,15 @@ class VariableDatabase : public SaveInterface
 			int32_t var1 = jr.Read<int32_t>("Unknown Flag");
 			fw.Write(var1);
 
+			int32_t dis = 0;
+
 			if (var1 <= -1)
 			{
 				if (var1 <= -2)
-					fw.Write(jr.Read<int32_t>("Data ID Specification"));
+				{
+					dis = jr.Read<int32_t>("Data ID Specification");
+					fw.Write(dis);
+				}
 
 				var1 = jr.Read<int32_t>("Field Count");
 				fw.Write(var1);
@@ -230,7 +254,7 @@ class VariableDatabase : public SaveInterface
 
 			for (uint32_t i = 0; i < var4; i++)
 			{
-				TypeData td(m_type, vars);
+				TypeData td(m_type, vars, i, dis);
 				td.Json2Save(jr, fw);
 			}
 		}
